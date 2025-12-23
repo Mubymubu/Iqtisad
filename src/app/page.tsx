@@ -43,7 +43,7 @@ export default function Home() {
 
       <section className="bg-background py-16">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl text-left">
-            <h2 className="text-3xl font-bold font-headline mb-6">Why the Name Iqtisad?</h2>
+            <h2 className="text-3xl font-bold font-headline mb-6">Why The Name Iqtisad(اقتصاد)</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>The name Iqtisad is derived from the Arabic word for economics and reflects the significant role Arab scholars played in shaping foundational economic and financial ideas that influence modern markets today. During the Islamic Golden Age, Arab thinkers developed early concepts of trade ethics, market regulation, contracts, risk-sharing, and financial accountability—principles that underpin contemporary stock markets and financial systems.</p>
               <p>Practices such as partnerships, profit-and-loss sharing, transparent record-keeping, and regulated marketplaces were formalized long before modern exchanges existed. By choosing the name Iqtisad, this platform acknowledges those historical contributions while emphasizing balance, structured decision-making, and responsible economic thinking, which are central to understanding today’s global financial markets.</p>
