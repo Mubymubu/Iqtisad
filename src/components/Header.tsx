@@ -13,11 +13,11 @@ import { GameStateProvider, useGameStoreState } from '@/hooks/use-game-state.tsx
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/core-concepts", label: "Core Concepts" },
   { href: "/tutorial", label: "Tutorial" },
   { href: "/level-1", label: "Level 1" },
   { href: "/level-2", label: "Level 2" },
   { href: "/level-3", label: "Level 3" },
+  { href: "/core-concepts", label: "Core Concepts" },
   { href: "/strategies", label: "Strategies" },
   { href: "/contact", label: "Contact Us" },
 ];
