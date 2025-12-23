@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+  const logoImage = PlaceHolderImages.find(p => p.id === 'iqtisad-logo-full');
 
   return (
     <div className="flex flex-col">
@@ -83,7 +84,16 @@ export default function Home() {
 
       <section className="bg-card/20 py-16">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 flex justify-center">
-           <Image src="/iqtisad-logo-full.png" alt="Iqtisad Logo with Arabic and English text" width={400} height={400} className="rounded-lg" />
+           {logoImage && (
+              <Image 
+                src={logoImage.imageUrl} 
+                alt={logoImage.description}
+                width={400} 
+                height={400} 
+                className="rounded-lg" 
+                data-ai-hint={logoImage.imageHint}
+              />
+           )}
         </div>
       </section>
 

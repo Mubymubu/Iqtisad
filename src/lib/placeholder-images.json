@@ -5,6 +5,12 @@
       "description": "Abstract representation of financial markets",
       "imageUrl": "https://images.unsplash.com/photo-1762279389020-eeeb69c25813?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGZpbmFuY2V8ZW58MHx8fHwxNzY2NDUxMjQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract finance"
+    },
+    {
+      "id": "iqtisad-logo-full",
+      "description": "Iqtisad Logo with Arabic and English text",
+      "imageUrl": "https://storage.googleapis.com/stabl-media/6f13ed76-8809-41cf-a14a-1150495f55e0.png",
+      "imageHint": "logo brand"
     }
   ]
 }
