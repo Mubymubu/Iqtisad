@@ -25,7 +25,7 @@ function Level3Content() {
     if (phase === 'intro') {
       return (
         <LevelIntro 
-          levelName="Level III"
+          levelName="Level 3"
           levelTitle="Crypto"
           startingCash={5000}
           duration={5}
