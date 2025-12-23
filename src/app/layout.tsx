@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'Iqtisad: Behavioral Economics Simulator',
-  description: 'An online simulation that teaches adolescents how psychological biases influence financial decision-making under uncertainty.',
+  description: 'Iqtisad is an educational simulator designed to teach users about financial markets and behavioral economics. The logo features a gold hexagon with six upward-trending candlesticks, symbolizing growth and structured learning in finance.',
   icons: {
     icon: '/logo.svg',
   },

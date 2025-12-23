@@ -54,12 +54,12 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore(state => state);
+    const state = useGameStore();
 
-    if (phase === 'intro' || phase === 'debrief' || !phase) return null;
+    if (state.phase === 'intro' || state.phase === 'debrief' || !state.phase) return null;
 
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
+    const minutes = Math.floor(state.timeRemaining / 60);
+    const seconds = state.timeRemaining % 60;
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat("en-US", {
@@ -76,13 +76,13 @@ const GameStateDisplay = () => {
                 <Wallet className="h-5 w-5 text-muted-foreground"/>
                 <div>
                    <div className="text-muted-foreground text-xs">Cash Balance</div>
-                   <div className="font-semibold">{formatCurrency(cashBalance)}</div>
+                   <div className="font-semibold">{formatCurrency(state.cashBalance)}</div>
                 </div>
             </div>
              <div className="flex items-center gap-2">
                 <div className="text-right">
                    <div className="text-muted-foreground text-xs">Portfolio Value</div>
-                   <div className="font-semibold">{formatCurrency(portfolioValue)}</div>
+                   <div className="font-semibold">{formatCurrency(state.portfolioValue)}</div>
                 </div>
             </div>
             <div className="font-mono text-lg font-bold text-primary tabular-nums">
@@ -107,14 +107,14 @@ export function Header() {
 
   const GameWrapper = isGameLevel ? GameStateProvider: React.Fragment;
   const gameWrapperProps = isGameLevel ? {initialAssets: [], duration: 0, startingBalance: 0} : {};
-
+  const logoAltText = "Iqtisad Logo: A gold hexagon with six upward-trending candlesticks, symbolizing growth and learning in finance.";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
+             <Image src="/logo.svg" alt={logoAltText} width={32} height={32} />
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -144,7 +144,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
+                   <Image src="/logo.svg" alt={logoAltText} width={32} height={32} />
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">
