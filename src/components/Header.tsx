@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -18,6 +17,7 @@ const navLinks = [
   { href: "/level-2", label: "Level 2" },
   { href: "/level-3", label: "Level 3" },
   { href: "/strategies", label: "Strategies" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const NavLink = ({ href, label, isSheet = false }: { href: string; label: string; isSheet?: boolean }) => {
@@ -52,7 +52,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore(state => state);
+    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore();
 
 
     if (phase === 'intro' || phase === 'debrief' || !phase) return null;
