@@ -1,8 +1,9 @@
+
 "use client";
 
 import { Zap } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 
 const cryptoAssetsConfig = [

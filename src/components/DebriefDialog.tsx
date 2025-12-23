@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -9,7 +10,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useGameStore } from "@/hooks/use-game-state";
+import { useGameStore } from "@/hooks/use-game-state.tsx";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 

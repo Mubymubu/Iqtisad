@@ -3,8 +3,8 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { StockChart } from "@/components/StockChart"
-import { useGameStore } from "@/hooks/use-game-state"
-import type { Asset } from "@/hooks/use-game-state"
+import { useGameStore } from "@/hooks/use-game-state.tsx"
+import type { Asset } from "@/hooks/use-game-state.tsx"
 import { Badge } from "./ui/badge";
 
 export function AssetCard({ asset }: { asset: Asset }) {

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { useGameState } from '@/hooks/use-game-state';
+import { useGameState } from '@/hooks/use-game-state.tsx';
 
 const navLinks = [
   { href: "/", label: "Home" },

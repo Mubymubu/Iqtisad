@@ -1,5 +1,6 @@
+
 "use client";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { AssetCard } from "@/components/AssetCard";
 import { Gamepad2 } from "lucide-react";
 import { DebriefDialog } from "@/components/DebriefDialog";
