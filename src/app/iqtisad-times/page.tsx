@@ -29,7 +29,7 @@ export default function IqtisadTimesPage() {
   return (
     <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
       <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter italic">
           The Iqtisad Times
         </h1>
         <p className="max-w-2xl mx-auto text-muted-foreground md:text-lg mt-2">
