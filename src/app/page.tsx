@@ -17,7 +17,7 @@ export default function Home() {
         <div className="mt-8">
           <Button asChild size="lg" className="group">
             <Link href="/tutorial">
-              Start Your Journey
+              Start Tutorial
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>

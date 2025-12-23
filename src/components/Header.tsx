@@ -13,6 +13,7 @@ import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/core-concepts", label: "Core Concepts" },
+  { href: "/tutorial", label: "Tutorial" },
   { href: "/level-1", label: "Level 1" },
   { href: "/level-2", label: "Level 2" },
   { href: "/level-3", label: "Level 3" },
@@ -52,8 +53,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore(state => state);
-
+    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore();
 
     if (phase === 'intro' || phase === 'debrief' || !phase) return null;
 
