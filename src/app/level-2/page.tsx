@@ -2,7 +2,7 @@
 "use client";
 
 import { AssetCard } from "@/components/AssetCard";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
+import { GameStateProvider, useGameStoreState } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
@@ -16,16 +16,12 @@ const ventureAssetsConfig = [
 ];
 
 function Level2Content() {
-    const { assets, phase, startGame } = useGameStore(state => ({
-      assets: state.assets,
-      phase: state.phase,
-      startGame: state.startGame,
-    }));
+    const { assets, phase, startGame } = useGameStoreState();
     
     if (phase === 'intro') {
       return (
         <LevelIntro 
-          levelName="Level II"
+          levelName="Level 2"
           levelTitle="Venture Capital"
           startingCash={100000}
           duration={5}
