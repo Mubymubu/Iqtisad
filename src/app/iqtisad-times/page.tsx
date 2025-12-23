@@ -1,3 +1,4 @@
+
 import { MarketNews } from "@/components/MarketNews";
 import { TopMovers } from "@/components/TopMovers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,15 @@ const articles = [
         "The Global Financial Crisis, which lasted from January 2008 to March 2009, was one of the most severe economic downturns since the Great Depression. It originated in the United States due to the collapse of the housing market and the widespread use of high-risk mortgage-backed securities.",
         "Major financial institutions faced insolvency, leading to bank failures, stock market crashes, and a sharp rise in unemployment worldwide. Governments and central banks intervened through large-scale bailouts, stimulus packages, and interest rate cuts to prevent total economic collapse.",
         "The crisis exposed weaknesses in financial regulation and risk management. As a result, stricter banking regulations and oversight frameworks were introduced globally. The 2008 crisis reshaped modern financial systems and continues to influence economic policy decisions today."
+    ]
+  },
+  {
+    title: "The COVID-19 Economic Shock",
+    author: "N’golo Robert",
+    content: [
+      "The COVID-19 economic crisis, which began in early 2020, caused a sudden and severe disruption to the global economy. Government-imposed lockdowns and travel restrictions halted production, reduced consumer spending, and led to widespread job losses across multiple sectors.",
+      "Financial markets experienced extreme volatility as uncertainty spread, with major stock indices falling sharply in the early months of the pandemic. In response, governments and central banks implemented unprecedented fiscal stimulus measures, including emergency spending programs and near-zero interest rates.",
+      "While these actions helped stabilize economies, they also increased public debt and inflationary pressures in the years that followed. The COVID-19 shock highlighted the interconnected nature of global economies and the importance of resilience in financial systems."
     ]
   }
 ];
