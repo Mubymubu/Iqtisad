@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { GameStateProvider, useGameStoreState } from '@/hooks/use-game-state.tsx';
+import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -54,7 +54,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStoreState();
+    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore(state => state);
 
     if (phase === 'intro' || phase === 'debrief' || !phase) return null;
 
@@ -114,7 +114,7 @@ export function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} className="dark:invert-0 invert" />
+             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -144,7 +144,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} className="dark:invert-0 invert"/>
+                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">
