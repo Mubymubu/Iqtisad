@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { createContext, useContext, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useRef, useEffect } from 'react';
 
 export type Asset = {
   id: string;
@@ -100,13 +100,13 @@ const createGameStore = (
 
     setStarRating: () => {
         const { portfolioValue, startingBalance } = get();
-        if (portfolioValue < startingBalance) {
+        if (portfolioValue < startingBalance * 0.95) { // more than 5% loss
             set({ starRating: 0 });
-        } else if (portfolioValue === startingBalance) {
+        } else if (portfolioValue < startingBalance) { // any loss up to 5%
             set({ starRating: 1 });
-        } else if (portfolioValue > startingBalance && portfolioValue <= startingBalance * 1.1) {
+        } else if (portfolioValue <= startingBalance * 1.1) { // profit up to 10%
             set({ starRating: 2 });
-        } else {
+        } else { // profit over 10%
             set({ starRating: 3 });
         }
     },
@@ -177,12 +177,22 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   );
 }
 
-export const useGameState = () => {
-  const store = useContext(GameContext);
-  if (!store) {
-    // This can happen if the component is not a child of GameStateProvider
-    // For the header, we return a limited, safe state.
-    return null;
-  }
-  return store(state => state);
+// Custom hook to get a specific slice of the game state.
+// Returns null if the provider is not in the component tree.
+export function useGameState<T>(selector: (state: GameStore) => T) {
+    const store = useContext(GameContext);
+    if (!store) {
+        return null; // Return null if the context is not available
+    }
+    return store(selector);
 };
+
+// Custom hook to get the entire store instance.
+// Throws an error if the provider is not in the component tree.
+export function useGameStore() {
+    const store = useContext(GameContext);
+    if (!store) {
+      throw new Error("useGameStore must be used within a GameStateProvider");
+    }
+    return store;
+}

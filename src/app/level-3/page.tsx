@@ -2,7 +2,7 @@
 
 import { Zap } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
-import { GameStateProvider, useGameState } from "@/hooks/use-game-state";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { DebriefDialog } from "@/components/DebriefDialog";
 
 const cryptoAssetsConfig = [
@@ -14,7 +14,8 @@ const cryptoAssetsConfig = [
 
 
 function Level3Content() {
-    const { assets, isFinished } = useGameState();
+    const assets = useGameStore(state => state.assets);
+    const isFinished = useGameStore(state => state.isFinished);
 
     return (
         <div className="container py-12">

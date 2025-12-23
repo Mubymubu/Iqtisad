@@ -9,7 +9,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useGameState } from "@/hooks/use-game-state";
+import { useGameStore } from "@/hooks/use-game-state";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +29,12 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function DebriefDialog() {
-  const { isFinished, startingBalance, portfolioValue, starRating } = useGameState();
+  const { isFinished, startingBalance, portfolioValue, starRating } = useGameStore(state => ({
+    isFinished: state.isFinished,
+    startingBalance: state.startingBalance,
+    portfolioValue: state.portfolioValue,
+    starRating: state.starRating
+  }));
   const router = useRouter();
 
   const netGain = portfolioValue - startingBalance;

@@ -54,14 +54,9 @@ const GameStateDisplay = () => {
     const pathname = usePathname();
     const isGameLevel = /^\/level-\d$/.test(pathname);
 
-    if (!isGameLevel) return null;
+    const state = useGameState(state => state);
 
-    // This is a bit of a hack, but it allows us to access the context
-    // without wrapping the entire header in the provider.
-    // The provider is on each level page.
-    const state = useGameState();
-
-    if (!state) return null;
+    if (!isGameLevel || !state) return null;
 
     const { timeRemaining, cashBalance, portfolioValue } = state;
     const minutes = Math.floor(timeRemaining / 60);

@@ -1,5 +1,5 @@
 "use client";
-import { useGameState, GameStateProvider } from "@/hooks/use-game-state";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { AssetCard } from "@/components/AssetCard";
 import { Gamepad2 } from "lucide-react";
 import { DebriefDialog } from "@/components/DebriefDialog";
@@ -12,7 +12,8 @@ const techAssetsConfig = [
 ];
 
 function Level1Content() {
-    const { assets, isFinished } = useGameState();
+    const assets = useGameStore(state => state.assets);
+    const isFinished = useGameStore(state => state.isFinished);
 
     return (
         <div className="container py-12">
