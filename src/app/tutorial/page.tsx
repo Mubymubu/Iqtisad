@@ -30,7 +30,7 @@ export default function TutorialPage() {
     const router = useRouter();
 
     const netWorth = cash + portfolioValue;
-    const tutorialPassed = netWorth > 100;
+    const tutorialPassed = netWorth > 100 && owned;
 
     useEffect(() => {
         let priceInterval: NodeJS.Timeout | undefined;
@@ -53,6 +53,14 @@ export default function TutorialPage() {
             setCash(cash - stockPrice);
             setPortfolioValue(stockPrice);
             setOwned(true);
+        }
+    };
+
+    const handleSell = () => {
+        if (owned) {
+            setCash(cash + stockPrice);
+            setPortfolioValue(0);
+            setOwned(false);
         }
     };
 
@@ -105,6 +113,9 @@ export default function TutorialPage() {
                      <div className="flex items-center gap-4">
                         <Button onClick={handleBuy} disabled={owned || cash < stockPrice}>
                             Buy
+                        </Button>
+                        <Button variant="outline" onClick={handleSell} disabled={!owned}>
+                            Sell
                         </Button>
                      </div>
                  </div>
