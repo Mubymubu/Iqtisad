@@ -5,6 +5,7 @@ import { AssetCard } from "@/components/AssetCard";
 import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
+import { GameStatusBar } from "@/components/GameStatusBar";
 
 
 const ventureAssetsConfig = [
@@ -15,7 +16,11 @@ const ventureAssetsConfig = [
 ];
 
 function Level2Content() {
-    const { assets, phase, startGame } = useGameStore();
+    const { assets, phase, startGame } = useGameStore(state => ({
+      assets: state.assets,
+      phase: state.phase,
+      startGame: state.startGame,
+    }));
     
     if (phase === 'intro') {
       return (
@@ -36,12 +41,7 @@ function Level2Content() {
     
     return (
         <div className="container py-12">
-            <div className="text-center mb-12">
-                <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Level II: Venture Capital</h1>
-                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                   Invest in early-stage startups. Valuations are estimates and can change dramatically.
-                </p>
-            </div>
+            <GameStatusBar />
              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {assets.map(asset => (
                      <AssetCard key={asset.id} asset={asset} />

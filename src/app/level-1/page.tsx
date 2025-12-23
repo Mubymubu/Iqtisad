@@ -4,6 +4,7 @@ import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { AssetCard } from "@/components/AssetCard";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
+import { GameStatusBar } from "@/components/GameStatusBar";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 105.42, volatility: 0.8 },
@@ -13,7 +14,11 @@ const techAssetsConfig = [
 ];
 
 function Level1Content() {
-    const { assets, phase, startGame } = useGameStore();
+    const { assets, phase, startGame } = useGameStore(state => ({
+      assets: state.assets,
+      phase: state.phase,
+      startGame: state.startGame,
+    }));
 
     if (phase === 'intro') {
       return (
@@ -34,12 +39,7 @@ function Level1Content() {
 
     return (
         <div className="container py-12">
-            <div className="text-center mb-12">
-                <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Level I: Tech Stocks</h1>
-                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                    You are trading public technology stocks. Prices update every few seconds.
-                </p>
-            </div>
+            <GameStatusBar />
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
                 {assets.map(asset => (
                      <AssetCard key={asset.id} asset={asset} />

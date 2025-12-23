@@ -5,7 +5,7 @@ import { AssetCard } from "@/components/AssetCard";
 import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
-
+import { GameStatusBar } from "@/components/GameStatusBar";
 
 const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 420.69, change: "+15.2", changeType: "gain" as const, volatility: 1.5 },
@@ -16,7 +16,11 @@ const cryptoAssetsConfig = [
 
 
 function Level3Content() {
-    const { assets, phase, startGame } = useGameStore();
+    const { assets, phase, startGame } = useGameStore(state => ({
+      assets: state.assets,
+      phase: state.phase,
+      startGame: state.startGame,
+    }));
 
     if (phase === 'intro') {
       return (
@@ -37,12 +41,7 @@ function Level3Content() {
 
     return (
         <div className="container py-12">
-            <div className="text-center mb-12">
-                <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Level III: Crypto</h1>
-                <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                   Trade digital assets in a fast-paced, high-volatility environment.
-                </p>
-            </div>
+            <GameStatusBar />
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
                 {assets.map(asset => (
                      <AssetCard key={asset.id} asset={asset} />
