@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Iqtisad: Behavioral Economics Simulator',
   description: 'Iqtisad is an educational simulator designed to teach users about financial markets and behavioral economics. The logo features a gold hexagon with six upward-trending candlesticks, symbolizing growth and structured learning in finance.',
   icons: {
-    
+    icon: '/logo.svg',
   },
 };
 

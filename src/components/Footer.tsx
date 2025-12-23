@@ -10,7 +10,7 @@ export function Footer() {
       <div className="container mx-auto py-8 px-4 md:px-6">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
            <div className="flex items-center space-x-2">
-            
+            <Image src="/logo.svg" alt={logoAltText} width={24} height={24} />
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} Iqtisad. All rights reserved.
             </p>
