@@ -78,7 +78,7 @@ export function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-auto flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -100,7 +100,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">
