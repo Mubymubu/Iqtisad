@@ -97,7 +97,7 @@ export default function TutorialPage() {
         <Card>
             <CardHeader>
                 <div className="flex justify-between items-baseline">
-                    <CardTitle className="text-2xl">AMV</CardTitle>
+                    <CardTitle className="text-2xl">AMVLBS</CardTitle>
                     <CardDescription className="text-3xl font-bold text-foreground">{formatCurrency(stockPrice)}</CardDescription>
                 </div>
             </CardHeader>
@@ -108,7 +108,7 @@ export default function TutorialPage() {
                  <div className="bg-muted/50 rounded-lg p-4 flex items-center justify-between">
                      <div>
                         <p className="text-sm text-muted-foreground">Trade this stock:</p>
-                        <p className="font-bold text-lg">AMV</p>
+                        <p className="font-bold text-lg">AMVLBS</p>
                      </div>
                      <div className="flex items-center gap-4">
                         <Button onClick={handleBuy} disabled={owned || cash < stockPrice}>
