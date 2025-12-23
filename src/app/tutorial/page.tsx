@@ -25,7 +25,7 @@ const StatCard = ({ label, value }: { label: string; value: string }) => (
 export default function TutorialPage() {
     const [cash, setCash] = useState(100);
     const [portfolioValue, setPortfolioValue] = useState(0);
-    const [stockPrice, setStockPrice] = useState(100);
+    const [stockPrice, setStockPrice] = useState(53);
     const [owned, setOwned] = useState(false);
     const router = useRouter();
 
