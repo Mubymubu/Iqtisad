@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
-import { useProgress } from '@/context/ProgressProvider';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -14,14 +13,14 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/tutorial", label: "Tutorial" },
   { href: "/core-concepts", label: "Core Concepts" },
-  { href: "/level-1", label: "Level I", needsTutorial: true },
-  { href: "/level-2", label: "Level II", needsTutorial: true },
-  { href: "/level-3", label: "Level III", needsTutorial: true },
+  { href: "/level-1", label: "Level I" },
+  { href: "/level-2", label: "Level II" },
+  { href: "/level-3", label: "Level III" },
   { href: "/strategies", label: "Strategies" },
   { href: "/contact", label: "Contact" },
 ];
 
-const NavLink = ({ href, label, disabled, isSheet = false }: { href: string; label: string; disabled: boolean; isSheet?: boolean }) => {
+const NavLink = ({ href, label, isSheet = false }: { href: string; label: string; isSheet?: boolean }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -34,14 +33,6 @@ const NavLink = ({ href, label, disabled, isSheet = false }: { href: string; lab
     "text-lg font-medium transition-colors hover:text-primary",
     isActive ? "text-primary" : "text-foreground"
   );
-
-  if (disabled) {
-      return (
-          <span className={cn(isSheet ? sheetLinkClasses : linkClasses, "cursor-not-allowed opacity-50")}>
-              {label}
-          </span>
-      )
-  }
   
   if (isSheet) {
     return (
@@ -61,14 +52,11 @@ const NavLink = ({ href, label, disabled, isSheet = false }: { href: string; lab
 };
 
 export function Header() {
-  const { tutorialCompleted } = useProgress();
-
   const renderNavLinks = (isSheet = false) => navLinks.map(link => (
     <NavLink
       key={link.href}
       href={link.href}
       label={link.label}
-      disabled={!!link.needsTutorial && !tutorialCompleted}
       isSheet={isSheet}
     />
   ));

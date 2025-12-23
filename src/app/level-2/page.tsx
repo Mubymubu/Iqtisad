@@ -1,7 +1,5 @@
 "use client";
 
-import { useProgress } from "@/context/ProgressProvider";
-import { LockedPage } from "@/components/LockedPage";
 import { BrainCircuit } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
 
@@ -12,7 +10,8 @@ const ventureAssets = [
     { name: "CORTEXA HEALTH", price: 8000000, isValuation: true },
 ];
 
-function Level2Content() {
+
+export default function Level2Page() {
     return (
         <div className="container py-12">
             <div className="text-center mb-12">
@@ -29,18 +28,4 @@ function Level2Content() {
             </div>
         </div>
     )
-}
-
-export default function Level2Page() {
-    const { levelOneCompleted, isLoaded } = useProgress();
-
-    if (!isLoaded) {
-        return null; // or a loading spinner
-    }
-
-    if (!levelOneCompleted) {
-        return <LockedPage levelName="Level II" requiredLevel="Level I" />;
-    }
-
-    return <Level2Content />;
 }

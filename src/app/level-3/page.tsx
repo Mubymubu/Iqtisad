@@ -1,7 +1,5 @@
 "use client";
 
-import { useProgress } from "@/context/ProgressProvider";
-import { LockedPage } from "@/components/LockedPage";
 import { Zap } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
 import { MarketNews } from "@/components/MarketNews";
@@ -13,7 +11,7 @@ const cryptoAssets = [
     { name: "CRYPTONEX", price: 5.43, change: "+8.3", changeType: "gain" },
 ];
 
-function Level3Content() {
+export default function Level3Page() {
     return (
         <div className="container py-12">
             <div className="text-center mb-12">
@@ -31,18 +29,4 @@ function Level3Content() {
             <MarketNews />
         </div>
     )
-}
-
-export default function Level3Page() {
-    const { levelTwoCompleted, isLoaded } = useProgress();
-    
-    if (!isLoaded) {
-        return null; // or a loading spinner
-    }
-
-    if (!levelTwoCompleted) {
-        return <LockedPage levelName="Level III" requiredLevel="Level II" />;
-    }
-
-    return <Level3Content />;
 }

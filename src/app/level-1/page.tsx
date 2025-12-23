@@ -1,7 +1,5 @@
 "use client";
 
-import { useProgress } from "@/context/ProgressProvider";
-import { LockedPage } from "@/components/LockedPage";
 import { Gamepad2 } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
 import { MarketNews } from "@/components/MarketNews";
@@ -13,7 +11,7 @@ const techAssets = [
     { name: "KALYX DATAWORKS", price: 98.17, change: "-1.8", changeType: "loss" },
 ];
 
-function Level1Content() {
+export default function Level1Page() {
     return (
         <div className="container py-12">
             <div className="text-center mb-12">
@@ -33,18 +31,4 @@ function Level1Content() {
             <MarketNews />
         </div>
     )
-}
-
-export default function Level1Page() {
-    const { tutorialCompleted, isLoaded } = useProgress();
-
-    if (!isLoaded) {
-        return null;
-    }
-
-    if (!tutorialCompleted) {
-        return <LockedPage levelName="Level I" requiredLevel="the Tutorial" />;
-    }
-
-    return <Level1Content />;
 }
