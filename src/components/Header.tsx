@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { useGameStore } from '@/hooks/use-game-state.tsx';
+import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
 
 const navLinks = [
   { href: "/", label: "Home" },
