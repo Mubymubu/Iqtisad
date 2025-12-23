@@ -32,6 +32,8 @@ type GameState = {
   starRating: number;
   phase: GamePhase;
   duration: number;
+  eventInProgress: boolean;
+  timeToNextEvent: number;
 };
 
 type GameActions = {
@@ -44,6 +46,8 @@ type GameActions = {
   startGame: () => void;
   reset: (initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number) => void;
   playAgain: () => void;
+  triggerEvent: () => void;
+  setInitialEventTimer: () => void;
 };
 
 type GameStore = GameState & GameActions;
@@ -64,9 +68,17 @@ const createGameStore = (
     netWorth: startingBalance,
     starRating: 0,
     phase: 'intro',
+    eventInProgress: false,
+    timeToNextEvent: 0,
     
+    setInitialEventTimer: () => {
+      const time = Math.floor(Math.random() * (75 - 60 + 1)) + 60; // 60-75 seconds
+      set({ timeToNextEvent: time });
+    },
+
     startGame: () => {
       set({ phase: 'trading' });
+      get().setInitialEventTimer();
     },
 
     buyAsset: (assetId) => {
@@ -93,8 +105,44 @@ const createGameStore = (
         get().calculatePortfolio();
     },
 
+    triggerEvent: () => {
+      set({ eventInProgress: true });
+
+      const assets = get().assets;
+      const upIndex = Math.floor(Math.random() * assets.length);
+      let downIndex = Math.floor(Math.random() * assets.length);
+      while (downIndex === upIndex) {
+        downIndex = Math.floor(Math.random() * assets.length);
+      }
+
+      const upAssetId = assets[upIndex].id;
+      const downAssetId = assets[downIndex].id;
+      const upPercentage = 1 + (Math.random() * (0.15 - 0.1) + 0.1); // 10-15%
+      const downPercentage = 1 - (Math.random() * (0.15 - 0.1) + 0.1); // 10-15%
+
+      let counter = 0;
+      const eventInterval = setInterval(() => {
+        if (counter >= 5) {
+          clearInterval(eventInterval);
+          set({ eventInProgress: false });
+          get().setInitialEventTimer();
+          return;
+        }
+        
+        set(state => {
+          const upAsset = state.assets.find(a => a.id === upAssetId)!;
+          const downAsset = state.assets.find(a => a.id === downAssetId)!;
+          upAsset.price *= upPercentage / 5 + (1 - upPercentage/5);
+          downAsset.price *= downPercentage / 5 + (1- downPercentage/5);
+        });
+
+        get().calculatePortfolio();
+        counter++;
+      }, 1000);
+    },
+
     updatePrices: () => {
-        if (get().phase !== 'trading') return;
+        if (get().phase !== 'trading' || get().eventInProgress) return;
         set(state => {
             state.assets.forEach(asset => {
                 const volatility = asset.volatility ?? 0.8;
@@ -141,12 +189,22 @@ const createGameStore = (
     
     tick: () => {
         if (get().phase !== 'trading') return;
-        const { timeRemaining } = get();
+        const { timeRemaining, timeToNextEvent } = get();
+
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
         } else {
             get().setStarRating();
             set({ isFinished: true, phase: 'debrief' });
+            return;
+        }
+
+        if (!get().eventInProgress) {
+            if (timeToNextEvent <= 0) {
+                get().triggerEvent();
+            } else {
+                set({ timeToNextEvent: timeToNextEvent - 1 });
+            }
         }
     },
     
@@ -162,6 +220,8 @@ const createGameStore = (
             portfolioValue: 0,
             netWorth: newStartingBalance,
             starRating: 0,
+            eventInProgress: false,
+            timeToNextEvent: 0,
         });
     },
 
@@ -240,7 +300,7 @@ const useSafeContext = () => {
   return context;
 }
 
-export function useGameStore<T>(selector: (state: GameState) => T) {
+export function useGameStore<T>(selector: (state: GameStore) => T) {
   const store = useSafeContext();
   return useStore(store, selector);
 }

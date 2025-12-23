@@ -20,7 +20,11 @@ const generateInitialChartData = () => {
 };
 
 export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boolean, isVolatile?: boolean }) => {
-  const phase = useGameStore(state => state.phase);
+  const { phase, eventInProgress } = useGameStore(state => ({
+    phase: state.phase,
+    eventInProgress: state.eventInProgress
+  }));
+
   const [data, setData] = useState(generateInitialChartData());
   const color = isGain ? '#10B981' : '#F43F5E';
 
@@ -31,12 +35,17 @@ export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boo
       setData(currentData => {
         const newData = [...currentData];
         const lastValue = newData[newData.length - 1].value;
-        const volatilityFactor = isVolatile ? 10 : 5;
-        let newValue = lastValue + (Math.random() - 0.5) * volatilityFactor;
-        
-        // Add a trend based on gain/loss
-        const trend = isGain ? 0.1 : -0.1;
-        newValue += trend * volatilityFactor;
+        let newValue = lastValue;
+
+        // Normal fluctuation only if no event is happening
+        if (!eventInProgress) {
+            const volatilityFactor = isVolatile ? 10 : 5;
+            newValue = lastValue + (Math.random() - 0.5) * volatilityFactor;
+            
+            // Add a trend based on gain/loss
+            const trend = isGain ? 0.1 : -0.1;
+            newValue += trend * volatilityFactor;
+        }
 
         newData.shift();
         newData.push({
@@ -48,7 +57,7 @@ export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boo
     }, 2000); // Same interval as price updates in store
 
     return () => clearInterval(interval);
-  }, [phase, isGain, isVolatile]);
+  }, [phase, isGain, isVolatile, eventInProgress]);
 
   return (
     <div className="w-full h-24">
