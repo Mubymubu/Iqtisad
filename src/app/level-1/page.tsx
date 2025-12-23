@@ -1,34 +1,44 @@
 "use client";
-
-import { Gamepad2 } from "lucide-react";
+import { useGameState, GameStateProvider } from "@/hooks/use-game-state";
 import { AssetCard } from "@/components/AssetCard";
-import { MarketNews } from "@/components/MarketNews";
+import { Gamepad2 } from "lucide-react";
+import { DebriefDialog } from "@/components/DebriefDialog";
 
-const techAssets = [
-    { name: "AUREX COMPUTING", price: 105.42, change: "+2.5", changeType: "gain" },
-    { name: "VANTIQ LABS", price: 100.50, change: "+0.5", changeType: "gain" },
-    { name: "SYNERON AI", price: 102.33, change: "+1.2", changeType: "gain" },
-    { name: "KALYX DATAWORKS", price: 98.17, change: "-1.8", changeType: "loss" },
+const techAssetsConfig = [
+    { id: "AUREX", name: "AUREX COMPUTING", price: 105.42, change: "+2.5", changeType: "gain" as const },
+    { id: "VANTIQ", name: "VANTIQ LABS", price: 100.50, change: "+0.5", changeType: "gain" as const },
+    { id: "SYNERON", name: "SYNERON AI", price: 102.33, change: "+1.2", changeType: "gain" as const },
+    { id: "KALYX", name: "KALYX DATAWORKS", price: 98.17, change: "-1.8", changeType: "loss" as const },
 ];
 
-export default function Level1Page() {
+function Level1Content() {
+    const { assets, isFinished } = useGameState();
+
     return (
         <div className="container py-12">
             <div className="text-center mb-12">
                 <Gamepad2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Level I: Tech Stocks</h1>
                 <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                    Invest in public tech companies and see how share prices are influenced by revenue, growth, and market sentiment. Learn about market cap, volatility, and risk vs. return.
+                    You have 3 minutes to trade tech stocks. Your goal is to increase your portfolio value.
                 </p>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
-                {techAssets.map(asset => (
-                     <AssetCard key={asset.name} asset={asset} />
+                {assets.map(asset => (
+                     <AssetCard key={asset.id} asset={asset} />
                 ))}
             </div>
-
-            <MarketNews />
+            
+            {isFinished && <DebriefDialog />}
         </div>
+    );
+}
+
+export default function Level1Page() {
+    return (
+        <GameStateProvider initialAssets={techAssetsConfig} duration={180} startingBalance={1000}>
+            <Level1Content />
+        </GameStateProvider>
     )
 }

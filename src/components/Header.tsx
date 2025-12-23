@@ -2,22 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
+import { useGameState } from '@/hooks/use-game-state';
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/tutorial", label: "Tutorial" },
   { href: "/core-concepts", label: "Core Concepts" },
   { href: "/level-1", label: "Level I" },
   { href: "/level-2", label: "Level II" },
   { href: "/level-3", label: "Level III" },
   { href: "/strategies", label: "Strategies" },
-  { href: "/contact", label: "Contact" },
 ];
 
 const NavLink = ({ href, label, isSheet = false }: { href: string; label: string; isSheet?: boolean }) => {
@@ -51,6 +50,54 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
   );
 };
 
+const GameStateDisplay = () => {
+    const pathname = usePathname();
+    const isGameLevel = /^\/level-\d$/.test(pathname);
+
+    if (!isGameLevel) return null;
+
+    // This is a bit of a hack, but it allows us to access the context
+    // without wrapping the entire header in the provider.
+    // The provider is on each level page.
+    const state = useGameState();
+
+    if (!state) return null;
+
+    const { timeRemaining, cashBalance, portfolioValue } = state;
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value);
+    }
+    
+    return (
+        <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+                <Wallet className="h-5 w-5 text-muted-foreground"/>
+                <div>
+                   <div className="text-muted-foreground text-xs">Cash Balance</div>
+                   <div className="font-semibold">{formatCurrency(cashBalance)}</div>
+                </div>
+            </div>
+             <div className="flex items-center gap-2">
+                <div className="text-right">
+                   <div className="text-muted-foreground text-xs">Portfolio Value</div>
+                   <div className="font-semibold">{formatCurrency(portfolioValue)}</div>
+                </div>
+            </div>
+            <div className="font-mono text-lg font-bold text-primary tabular-nums">
+                {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </div>
+        </div>
+    )
+}
+
 export function Header() {
   const renderNavLinks = (isSheet = false) => navLinks.map(link => (
     <NavLink
@@ -64,9 +111,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="mr-auto flex items-center">
+        <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
+             <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -77,7 +124,11 @@ export function Header() {
             {renderNavLinks()}
         </nav>
         
-        <div className="flex md:hidden">
+        <div className="ml-auto">
+            <GameStateDisplay />
+        </div>
+
+        <div className="flex md:hidden ml-4">
            <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -88,7 +139,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} />
+                   <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">

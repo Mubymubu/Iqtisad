@@ -1,15 +1,17 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
-const topMovers = [
-  { name: "AUREX", price: "$105.42", change: "+2.5%", changeType: "gain" },
-  { name: "KALYX", price: "$98.17", change: "-1.8%", changeType: "loss" },
-  { name: "SYNERON", price: "$102.33", change: "+1.2%", changeType: "gain" },
-  { name: "VANTIQ", price: "$100.50", change: "+0.5%", changeType: "gain" },
-];
-
 export function TopMovers() {
+    // This component is now decorative on the home page.
+    // In-game movers are reflected on the asset cards themselves.
+    const topMovers = [
+        { name: "AUREX", price: "$105.42", change: "+2.5%", changeType: "gain" as const },
+        { name: "KALYX", price: "$98.17", change: "-1.8%", changeType: "loss" as const },
+        { name: "SYNERON", price: "$102.33", change: "+1.2%", changeType: "gain" as const },
+        { name: "VANTIQ", price: "$100.50", change: "+0.5%", changeType: "gain" as const },
+    ];
+
     return (
         <div>
             <h2 className="text-2xl font-bold font-headline mb-4">Top Movers</h2>
@@ -17,7 +19,7 @@ export function TopMovers() {
                 <CardContent className="p-0">
                      <div className="divide-y divide-border">
                         {topMovers.map((mover) => (
-                          <div key={mover.name} className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
+                          <div key={mover.name} className="p-4 flex justify-between items-center hover:bg-card/80 transition-colors">
                             <div>
                                 <p className="font-bold">{mover.name}</p>
                                 <p className="text-sm text-muted-foreground">{mover.price}</p>
