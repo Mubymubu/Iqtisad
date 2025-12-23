@@ -21,7 +21,7 @@ export function Footer() {
               Strategies
             </Link>
             <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">
-              Contact
+              Contact Us
             </Link>
           </nav>
         </div>
