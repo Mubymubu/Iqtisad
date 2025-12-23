@@ -107,14 +107,14 @@ export function Header() {
 
   const GameWrapper = isGameLevel ? GameStateProvider: React.Fragment;
   const gameWrapperProps = isGameLevel ? {initialAssets: [], duration: 0, startingBalance: 0} : {};
-  const logoAltText = "Iqtisad Logo: A gold hexagon with six upward-trending candlesticks, symbolizing growth and learning in finance.";
+  const logoAltText = "Iqtisad Logo: A gold hexagon with six upward-trending candlesticks, symbolizing growth and structured learning in finance.";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.svg" alt={logoAltText} width={32} height={32} />
+            
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -144,7 +144,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.svg" alt={logoAltText} width={32} height={32} />
+                   
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">
