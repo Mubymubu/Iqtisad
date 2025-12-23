@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
       <section className="text-center mb-16">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4 italic">
           Welcome to Iqtisad
         </h1>
         <p className="max-w-3xl mx-auto text-muted-foreground md:text-xl">
