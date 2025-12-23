@@ -1,8 +1,10 @@
+
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Newspaper, TrendingUp, Cpu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
@@ -25,16 +27,57 @@ export default function Home() {
             Welcome to Iqtisad
           </h1>
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-neutral-200">
-            Discover how psychology shapes financial markets. A learning environment to understand and navigate the cognitive biases that influence financial decision-making.
+             Iqtisad: An educational platform for understanding financial markets and economic decision-making.
           </p>
           <div className="mt-8">
             <Button asChild size="lg" className="group">
               <Link href="/tutorial">
-                Start Tutorial
+                Explore Iqtisad
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
           </div>
+        </div>
+      </section>
+      
+      <section className="bg-background">
+        <div className="container mx-auto px-4 py-16 md:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                 <h2 className="text-3xl font-bold font-headline mb-4">Overview</h2>
+                 <div className="space-y-4 text-muted-foreground">
+                    <p>Iqtisad is designed to help students learn how financial markets work in a clear and structured way. The platform uses simplified explanations and real-world examples to make complex concepts easier to understand.</p>
+                    <p>Rather than focusing on real investing, Iqtisad emphasizes learning. Users can explore how markets behave, how trading decisions are made, and how economic events influence financial systems—all in a risk-free environment.</p>
+                 </div>
+            </div>
+             <div>
+                <h2 className="text-3xl font-bold font-headline mb-4">What You Can Explore</h2>
+                <ul className="space-y-4">
+                    <li className="flex items-start gap-4">
+                        <div className="bg-primary/10 p-2 rounded-full mt-1">
+                            <TrendingUp className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h4 className="font-semibold">Simulated market scenarios</h4>
+                        </div>
+                    </li>
+                     <li className="flex items-start gap-4">
+                        <div className="bg-primary/10 p-2 rounded-full mt-1">
+                            <Newspaper className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h4 className="font-semibold">Financial news and educational articles</h4>
+                        </div>
+                    </li>
+                     <li className="flex items-start gap-4">
+                        <div className="bg-primary/10 p-2 rounded-full mt-1">
+                            <Cpu className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h4 className="font-semibold">Fundamental trading and economic concepts</h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
       </section>
 

@@ -16,6 +16,9 @@ export function Footer() {
             </p>
           </div>
           <nav className="flex gap-4 sm:gap-6">
+            <Link href="/iqtisad-times" className="text-sm text-muted-foreground hover:text-primary">
+              The Iqtisad Times
+            </Link>
             <Link href="/core-concepts" className="text-sm text-muted-foreground hover:text-primary">
               Core Concepts
             </Link>
@@ -28,7 +31,7 @@ export function Footer() {
           </nav>
         </div>
         <div className="mt-6 text-center text-xs text-muted-foreground/50">
-           <p>Iqtisad is a simulation for educational purposes only. Not financial advice.</p>
+           <p>Educational use only. Not financial advice.</p>
         </div>
       </div>
     </footer>
