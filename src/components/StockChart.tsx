@@ -20,7 +20,7 @@ const generateInitialChartData = () => {
 };
 
 export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boolean, isVolatile?: boolean }) => {
-  const phase = useGameStore(state => state.phase);
+  const { phase } = useGameStore();
   const [data, setData] = useState(generateInitialChartData());
   const color = isGain ? '#10B981' : '#F43F5E';
 

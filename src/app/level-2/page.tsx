@@ -15,12 +15,7 @@ const ventureAssetsConfig = [
 ];
 
 function Level2Content() {
-    const store = useGameStore();
-    const { assets, phase, startGame } = store(state => ({
-      assets: state.assets,
-      phase: state.phase,
-      startGame: state.startGame,
-    }));
+    const { assets, phase, startGame } = useGameStore();
     
     if (phase === 'intro') {
       return (

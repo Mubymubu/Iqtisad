@@ -1,8 +1,9 @@
+
 "use client";
 
-import { create } from 'zustand';
+import { create, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
+import React, { createContext, useContext, useRef, useEffect } from 'react';
 
 export type Asset = {
   id: string;
@@ -96,17 +97,16 @@ const createGameStore = (
                 const randomFactor = (Math.random() - 0.49) * volatility;
                 let newPrice = asset.price * (1 + randomFactor / 100);
 
-                // Enforce max price for specific assets if defined
                 if (asset.maxPrice && newPrice > asset.maxPrice) {
-                    newPrice = asset.maxPrice * (1 - Math.random() * 0.1); // Slightly drop from max
+                    newPrice = asset.maxPrice * (1 - Math.random() * 0.1);
                 }
-                // Ensure players can always afford at least one unit
-                if (newPrice > state.cashBalance && state.assets.every(a => a.quantity === 0)) {
-                    newPrice = state.cashBalance * (0.8 + Math.random() * 0.15); // price it slightly below balance
+                
+                if (newPrice > state.cashBalance && state.assets.every(a => a.quantity === 0) && asset.maxPrice === undefined) {
+                  newPrice = state.cashBalance * (0.8 + Math.random() * 0.15);
                 }
                 
                 const change = (((newPrice - asset.price) / asset.price) * 100);
-                asset.price = Math.max(1, newPrice); // Ensure price doesn't go below 1
+                asset.price = Math.max(1, newPrice);
                 asset.change = change.toFixed(1);
                 asset.changeType = change >= 0 ? 'gain' : 'loss';
             });
@@ -122,23 +122,16 @@ const createGameStore = (
     },
 
     setStarRating: () => {
-        const { portfolioValue, startingBalance } = get();
-        // 3 stars for > 10% profit
-        if (portfolioValue > startingBalance * 1.1) {
-            set({ starRating: 3 });
-        } 
-        // 2 stars for any profit
-        else if (portfolioValue > startingBalance) {
-            set({ starRating: 2 });
-        }
-        // 1 star for breaking even
-        else if (portfolioValue === startingBalance) {
-            set({ starRating: 1 });
-        }
-        // 0 stars for any loss
-        else {
-            set({ starRating: 0 });
-        }
+      const { portfolioValue, startingBalance } = get();
+      if (portfolioValue > startingBalance * 1.2) {
+        set({ starRating: 3 });
+      } else if (portfolioValue > startingBalance) {
+        set({ starRating: 2 });
+      } else if (portfolioValue === startingBalance) {
+        set({ starRating: 1 });
+      } else {
+        set({ starRating: 0 });
+      }
     },
     
     tick: () => {
@@ -188,18 +181,15 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
     storeRef.current = createGameStore(initialAssets, duration, startingBalance);
   }
 
-  // Effect to reset the state when props change, for re-playability
   useEffect(() => {
     storeRef.current?.getState().reset(initialAssets, duration, startingBalance);
   }, [initialAssets, duration, startingBalance]);
 
-  // Effect to run the game clock and price updates
   useEffect(() => {
-    let timerInterval: NodeJS.Timeout;
-    let priceInterval: NodeJS.Timeout;
+    let timerInterval: NodeJS.Timeout | undefined;
+    let priceInterval: NodeJS.Timeout | undefined;
 
     const unsubscribe = storeRef.current?.subscribe(state => {
-      // Only start intervals when trading begins
       if (state.phase === 'trading') {
         if (!timerInterval) {
           timerInterval = setInterval(() => {
@@ -212,15 +202,16 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
           }, 2000);
         }
       } else {
-        // Clear intervals if not in trading phase
-        clearInterval(timerInterval);
-        clearInterval(priceInterval);
+        if (timerInterval) clearInterval(timerInterval);
+        if (priceInterval) clearInterval(priceInterval);
+        timerInterval = undefined;
+        priceInterval = undefined;
       }
     });
 
     return () => {
-      clearInterval(timerInterval);
-      clearInterval(priceInterval);
+      if (timerInterval) clearInterval(timerInterval);
+      if (priceInterval) clearInterval(priceInterval);
       if (unsubscribe) unsubscribe();
     };
   }, []);
@@ -232,12 +223,15 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   );
 }
 
+const useSafeContext = () => {
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error('useGameStore must be used within a GameStateProvider');
+  }
+  return context;
+}
+
 export const useGameStore = () => {
-    const store = useContext(GameContext);
-    if (!store) {
-      // This is a temporary dummy store to prevent crashes in the Header
-      // when it's rendered outside a game level context.
-      return createGameStore([], 0, 0)();
-    }
-    return store;
+  const store = useSafeContext();
+  return useStore(store);
 }

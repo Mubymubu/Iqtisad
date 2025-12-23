@@ -52,16 +52,9 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const store = useGameStore();
-    const { timeRemaining, cashBalance, portfolioValue, phase } = store(state => ({
-        timeRemaining: state.timeRemaining,
-        cashBalance: state.cashBalance,
-        portfolioValue: state.portfolioValue,
-        phase: state.phase
-    }));
+    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore();
 
-
-    if (phase === 'intro') return null;
+    if (phase === 'intro' || phase === 'debrief' || !phase) return null;
 
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
@@ -110,6 +103,10 @@ export function Header() {
     />
   ));
 
+  const GameWrapper = isGameLevel ? GameStateProvider: React.Fragment;
+  const gameWrapperProps = isGameLevel ? {initialAssets: [], duration: 0, startingBalance: 0} : {};
+
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
@@ -127,7 +124,11 @@ export function Header() {
         </nav>
         
         <div className="ml-auto">
-            {isGameLevel && <GameStateDisplay />}
+            {isGameLevel && (
+              <GameWrapper {...gameWrapperProps}>
+                <GameStateDisplay />
+              </GameWrapper>
+            )}
         </div>
 
         <div className="flex md:hidden ml-4">

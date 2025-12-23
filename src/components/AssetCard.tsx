@@ -10,14 +10,7 @@ import { Badge } from "./ui/badge";
 export function AssetCard({ asset }: { asset: Asset }) {
     const { name, price, change, changeType, isValuation, id, quantity } = asset;
     
-    const store = useGameStore();
-    const { buyAsset, sellAsset, isFinished, cashBalance, phase } = store(state => ({
-        buyAsset: state.buyAsset,
-        sellAsset: state.sellAsset,
-        isFinished: state.isFinished,
-        cashBalance: state.cashBalance,
-        phase: state.phase,
-    }));
+    const { buyAsset, sellAsset, cashBalance, phase } = useGameStore();
 
     const isTrading = phase === 'trading';
 
