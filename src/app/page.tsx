@@ -1,92 +1,110 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Gamepad2, GraduationCap, BrainCircuit } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown, Newspaper } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import placeholderImages from "@/lib/placeholder-images.json";
 
-const heroImage = placeholderImages.placeholderImages.find(img => img.id === "hero");
+const topMovers = [
+  { name: "AUREX", price: "$105.42", change: "+2.5%", changeType: "gain" },
+  { name: "KALYX", price: "$98.17", change: "-1.8%", changeType: "loss" },
+  { name: "SYNERON", price: "$102.33", change: "+1.2%", changeType: "gain" },
+  { name: "VANTIQ", price: "$100.50", change: "+0.5%", changeType: "gain" },
+];
+
+const news = [
+    {
+      source: "TechPulse",
+      headline: "Aurex Computing Unveils New Quantum-Inspired Chip",
+      time: "2h ago",
+      sentiment: "Positive",
+    },
+    {
+      source: "MarketWatch",
+      headline: "Analysts Raise Concerns Over Kalyx Dataworks' Q3 Earnings",
+      time: "4h ago",
+      sentiment: "Negative",
+    },
+    {
+      source: "AI Today",
+      headline: "Syneron AI Partners with Major Automaker for Autonomous Driving",
+      time: "5h ago",
+      sentiment: "Positive",
+    },
+    {
+      source: "BioInvest",
+      headline: "Vantiq Labs Faces Regulatory Scrutiny Over New Drug Trial",
+      time: "8h ago",
+      sentiment: "Negative",
+    },
+];
 
 export default function Home() {
   return (
-    <>
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-            {heroImage && (
-               <Image
-                alt="Abstract representation of financial markets"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
-                height="600"
-                src={heroImage.imageUrl}
-                width="600"
-                data-ai-hint={heroImage.imageHint}
-              />
-            )}
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-4">
-                <h1 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Iqtisad: A Behavioural Economics Simulation
-                </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Discover how psychology shapes financial markets. Iqtisad is a learning environment designed for adolescents aged 10–17 to understand and navigate the cognitive biases that influence decision-making under uncertainty.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button asChild size="lg" className="group">
-                  <Link href="/tutorial">
-                    Start Tutorial
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
+    <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <section className="text-center mb-16">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+          Welcome to Iqtisad
+        </h1>
+        <p className="max-w-3xl mx-auto text-muted-foreground md:text-xl">
+          Discover how psychology shapes financial markets. A learning environment to understand and navigate the cognitive biases that influence financial decision-making.
+        </p>
+        <div className="mt-8">
+          <Button asChild size="lg" className="group">
+            <Link href="/tutorial">
+              Start Your Journey
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
         </div>
       </section>
 
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">The Levels</div>
-              <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">A Journey of Increasing Complexity</h2>
-              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Progress through three distinct levels, each designed to test your discipline against different psychological pressures.
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:max-w-none mt-12">
-            <Card>
-              <CardHeader className="items-center text-center">
-                <Gamepad2 className="h-10 w-10 text-primary mb-4" />
-                <CardTitle className="font-headline">Level I: Tech Stocks</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-muted-foreground">Experience the pull of overconfidence and confirmation bias in a fast-moving digital market.</p>
-              </CardContent>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+            <h2 className="text-2xl font-bold font-headline mb-4 flex items-center"><Newspaper className="mr-3 h-6 w-6" /> Market News</h2>
+             <Card>
+                <CardContent className="p-0">
+                    <div className="divide-y divide-border">
+                        {news.map((item, index) => (
+                            <div key={index} className="p-4 hover:bg-muted/50 transition-colors">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-sm font-semibold">{item.headline}</p>
+                                        <p className="text-xs text-muted-foreground">{item.source} &middot; {item.time}</p>
+                                    </div>
+                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${item.sentiment === 'Positive' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                                        {item.sentiment}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="items-center text-center">
-                <BrainCircuit className="h-10 w-10 text-primary mb-4" />
-                <CardTitle className="font-headline">Level II: Venture Capital</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-muted-foreground">Navigate uncertainty and herd behavior with long-term, high-stakes investments.</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="items-center text-center">
-                <GraduationCap className="h-10 w-10 text-primary mb-4" />
-                <CardTitle className="font-headline">Level III: Crypto</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-muted-foreground">Master your emotions amidst extreme volatility and the fear of missing out (FOMO).</p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
-      </section>
-    </>
+        
+        <div>
+            <h2 className="text-2xl font-bold font-headline mb-4">Top Movers</h2>
+            <Card>
+                <CardContent className="p-0">
+                     <div className="divide-y divide-border">
+                        {topMovers.map((mover) => (
+                          <div key={mover.name} className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
+                            <div>
+                                <p className="font-bold">{mover.name}</p>
+                                <p className="text-sm text-muted-foreground">{mover.price}</p>
+                            </div>
+                            <div className={`flex items-center font-semibold ${mover.changeType === 'gain' ? 'text-green-400' : 'text-red-400'}`}>
+                              {mover.changeType === 'gain' ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
+                              {mover.change}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
+      </div>
+    </div>
   );
 }

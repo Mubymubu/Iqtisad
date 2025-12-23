@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { DollarSign, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useProgress } from '@/context/ProgressProvider';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
+import Image from 'next/image';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -17,32 +18,35 @@ const navLinks = [
   { href: "/level-2", label: "Level II", needsTutorial: true },
   { href: "/level-3", label: "Level III", needsTutorial: true },
   { href: "/strategies", label: "Strategies" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const NavLink = ({ href, label, disabled, isSheet = false }: { href: string; label: string; disabled: boolean; isSheet?: boolean }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
-  const Comp = disabled ? 'span' : Link;
 
-  const sheetClasses = "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground";
-  const desktopClasses = cn(
-    "transition-colors hover:text-foreground",
-    isActive ? "text-foreground font-semibold" : "text-muted-foreground"
+  const linkClasses = cn(
+    "text-sm font-medium transition-colors hover:text-primary",
+    isActive ? "text-primary" : "text-muted-foreground"
   );
   
+  const sheetLinkClasses = cn(
+    "text-lg font-medium transition-colors hover:text-primary",
+    isActive ? "text-primary" : "text-foreground"
+  );
+
   if (disabled) {
       return (
-          <span className={cn(isSheet ? sheetClasses : desktopClasses, "cursor-not-allowed opacity-50")}>
+          <span className={cn(isSheet ? sheetLinkClasses : linkClasses, "cursor-not-allowed opacity-50")}>
               {label}
           </span>
       )
   }
-
+  
   if (isSheet) {
     return (
       <SheetClose asChild>
-        <Link href={href} className={cn(sheetClasses, isActive && 'text-foreground')}>
+        <Link href={href} className={sheetLinkClasses}>
           {label}
         </Link>
       </SheetClose>
@@ -50,10 +54,7 @@ const NavLink = ({ href, label, disabled, isSheet = false }: { href: string; lab
   }
 
   return (
-    <Link
-      href={href}
-      className={desktopClasses}
-    >
+    <Link href={href} className={linkClasses}>
       {label}
     </Link>
   );
@@ -73,40 +74,39 @@ export function Header() {
   ));
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="mr-auto flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <DollarSign className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block font-headline">
+             <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+            <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {renderNavLinks()}
-          </nav>
         </div>
         
-        <div className="flex flex-1 items-center justify-between space-x-2 md:hidden">
-           <Link href="/" className="flex items-center space-x-2">
-             <DollarSign className="h-6 w-6 text-primary" />
-             <span className="font-bold font-headline">Iqtisad</span>
-           </Link>
+        <nav className="hidden md:flex items-center space-x-6">
+            {renderNavLinks()}
+        </nav>
+        
+        <div className="flex md:hidden">
            <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
-               <Link href="/" className="flex items-center space-x-2 mb-8">
-                 <DollarSign className="h-6 w-6 text-primary" />
-                 <span className="font-bold font-headline">Iqtisad</span>
-               </Link>
-              <nav className="grid gap-6 text-lg font-medium">
-                {renderNavLinks(true)}
-              </nav>
+               <div className="p-4">
+                 <Link href="/" className="flex items-center space-x-2 mb-8">
+                   <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+                   <span className="font-bold text-lg">Iqtisad</span>
+                 </Link>
+                <nav className="grid gap-6">
+                  {renderNavLinks(true)}
+                </nav>
+               </div>
             </SheetContent>
           </Sheet>
         </div>

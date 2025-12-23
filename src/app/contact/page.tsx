@@ -25,22 +25,22 @@ export default function ContactUsPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
     toast({
-      title: "Feedback Submitted!",
-      description: "Thank you for your feedback. We'll use it to improve Iqtisad.",
+      title: "Message Sent!",
+      description: "Thank you for contacting us. We will get back to you shortly.",
     })
     form.reset()
   }
 
   return (
-    <div className="container max-w-3xl py-12 md:py-24">
+    <div className="container max-w-2xl py-12 md:py-24">
+      <div className="text-center mb-12">
+        <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Contact Us</h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Have questions or feedback? We'd love to hear from you.
+        </p>
+      </div>
       <Card>
-        <CardHeader>
-          <CardTitle className="font-headline text-3xl">Contact Us</CardTitle>
-          <CardDescription>
-            Your feedback is invaluable for improving the educational quality of this simulation.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -74,7 +74,7 @@ export default function ContactUsPage() {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Feedback</FormLabel>
+                    <FormLabel>Message</FormLabel>
                     <FormControl>
                       <Textarea placeholder="Tell us what you think..." className="min-h-[120px]" {...field} />
                     </FormControl>
@@ -82,17 +82,11 @@ export default function ContactUsPage() {
                   </FormItem>
                 )}
               />
-              <div className="pt-4">
-                <Button type="submit">Submit Feedback</Button>
+              <div className="pt-2">
+                <Button type="submit" className="w-full">Submit</Button>
               </div>
             </form>
           </Form>
-          <div className="mt-8 border-t pt-6">
-            <h3 className="font-semibold">Ethical Data Statement</h3>
-            <p className="text-sm text-muted-foreground mt-2">
-              We are committed to protecting the privacy of our users. All feedback is collected anonymously unless you voluntarily provide contact information. We do not sell or share your data with third parties. Data is used solely for the purpose of educational research and improving this platform.
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

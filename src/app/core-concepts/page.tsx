@@ -58,7 +58,7 @@ export default function CoreConceptsPage() {
   return (
     <div className="container max-w-4xl py-12 md:py-24">
       <div className="text-center mb-12">
-        <BookOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+        <BookOpen className="mx-auto h-12 w-12 text-primary mb-4" />
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Core Concepts</h1>
         <p className="mt-4 text-lg text-muted-foreground">
           Understanding these key ideas from behavioural economics is the first step to mastering your financial decisions.
@@ -68,7 +68,7 @@ export default function CoreConceptsPage() {
       <Accordion type="single" collapsible className="w-full">
         {concepts.map((concept) => (
           <AccordionItem key={concept.value} value={concept.value}>
-            <AccordionTrigger className="text-xl font-headline hover:no-underline">
+            <AccordionTrigger className="text-xl font-headline hover:no-underline text-left">
               {concept.title}
             </AccordionTrigger>
             <AccordionContent className="space-y-6 pt-2 text-base">
@@ -85,7 +85,7 @@ export default function CoreConceptsPage() {
                 <p className="text-muted-foreground mt-1">{concept.inGame}</p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg border p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg border bg-card/50 p-4">
                   <div>
                     <h4 className="font-semibold">Common Mistake</h4>
                     <p className="text-sm text-muted-foreground mt-1">{concept.mistake}</p>
