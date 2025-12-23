@@ -13,8 +13,11 @@ const techAssetsConfig = [
 ];
 
 function Level1Content() {
-    const assets = useGameStore(state => state.assets);
-    const isFinished = useGameStore(state => state.isFinished);
+    const store = useGameStore();
+    const { assets, isFinished } = store(state => ({
+      assets: state.assets,
+      isFinished: state.isFinished,
+    }));
 
     return (
         <div className="container py-12">

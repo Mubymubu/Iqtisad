@@ -30,7 +30,8 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function DebriefDialog() {
-  const { isFinished, startingBalance, portfolioValue, starRating } = useGameStore(state => ({
+  const store = useGameStore();
+  const { isFinished, startingBalance, portfolioValue, starRating } = store(state => ({
     isFinished: state.isFinished,
     startingBalance: state.startingBalance,
     portfolioValue: state.portfolioValue,

@@ -54,7 +54,7 @@ const createGameStore = (
     
     buyAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || get().cashBalance < asset.price) return;
+        if (!asset || get().cashBalance < asset.price || get().isFinished) return;
 
         set(state => {
             const boughtAsset = state.assets.find(a => a.id === assetId)!;
@@ -66,7 +66,7 @@ const createGameStore = (
 
     sellAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || asset.quantity <= 0) return;
+        if (!asset || asset.quantity <= 0 || get().isFinished) return;
 
         set(state => {
             const soldAsset = state.assets.find(a => a.id === assetId)!;
@@ -77,6 +77,7 @@ const createGameStore = (
     },
 
     updatePrices: () => {
+        if (get().isFinished) return;
         set(state => {
             state.assets.forEach(asset => {
                 const volatility = asset.volatility ?? 0.8;
@@ -101,22 +102,30 @@ const createGameStore = (
 
     setStarRating: () => {
         const { portfolioValue, startingBalance } = get();
-        if (portfolioValue < startingBalance * 0.95) { // more than 5% loss
-            set({ starRating: 0 });
-        } else if (portfolioValue < startingBalance) { // any loss up to 5%
-            set({ starRating: 1 });
-        } else if (portfolioValue <= startingBalance * 1.1) { // profit up to 10%
-            set({ starRating: 2 });
-        } else { // profit over 10%
+        // 3 stars for > 10% profit
+        if (portfolioValue > startingBalance * 1.1) {
             set({ starRating: 3 });
+        } 
+        // 2 stars for any profit
+        else if (portfolioValue > startingBalance) {
+            set({ starRating: 2 });
+        }
+        // 1 star for breaking even
+        else if (portfolioValue === startingBalance) {
+            set({ starRating: 1 });
+        }
+        // 0 stars for any loss
+        else {
+            set({ starRating: 0 });
         }
     },
     
     tick: () => {
+        if (get().isFinished) return;
         const { timeRemaining } = get();
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
-        } else if (!get().isFinished) {
+        } else {
             set({ isFinished: true });
             get().setStarRating();
         }
@@ -151,7 +160,6 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   }
 
   useEffect(() => {
-    // Reset state if config changes
     storeRef.current?.getState().reset(initialAssets, duration, startingBalance);
   }, [initialAssets, duration, startingBalance]);
 
@@ -160,10 +168,8 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
       storeRef.current?.getState().tick();
     }, 1000);
     const priceInterval = setInterval(() => {
-        if(!storeRef.current?.getState().isFinished) {
-            storeRef.current?.getState().updatePrices();
-        }
-    }, 2000); // Update prices every 2 seconds
+        storeRef.current?.getState().updatePrices();
+    }, 2000);
 
     return () => {
       clearInterval(timerInterval);
@@ -178,19 +184,8 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   );
 }
 
-// Custom hook to get a specific slice of the game state.
-// Returns null if the provider is not in the component tree.
-export function useGameState<T>(selector: (state: GameStore) => T) {
-    const store = useContext(GameContext);
-    if (!store) {
-        return null; // Return null if the context is not available
-    }
-    return store(selector);
-};
 
-// Custom hook to get the entire store instance.
-// Throws an error if the provider is not in the component tree.
-export function useGameStore() {
+export const useGameStore = () => {
     const store = useContext(GameContext);
     if (!store) {
       throw new Error("useGameStore must be used within a GameStateProvider");

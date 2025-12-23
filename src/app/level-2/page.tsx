@@ -7,15 +7,18 @@ import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 
 const ventureAssetsConfig = [
-    { id: "SEED", name: "SEEDLINE BIOTECH", price: 1000000, isValuation: true, volatility: 0.5 },
-    { id: "ORBIT", name: "ORBITA ENERGY", price: 5000000, isValuation: true, volatility: 0.8 },
-    { id: "NEX", name: "NEXFIELD MOBILITY", price: 2500000, isValuation: true, volatility: 0.6 },
-    { id: "CORTEX", name: "CORTEXA HEALTH", price: 8000000, isValuation: true, volatility: 0.4 },
+    { id: "SEED", name: "SEEDLINE BIOTECH", price: 100000, isValuation: true, volatility: 0.5 },
+    { id: "ORBIT", name: "ORBITA ENERGY", price: 500000, isValuation: true, volatility: 0.8 },
+    { id: "NEX", name: "NEXFIELD MOBILITY", price: 250000, isValuation: true, volatility: 0.6 },
+    { id: "CORTEXA", name: "CORTEXA HEALTH", price: 800000, isValuation: true, volatility: 0.4 },
 ];
 
 function Level2Content() {
-    const assets = useGameStore(state => state.assets);
-    const isFinished = useGameStore(state => state.isFinished);
+    const store = useGameStore();
+    const { assets, isFinished } = store(state => ({
+      assets: state.assets,
+      isFinished: state.isFinished
+    }));
     
     return (
         <div className="container py-12">
