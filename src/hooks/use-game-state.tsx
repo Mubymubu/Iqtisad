@@ -1,9 +1,8 @@
-
 "use client";
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import React, { createContext, useContext, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
 
 export type Asset = {
   id: string;
@@ -14,7 +13,10 @@ export type Asset = {
   changeType?: 'gain' | 'loss';
   isValuation?: boolean;
   volatility?: number;
+  maxPrice?: number;
 };
+
+type GamePhase = 'intro' | 'trading' | 'debrief';
 
 type GameState = {
   assets: Asset[];
@@ -24,6 +26,8 @@ type GameState = {
   isFinished: boolean;
   portfolioValue: number;
   starRating: number;
+  phase: GamePhase;
+  duration: number;
 };
 
 type GameActions = {
@@ -33,7 +37,9 @@ type GameActions = {
   updatePrices: () => void;
   calculatePortfolio: () => void;
   setStarRating: () => void;
+  startGame: () => void;
   reset: (initialAssets: Omit<Asset, 'quantity'>[], duration: number, startingBalance: number) => void;
+  playAgain: () => void;
 };
 
 type GameStore = GameState & GameActions;
@@ -48,13 +54,19 @@ const createGameStore = (
     cashBalance: startingBalance,
     startingBalance: startingBalance,
     timeRemaining: duration,
+    duration: duration,
     isFinished: false,
     portfolioValue: startingBalance,
     starRating: 0,
+    phase: 'intro',
     
+    startGame: () => {
+      set({ phase: 'trading' });
+    },
+
     buyAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || get().cashBalance < asset.price || get().isFinished) return;
+        if (!asset || get().cashBalance < asset.price || get().isFinished || get().phase !== 'trading') return;
 
         set(state => {
             const boughtAsset = state.assets.find(a => a.id === assetId)!;
@@ -66,7 +78,7 @@ const createGameStore = (
 
     sellAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || asset.quantity <= 0 || get().isFinished) return;
+        if (!asset || asset.quantity <= 0 || get().isFinished || get().phase !== 'trading') return;
 
         set(state => {
             const soldAsset = state.assets.find(a => a.id === assetId)!;
@@ -77,12 +89,21 @@ const createGameStore = (
     },
 
     updatePrices: () => {
-        if (get().isFinished) return;
+        if (get().phase !== 'trading') return;
         set(state => {
             state.assets.forEach(asset => {
                 const volatility = asset.volatility ?? 0.8;
                 const randomFactor = (Math.random() - 0.49) * volatility;
-                const newPrice = asset.price * (1 + randomFactor / 100);
+                let newPrice = asset.price * (1 + randomFactor / 100);
+
+                // Enforce max price for specific assets if defined
+                if (asset.maxPrice && newPrice > asset.maxPrice) {
+                    newPrice = asset.maxPrice * (1 - Math.random() * 0.1); // Slightly drop from max
+                }
+                // Ensure players can always afford at least one unit
+                if (newPrice > state.cashBalance && state.assets.every(a => a.quantity === 0)) {
+                    newPrice = state.cashBalance * (0.8 + Math.random() * 0.15); // price it slightly below balance
+                }
                 
                 const change = (((newPrice - asset.price) / asset.price) * 100);
                 asset.price = Math.max(1, newPrice); // Ensure price doesn't go below 1
@@ -121,13 +142,13 @@ const createGameStore = (
     },
     
     tick: () => {
-        if (get().isFinished) return;
+        if (get().phase !== 'trading') return;
         const { timeRemaining } = get();
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
         } else {
-            set({ isFinished: true });
             get().setStarRating();
+            set({ isFinished: true, phase: 'debrief' });
         }
     },
     
@@ -137,11 +158,19 @@ const createGameStore = (
             cashBalance: newStartingBalance,
             startingBalance: newStartingBalance,
             timeRemaining: newDuration,
+            duration: newDuration,
             isFinished: false,
+            phase: 'intro',
             portfolioValue: newStartingBalance,
             starRating: 0,
         });
     },
+
+    playAgain: () => {
+      const { assets, duration, startingBalance } = get();
+      const initialAssets = assets.map(({ id, name, price, isValuation, volatility, maxPrice }) => ({ id, name, price, isValuation, volatility, maxPrice }));
+      get().reset(initialAssets, duration, startingBalance);
+    }
   }))
 );
 
@@ -150,7 +179,7 @@ const GameContext = createContext<GameStoreType | null>(null);
 
 export function GameStateProvider({ children, initialAssets, duration, startingBalance }: { 
     children: React.ReactNode; 
-    initialAssets: Omit<Asset, 'quantity'>[];
+    initialAssets: Omit<Asset, 'quantity' | 'change' | 'changeType'>[];
     duration: number;
     startingBalance: number;
 }) {
@@ -159,21 +188,40 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
     storeRef.current = createGameStore(initialAssets, duration, startingBalance);
   }
 
+  // Effect to reset the state when props change, for re-playability
   useEffect(() => {
     storeRef.current?.getState().reset(initialAssets, duration, startingBalance);
   }, [initialAssets, duration, startingBalance]);
 
+  // Effect to run the game clock and price updates
   useEffect(() => {
-    const timerInterval = setInterval(() => {
-      storeRef.current?.getState().tick();
-    }, 1000);
-    const priceInterval = setInterval(() => {
-        storeRef.current?.getState().updatePrices();
-    }, 2000);
+    let timerInterval: NodeJS.Timeout;
+    let priceInterval: NodeJS.Timeout;
+
+    const unsubscribe = storeRef.current?.subscribe(state => {
+      // Only start intervals when trading begins
+      if (state.phase === 'trading') {
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            storeRef.current?.getState().tick();
+          }, 1000);
+        }
+        if (!priceInterval) {
+          priceInterval = setInterval(() => {
+            storeRef.current?.getState().updatePrices();
+          }, 2000);
+        }
+      } else {
+        // Clear intervals if not in trading phase
+        clearInterval(timerInterval);
+        clearInterval(priceInterval);
+      }
+    });
 
     return () => {
       clearInterval(timerInterval);
       clearInterval(priceInterval);
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
@@ -184,11 +232,12 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   );
 }
 
-
 export const useGameStore = () => {
     const store = useContext(GameContext);
     if (!store) {
-      throw new Error("useGameStore must be used within a GameStateProvider");
+      // This is a temporary dummy store to prevent crashes in the Header
+      // when it's rendered outside a game level context.
+      return createGameStore([], 0, 0)();
     }
     return store;
 }

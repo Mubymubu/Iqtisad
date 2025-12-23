@@ -52,15 +52,17 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const pathname = usePathname();
-    const isGameLevel = /^\/level-\d$/.test(pathname);
     const store = useGameStore();
-    const state = store(s => s);
+    const { timeRemaining, cashBalance, portfolioValue, phase } = store(state => ({
+        timeRemaining: state.timeRemaining,
+        cashBalance: state.cashBalance,
+        portfolioValue: state.portfolioValue,
+        phase: state.phase
+    }));
 
 
-    if (!isGameLevel || !state) return null;
+    if (phase === 'intro') return null;
 
-    const { timeRemaining, cashBalance, portfolioValue } = state;
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
 
@@ -97,7 +99,7 @@ const GameStateDisplay = () => {
 
 export function Header() {
   const pathname = usePathname();
-  const isGameLevel = /^\/level-\d$/.test(pathname);
+  const isGameLevel = /^\/level-\d/.test(pathname);
 
   const renderNavLinks = (isSheet = false) => navLinks.map(link => (
     <NavLink
@@ -113,7 +115,7 @@ export function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-             <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+             <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} className="dark:invert-0 invert" />
             <span className="hidden font-bold sm:inline-block font-headline text-lg">
               Iqtisad
             </span>
@@ -125,11 +127,7 @@ export function Header() {
         </nav>
         
         <div className="ml-auto">
-            {isGameLevel && (
-              <GameStateProvider initialAssets={[]} duration={0} startingBalance={0}>
-                <GameStateDisplay />
-              </GameStateProvider>
-            )}
+            {isGameLevel && <GameStateDisplay />}
         </div>
 
         <div className="flex md:hidden ml-4">
@@ -143,7 +141,7 @@ export function Header() {
             <SheetContent side="left">
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
-                   <Image src="/logo.png" alt="Iqtisad Logo" width={32} height={32} />
+                   <Image src="/logo.svg" alt="Iqtisad Logo" width={32} height={32} className="dark:invert-0 invert"/>
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
                 <nav className="grid gap-6">

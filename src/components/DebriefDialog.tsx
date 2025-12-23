@@ -31,11 +31,12 @@ function StarRating({ rating }: { rating: number }) {
 
 export function DebriefDialog() {
   const store = useGameStore();
-  const { isFinished, startingBalance, portfolioValue, starRating } = store(state => ({
-    isFinished: state.isFinished,
+  const { phase, startingBalance, portfolioValue, starRating, playAgain } = store(state => ({
+    phase: state.phase,
     startingBalance: state.startingBalance,
     portfolioValue: state.portfolioValue,
-    starRating: state.starRating
+    starRating: state.starRating,
+    playAgain: state.playAgain,
   }));
   const router = useRouter();
 
@@ -50,7 +51,7 @@ export function DebriefDialog() {
   };
 
   return (
-    <Dialog open={isFinished}>
+    <Dialog open={phase === 'debrief'}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold font-headline">Session Complete</DialogTitle>
@@ -64,7 +65,7 @@ export function DebriefDialog() {
              <StarRating rating={starRating} />
           </div>
 
-          <div className="rounded-lg border bg-muted/30 p-4 space-y-3 text-center">
+          <div className="rounded-lg border bg-card/80 p-4 space-y-3 text-center">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Final Portfolio Value</p>
               <p className="text-2xl font-bold">{formatCurrency(portfolioValue)}</p>
@@ -84,7 +85,7 @@ export function DebriefDialog() {
 
         <DialogFooter className="flex-col gap-2 sm:flex-row">
             <Button className="w-full" onClick={() => router.push('/strategies')}>Review Strategies</Button>
-            <Button className="w-full" variant="outline" onClick={() => window.location.reload()}>Play Again</Button>
+            <Button className="w-full" variant="outline" onClick={playAgain}>Play Again</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,33 +1,60 @@
 
 "use client"
-import React from 'react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { useGameStore } from '@/hooks/use-game-state.tsx';
 
-const generateChartData = () => {
+const generateInitialChartData = () => {
   const data = [];
-  let value = 50;
+  let value = 50 + Math.random() * 50;
   for (let i = 0; i < 30; i++) {
     const date = new Date();
     date.setDate(date.getDate() - (29 - i));
     value += (Math.random() - 0.5) * 5;
     data.push({
       date: date.toISOString().slice(0, 10),
-      value: Math.max(10, value), // Ensure value doesn't drop too low
+      value: Math.max(10, value),
     });
   }
   return data;
 };
 
-const chartData = generateChartData();
-
-export const StockChart = ({ isGain = true }: { isGain?: boolean }) => {
+export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boolean, isVolatile?: boolean }) => {
+  const phase = useGameStore(state => state.phase);
+  const [data, setData] = useState(generateInitialChartData());
   const color = isGain ? '#10B981' : '#F43F5E';
+
+  useEffect(() => {
+    if (phase !== 'trading') return;
+
+    const interval = setInterval(() => {
+      setData(currentData => {
+        const newData = [...currentData];
+        const lastValue = newData[newData.length - 1].value;
+        const volatilityFactor = isVolatile ? 10 : 5;
+        let newValue = lastValue + (Math.random() - 0.5) * volatilityFactor;
+        
+        // Add a trend based on gain/loss
+        const trend = isGain ? 0.1 : -0.1;
+        newValue += trend * volatilityFactor;
+
+        newData.shift();
+        newData.push({
+          date: new Date().toISOString().slice(0, 10),
+          value: Math.max(10, newValue),
+        });
+        return newData;
+      });
+    }, 2000); // Same interval as price updates in store
+
+    return () => clearInterval(interval);
+  }, [phase, isGain, isVolatile]);
 
   return (
     <div className="w-full h-24">
       <ResponsiveContainer>
         <AreaChart
-          data={chartData}
+          data={data}
           margin={{
             top: 5,
             right: 0,
@@ -36,19 +63,23 @@ export const StockChart = ({ isGain = true }: { isGain?: boolean }) => {
           }}
         >
           <defs>
-            <linearGradient id={`colorUv-${isGain}`} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={`colorUv-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={color} stopOpacity={0.4} />
               <stop offset="95%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
           <Tooltip
             contentStyle={{
-              backgroundColor: '#1F2933',
-              border: '1px solid #374151',
+              backgroundColor: 'hsl(var(--card))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: '0.5rem',
+              fontSize: '0.75rem',
             }}
-            labelStyle={{ color: '#E5E7EB' }}
-            itemStyle={{ color: '#E5E7EB' }}
+            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            itemStyle={{ color: color }}
+            formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
+            labelFormatter={() => ''}
+            cursor={{ stroke: 'hsl(var(--foreground))', strokeWidth: 1, strokeDasharray: '3 3' }}
           />
           <Area
             type="monotone"
@@ -56,7 +87,7 @@ export const StockChart = ({ isGain = true }: { isGain?: boolean }) => {
             stroke={color}
             strokeWidth={2}
             fillOpacity={1}
-            fill={`url(#colorUv-${isGain})`}
+            fill={`url(#colorUv-${color.replace('#', '')})`}
             dot={false}
           />
         </AreaChart>

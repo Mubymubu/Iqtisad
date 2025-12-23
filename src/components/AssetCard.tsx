@@ -11,22 +11,26 @@ export function AssetCard({ asset }: { asset: Asset }) {
     const { name, price, change, changeType, isValuation, id, quantity } = asset;
     
     const store = useGameStore();
-    const { buyAsset, sellAsset, isFinished } = store(state => ({
+    const { buyAsset, sellAsset, isFinished, cashBalance, phase } = store(state => ({
         buyAsset: state.buyAsset,
         sellAsset: state.sellAsset,
         isFinished: state.isFinished,
+        cashBalance: state.cashBalance,
+        phase: state.phase,
     }));
+
+    const isTrading = phase === 'trading';
 
     const formatPrice = (value: number) => {
         if (isValuation) {
             if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
-            if (value >= 1000) return `$${(value / 1000).toFixed(2)}K`;
+            if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
         }
         return `$${value.toFixed(2)}`;
     }
 
     return (
-        <Card className="flex flex-col relative">
+        <Card className="flex flex-col relative bg-card/50">
              {quantity > 0 && (
                 <Badge className="absolute top-4 right-4" variant="secondary">
                     {quantity} Owned
@@ -38,23 +42,30 @@ export function AssetCard({ asset }: { asset: Asset }) {
                     <CardDescription className="text-2xl font-bold text-foreground">{formatPrice(price)}</CardDescription>
                     {change && (
                          <p className={`text-sm font-semibold ${changeType === 'gain' ? 'text-green-400' : 'text-red-400'}`}>
-                            {changeType === 'gain' ? '+' : ''}{change}%
+                            {changeType === 'gain' ? '▲' : '▼'} {change}%
                         </p>
                     )}
                 </div>
             </CardHeader>
-            {!isValuation && (
-                <CardContent className="flex-grow">
-                    <StockChart isGain={changeType !== 'loss'} />
-                </CardContent>
-            )}
+
+            <CardContent className="flex-grow h-24">
+                <StockChart 
+                    isGain={changeType !== 'loss'} 
+                    isVolatile={asset.volatility ? asset.volatility > 1.5 : false}
+                />
+            </CardContent>
+
             <CardFooter className="flex gap-2">
-                <Button onClick={() => buyAsset(id)} disabled={isFinished} className="flex-1">
+                <Button 
+                    onClick={() => buyAsset(id)} 
+                    disabled={!isTrading || cashBalance < price} 
+                    className="flex-1"
+                >
                     {isValuation ? 'Invest' : 'Buy'}
                 </Button>
                 <Button 
                     onClick={() => sellAsset(id)} 
-                    disabled={isFinished || quantity === 0} 
+                    disabled={!isTrading || quantity === 0} 
                     variant="outline" 
                     className="flex-1"
                 >

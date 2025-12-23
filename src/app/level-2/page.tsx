@@ -1,32 +1,50 @@
 
 "use client";
 
-import { BrainCircuit } from "lucide-react";
 import { AssetCard } from "@/components/AssetCard";
 import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
+import { LevelIntro } from "@/components/LevelIntro";
+
 
 const ventureAssetsConfig = [
-    { id: "SEED", name: "SEEDLINE BIOTECH", price: 100000, isValuation: true, volatility: 0.5 },
-    { id: "ORBIT", name: "ORBITA ENERGY", price: 500000, isValuation: true, volatility: 0.8 },
-    { id: "NEX", name: "NEXFIELD MOBILITY", price: 250000, isValuation: true, volatility: 0.6 },
-    { id: "CORTEXA", name: "CORTEXA HEALTH", price: 800000, isValuation: true, volatility: 0.4 },
+    { id: "SEED", name: "SEEDLINE BIOTECH", price: 15000, isValuation: true, volatility: 0.5, maxPrice: 25000 },
+    { id: "ORBIT", name: "ORBITA ENERGY", price: 22000, isValuation: true, volatility: 0.8, maxPrice: 25000 },
+    { id: "NEX", name: "NEXFIELD MOBILITY", price: 18000, isValuation: true, volatility: 0.6, maxPrice: 25000 },
+    { id: "CORTEXA", name: "CORTEXA HEALTH", price: 20000, isValuation: true, volatility: 0.4, maxPrice: 25000 },
 ];
 
 function Level2Content() {
     const store = useGameStore();
-    const { assets, isFinished } = store(state => ({
+    const { assets, phase, startGame } = store(state => ({
       assets: state.assets,
-      isFinished: state.isFinished
+      phase: state.phase,
+      startGame: state.startGame,
     }));
+    
+    if (phase === 'intro') {
+      return (
+        <LevelIntro 
+          levelName="Level II"
+          levelTitle="Venture Capital"
+          startingCash={100000}
+          duration={5}
+          objective="Invest in high-risk, high-reward private companies."
+          onStart={startGame}
+        />
+      );
+    }
+    
+    if (phase === 'debrief') {
+      return <DebriefDialog />;
+    }
     
     return (
         <div className="container py-12">
             <div className="text-center mb-12">
-                <BrainCircuit className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Level II: Venture Capital</h1>
                 <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-                   You have 5 minutes. Invest in high-risk, high-reward private companies.
+                   Invest in early-stage startups. Valuations are estimates and can change dramatically.
                 </p>
             </div>
              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -34,7 +52,6 @@ function Level2Content() {
                      <AssetCard key={asset.id} asset={asset} />
                 ))}
             </div>
-            {isFinished && <DebriefDialog />}
         </div>
     )
 }
