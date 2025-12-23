@@ -30,10 +30,17 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function DebriefDialog() {
-  const { phase, startingBalance, portfolioValue, starRating, playAgain } = useGameStore();
+  const { phase, startingBalance, netWorth, starRating, playAgain } = useGameStore(state => ({
+    phase: state.phase,
+    startingBalance: state.startingBalance,
+    netWorth: state.netWorth,
+    starRating: state.starRating,
+    playAgain: state.playAgain,
+  }));
+
   const router = useRouter();
 
-  const netGain = portfolioValue - startingBalance;
+  const netGain = netWorth - startingBalance;
   const isProfit = netGain >= 0;
 
   const formatCurrency = (value: number) => {
@@ -43,8 +50,14 @@ export function DebriefDialog() {
     }).format(value);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      playAgain();
+    }
+  };
+
   return (
-    <Dialog open={phase === 'debrief'}>
+    <Dialog open={phase === 'debrief'} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold font-headline">Session Complete</DialogTitle>
@@ -60,8 +73,8 @@ export function DebriefDialog() {
 
           <div className="rounded-lg border bg-card/80 p-4 space-y-3 text-center">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Final Portfolio Value</p>
-              <p className="text-2xl font-bold">{formatCurrency(portfolioValue)}</p>
+              <p className="text-sm text-muted-foreground">Final Net Worth</p>
+              <p className="text-2xl font-bold">{formatCurrency(netWorth)}</p>
             </div>
              <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Starting Budget</p>

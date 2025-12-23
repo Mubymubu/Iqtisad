@@ -8,10 +8,10 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 
 const cryptoAssetsConfig = [
-    { id: "ZYNT", name: "ZYNTRA", price: 420.69, change: "+15.2", changeType: "gain" as const, volatility: 1.5 },
-    { id: "HEX", name: "HEXIUM", price: 88.12, change: "-5.8", changeType: "loss" as const, volatility: 1.8 },
-    { id: "LEDG", name: "LEDGERA", price: 1234.56, change: "+22.1", changeType: "gain" as const, volatility: 2.2 },
-    { id: "CRYPT", name: "CRYPTONEX", price: 5.43, change: "+8.3", changeType: "gain" as const, volatility: 2.5 },
+    { id: "ZYNT", name: "ZYNTRA", price: 420.69, volatility: 1.5 },
+    { id: "HEX", name: "HEXIUM", price: 88.12, volatility: 1.8 },
+    { id: "LEDG", name: "LEDGERA", price: 1234.56, volatility: 2.2 },
+    { id: "CRYPT", name: "CRYPTONEX", price: 5.43, volatility: 2.5 },
 ];
 
 

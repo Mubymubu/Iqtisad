@@ -1,15 +1,17 @@
 
 "use client";
 
-import { create, useStore } from 'zustand';
+import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import React, { createContext, useContext, useRef, useEffect } from 'react';
+import { useStore } from 'zustand';
 
 export type Asset = {
   id: string;
   name: string;
   price: number;
   quantity: number;
+  initialPrice: number;
   change?: string;
   changeType?: 'gain' | 'loss';
   isValuation?: boolean;
@@ -25,7 +27,8 @@ type GameState = {
   startingBalance: number;
   timeRemaining: number;
   isFinished: boolean;
-  portfolioValue: number;
+  portfolioValue: number; // Value of owned assets
+  netWorth: number; // Cash + Portfolio Value
   starRating: number;
   phase: GamePhase;
   duration: number;
@@ -39,25 +42,26 @@ type GameActions = {
   calculatePortfolio: () => void;
   setStarRating: () => void;
   startGame: () => void;
-  reset: (initialAssets: Omit<Asset, 'quantity'>[], duration: number, startingBalance: number) => void;
+  reset: (initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number) => void;
   playAgain: () => void;
 };
 
 type GameStore = GameState & GameActions;
 
 const createGameStore = (
-    initialAssets: Omit<Asset, 'quantity'>[], 
+    initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], 
     duration: number, 
     startingBalance: number
 ) => create<GameStore>()(
   immer((set, get) => ({
-    assets: initialAssets.map(asset => ({ ...asset, quantity: 0 })),
+    assets: initialAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
     cashBalance: startingBalance,
     startingBalance: startingBalance,
     timeRemaining: duration,
     duration: duration,
     isFinished: false,
-    portfolioValue: startingBalance,
+    portfolioValue: 0,
+    netWorth: startingBalance,
     starRating: 0,
     phase: 'intro',
     
@@ -117,17 +121,18 @@ const createGameStore = (
     calculatePortfolio: () => {
         set(state => {
             const assetsValue = state.assets.reduce((total, asset) => total + (asset.price * asset.quantity), 0);
-            state.portfolioValue = state.cashBalance + assetsValue;
+            state.portfolioValue = assetsValue;
+            state.netWorth = state.cashBalance + assetsValue;
         });
     },
 
     setStarRating: () => {
-      const { portfolioValue, startingBalance } = get();
-      if (portfolioValue > startingBalance * 1.2) {
+      const { netWorth, startingBalance } = get();
+      if (netWorth > startingBalance * 1.2) {
         set({ starRating: 3 });
-      } else if (portfolioValue > startingBalance) {
+      } else if (netWorth > startingBalance) {
         set({ starRating: 2 });
-      } else if (portfolioValue === startingBalance) {
+      } else if (netWorth === startingBalance) {
         set({ starRating: 1 });
       } else {
         set({ starRating: 0 });
@@ -147,21 +152,22 @@ const createGameStore = (
     
     reset: (newAssets, newDuration, newStartingBalance) => {
         set({
-            assets: newAssets.map(asset => ({ ...asset, quantity: 0 })),
+            assets: newAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
             cashBalance: newStartingBalance,
             startingBalance: newStartingBalance,
             timeRemaining: newDuration,
             duration: newDuration,
             isFinished: false,
             phase: 'intro',
-            portfolioValue: newStartingBalance,
+            portfolioValue: 0,
+            netWorth: newStartingBalance,
             starRating: 0,
         });
     },
 
     playAgain: () => {
       const { assets, duration, startingBalance } = get();
-      const initialAssets = assets.map(({ id, name, price, isValuation, volatility, maxPrice }) => ({ id, name, price, isValuation, volatility, maxPrice }));
+      const initialAssets = assets.map(({ id, name, initialPrice, isValuation, volatility, maxPrice }) => ({ id, name, price: initialPrice, isValuation, volatility, maxPrice }));
       get().reset(initialAssets, duration, startingBalance);
     }
   }))
@@ -172,7 +178,7 @@ const GameContext = createContext<GameStoreType | null>(null);
 
 export function GameStateProvider({ children, initialAssets, duration, startingBalance }: { 
     children: React.ReactNode; 
-    initialAssets: Omit<Asset, 'quantity' | 'change' | 'changeType'>[];
+    initialAssets: Omit<Asset, 'quantity' | 'initialPrice' | 'change' | 'changeType'>[];
     duration: number;
     startingBalance: number;
 }) {
@@ -226,12 +232,21 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
 const useSafeContext = () => {
   const context = useContext(GameContext);
   if (!context) {
-    throw new Error('useGameStore must be used within a GameStateProvider');
+    // This provides a dummy store when not in a provider.
+    // Useful for components like the Header that might render outside a specific level.
+    const dummyStore = createGameStore([], 0, 0);
+    return dummyStore;
   }
   return context;
 }
 
-export const useGameStore = () => {
+export function useGameStore<T>(selector: (state: GameState) => T) {
   const store = useSafeContext();
-  return useStore(store);
+  return useStore(store, selector);
+}
+
+// A hook to get the entire state without selectors, useful for simple displays
+export const useGameStoreState = () => {
+    const store = useSafeContext();
+    return useStore(store);
 }

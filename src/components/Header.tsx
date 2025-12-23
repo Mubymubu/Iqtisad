@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
+import { GameStateProvider, useGameStoreState } from '@/hooks/use-game-state.tsx';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -52,7 +52,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStore();
+    const { timeRemaining, cashBalance, portfolioValue, phase } = useGameStoreState();
 
     if (phase === 'intro' || phase === 'debrief' || !phase) return null;
 

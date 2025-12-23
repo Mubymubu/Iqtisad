@@ -1,6 +1,6 @@
 
 "use client";
-import { useGameStore } from "@/hooks/use-game-state.tsx";
+import { useGameStoreState } from "@/hooks/use-game-state.tsx";
 
 const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -19,14 +19,8 @@ const StatCard = ({ label, value }: { label: string; value: string }) => (
 );
 
 export function GameStatusBar() {
-    const { timeRemaining, cashBalance, portfolioValue } = useGameStore(state => ({
-        timeRemaining: state.timeRemaining,
-        cashBalance: state.cashBalance,
-        portfolioValue: state.portfolioValue,
-    }));
+    const { timeRemaining, cashBalance, portfolioValue, netWorth } = useGameStoreState();
     
-    const netWorth = cashBalance + portfolioValue;
-
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
 
