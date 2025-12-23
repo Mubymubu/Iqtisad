@@ -14,16 +14,14 @@ const techAssetsConfig = [
 ];
 
 function Level1Content() {
-    const { assets, phase, startGame } = useGameStore(state => ({
-      assets: state.assets,
-      phase: state.phase,
-      startGame: state.startGame,
-    }));
+    const state = useGameStore(state => state);
+    const { assets, phase, startGame } = state;
+
 
     if (phase === 'intro') {
       return (
         <LevelIntro 
-          levelName="Level I"
+          levelName="Level 1"
           levelTitle="Tech Stocks"
           startingCash={1000}
           duration={3}
