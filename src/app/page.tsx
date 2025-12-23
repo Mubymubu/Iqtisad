@@ -81,6 +81,12 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="bg-card/20 py-16">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 flex justify-center">
+           <Image src="/iqtisad-logo-full.png" alt="Iqtisad Logo with Arabic and English text" width={400} height={400} className="rounded-lg" />
+        </div>
+      </section>
+
       <section className="container mx-auto px-4 py-16 md:px-6 lg:px-8">
         <div className="text-center mb-12">
             <h2 className="text-3xl font-bold font-headline">Explore the Simulation</h2>
