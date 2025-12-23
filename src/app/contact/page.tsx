@@ -41,7 +41,7 @@ export default function ContactPage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Hello! My name is Ammar Vasee. I am a Grade 10 student at Sreenidhi International School, Hyderabad. I created Iqtisad as an educational project to explore financial markets, economics, and trading concepts through interactive learning.
+              Hello! My name is <span className="font-semibold text-foreground">Ammar Vasee</span>. I am a Grade 10 student at Sreenidhi International School, Hyderabad. I created Iqtisad as an educational project to explore financial markets, economics, and trading concepts through interactive learning.
             </p>
           </CardContent>
         </Card>
