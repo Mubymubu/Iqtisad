@@ -112,26 +112,6 @@ export default function HowToPlayPage() {
         </section>
 
         <section>
-            <h2 className="font-headline text-2xl font-bold mb-4">How to Earn Stars</h2>
-            <div className="space-y-6">
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4 mb-3">
-                            <div className="flex gap-1">
-                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                                <Star className="h-5 w-5 text-muted-foreground/30" />
-                                <Star className="h-5 w-5 text-muted-foreground/30" />
-                            </div>
-                            <h3 className="font-semibold text-xl">1 Star</h3>
-                        </div>
-                        <p className="text-muted-foreground">Finish the level with a net worth increase of at least 5% compared to the starting capital.</p>
-                        <p className="text-sm text-muted-foreground/80 mt-2">This indicates the player successfully made profitable decisions and understands the basics of market movement.</p>
-                    </CardContent>
-                </Card>
-            </div>
-        </section>
-
-        <section>
           <h2 className="font-headline text-2xl font-bold mb-4">Objective</h2>
           <p className="text-muted-foreground leading-relaxed">
             Iqtisad is not the search of definite winning strategy. It is directed toward getting players to learn market behaviour, learn to balance risk and reward, and make decision making in the uncertainty environment. The game does not rely much on luck but rather patience, discipline, and a well-educated strategy, which is a perfect way of learning some practical financial skills.
