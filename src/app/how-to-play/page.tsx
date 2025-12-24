@@ -124,7 +124,7 @@ export default function HowToPlayPage() {
                     1 Star
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
-                  To earn 1 star, the player must finish the level with a net worth increase of at least 5% compared to the starting capital and complete at least 2 trades.
+                  To earn 1 star, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 5%</strong> compared to the starting capital and complete at least 2 trades.
                 </p>
                 <p className="text-sm text-muted-foreground/80 italic mt-2">
                   This shows that the player understands the basic idea of trading, actively participates in the market, and is able to make simple profitable decisions.
