@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
+import { GameStateProvider, useGameStore } from '@/hooks/use-game-state';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -56,7 +56,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const state = useGameStore();
+    const state = useGameStore(s => s);
 
     if (state.phase === 'intro' || state.phase === 'debrief' || !state.phase) return null;
 
@@ -96,7 +96,7 @@ const GameStateDisplay = () => {
 
 export function Header() {
   const pathname = usePathname();
-  const isGameLevel = /^\/level-\d/.test(pathname);
+  const isGameLevel = /^\/level-\d/.test(pathname) || pathname === '/tutorial';
 
   const renderNavLinks = (isSheet = false) => navLinks.map(link => (
     <NavLink
@@ -107,8 +107,6 @@ export function Header() {
     />
   ));
 
-  const GameWrapper = isGameLevel ? GameStateProvider: React.Fragment;
-  const gameWrapperProps = isGameLevel ? {initialAssets: [], duration: 0, startingBalance: 0} : {};
   const logoAltText = "Iqtisad Logo: A gold hexagon with six upward-trending candlesticks, symbolizing growth and structured learning in finance.";
 
   return (
@@ -129,9 +127,9 @@ export function Header() {
         
         <div className="ml-auto">
             {isGameLevel && (
-              <GameWrapper {...gameWrapperProps}>
+              <GameStateProvider levelId='level1' initialAssets={[]} duration={0} startingBalance={0}>
                 <GameStateDisplay />
-              </GameWrapper>
+              </GameStateProvider>
             )}
         </div>
 

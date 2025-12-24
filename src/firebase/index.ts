@@ -12,7 +12,9 @@ function initializeFirebase(config: FirebaseOptions = {}) {
 // This is the easiest way to make sure that the app is only initialized once
 // and you don't produce an error.
 const firebaseApp = initializeFirebase(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
 
-export { firebaseApp };
+export { firebaseApp, auth, firestore, initializeFirebase };
 
 export default firebaseApp;

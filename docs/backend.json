@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "user-progress": {
+      "title": "User Progress",
+      "description": "Stores the progress of a user in the simulation.",
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "object",
+          "description": "An object mapping level IDs to their star count.",
+          "properties": {
+            "tutorial": {
+              "type": "object",
+              "properties": {
+                "stars": {
+                  "type": "number"
+                }
+              }
+            },
+            "level1": {
+              "type": "object",
+              "properties": {
+                "stars": {
+                  "type": "number"
+                }
+              }
+            },
+            "level2": {
+              "type": "object",
+              "properties": {
+                "stars": {
+                  "type": "number"
+                }
+              }
+            },
+            "level3": {
+              "type": "object",
+              "properties": {
+                "stars": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": [
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/user-progress"
+      },
+      "description": "Stores user-specific data, including their progress in the game levels."
+    }
+  }
+}

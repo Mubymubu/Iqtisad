@@ -5,23 +5,25 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import React, { createContext, useContext, useRef, useEffect, useState, useMemo } from 'react';
 import { useStore, type StoreApi } from 'zustand';
-import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, type User, signInAnonymously } from 'firebase/auth';
 import { doc, setDoc, getFirestore, onSnapshot, type DocumentReference, type Firestore } from 'firebase/firestore';
-import { initializeFirebase } from '@/firebase';
+import { auth, firestore } from '@/firebase';
 
 
 export { useUser, useDoc };
-
-const firebaseApp = initializeFirebase();
-const auth = getAuth(firebaseApp);
-const firestore = getFirestore(firebaseApp);
 
 function useUser() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        signInAnonymously(auth).catch((error) => {
+          console.error("Anonymous sign-in failed:", error);
+        });
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -337,7 +339,7 @@ const createGameStore = (
     },
 
     setStarRating: () => {
-      const { netWorth, startingBalance, profitGoal, trades, maxNetWorth } = get();
+      const { netWorth, startingBalance, profitGoal, trades, maxNetWorth, minNetWorth } = get();
 
       if (profitGoal) { // Tutorial logic
         if (netWorth >= startingBalance + profitGoal) {
@@ -350,29 +352,26 @@ const createGameStore = (
       
       // Level logic
       const finalNetWorth = netWorth;
-      const tradeCount = trades.length;
+      const tradeCount = trades.filter(t => t.type === 'buy' || t.type === 'sell').length;
       const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
-      const sellTrades = trades.filter(t => t.type === 'sell').length;
-      const winRate = sellTrades > 0 ? winningTrades / sellTrades : 0;
-      const maxDrawdown = (maxNetWorth - finalNetWorth) / maxNetWorth;
-      const totalCapital = startingBalance;
+      const sellTradesCount = trades.filter(t => t.type === 'sell').length;
+      const winRate = sellTradesCount > 0 ? winningTrades / sellTradesCount : 0;
+      const maxDrawdown = maxNetWorth > startingBalance ? (maxNetWorth - minNetWorth) / maxNetWorth : 0;
+      const totalCapital = startingBalance + trades.filter(t=>t.type === 'sell').reduce((acc, trade) => acc + trade.price, 0);
       const maxTradeSize = Math.max(...trades.map(t => t.capitalUsed), 0);
 
       let stars = 0;
       
-      // 1 Star
       const oneStarMet = finalNetWorth >= startingBalance * 1.05;
       
-      // 2 Stars
       const twoStarMet = finalNetWorth >= startingBalance * 1.15 &&
         maxDrawdown <= 0.20 &&
         tradeCount >= 3;
 
-      // 3 Stars
       const threeStarMet = finalNetWorth >= startingBalance * 1.30 &&
         maxDrawdown <= 0.10 &&
         winRate >= 0.60 &&
-        maxTradeSize <= (totalCapital * 0.40);
+        maxTradeSize <= (startingBalance * 0.40);
 
       if(threeStarMet){
         stars = 3;
@@ -496,15 +495,7 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
         const { starRating } = storeRef.current.getState();
         const userDocRef = doc(firestore, 'users', user.uid);
         
-        // To prevent overwriting with a lower score, you might want to read first,
-        // but for simplicity, we'll just check against the current store state.
-        // A more robust implementation would use a transaction to read and then write.
-        const dataToUpdate = {
-            [`progress.${levelId}.stars`]: starRating
-        };
-        
         try {
-            // Using set with merge avoids overwriting the whole document
             await setDoc(userDocRef, { progress: { [levelId]: { stars: starRating } } }, { merge: true });
         } catch (error) {
             console.error("Failed to save progress:", error);

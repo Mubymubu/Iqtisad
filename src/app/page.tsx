@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useUser, useDoc, Progress, UserProgress } from "@/hooks/use-game-state";
+import { useUser, useDoc, type Progress, type UserProgress } from "@/hooks/use-game-state";
 import { doc } from "firebase/firestore";
 import { useMemo } from "react";
 
@@ -15,7 +15,7 @@ import { useMemo } from "react";
 const defaultLevels = [
   {
     level: 1,
-    id: "level1",
+    id: "level1" as const,
     title: "Level 1: Tech Stocks",
     description: "Trade volatile tech stocks in a fast-paced market. Learn to manage risk and capitalize on rapid price movements.",
     href: "/level-1",
@@ -23,7 +23,7 @@ const defaultLevels = [
   },
   {
     level: 2,
-    id: "level2",
+    id: "level2" as const,
     title: "Level 2: Venture Capital",
     description: "Invest in high-risk, high-reward private companies. Make strategic, long-term decisions to maximize your returns.",
     href: "/level-2",
@@ -31,7 +31,7 @@ const defaultLevels = [
   },
   {
     level: 3,
-    id: "level3",
+    id: "level3" as const,
     title: "Level 3: Crypto",
     description: "Navigate the unpredictable and highly volatile cryptocurrency market. Test your discipline against extreme market swings.",
     href: "/level-3",
@@ -80,13 +80,13 @@ export default function Home() {
     return doc(firestore, "users", user.uid);
   }, [firestore, user]);
 
-  const { data: userProgress } = useDoc<{ progress: Progress }>(userProgressRef);
+  const { data: userProgress } = useDoc<UserProgress>(userProgressRef);
 
   const levels = useMemo(() => {
-    if (!userProgress) return defaultLevels;
+    if (!userProgress || !userProgress.progress) return defaultLevels;
 
     return defaultLevels.map(level => {
-      const progress = userProgress.progress?.[level.id as keyof Progress];
+      const progress = userProgress.progress?.[level.id];
       return {
         ...level,
         stars: progress?.stars || 0
