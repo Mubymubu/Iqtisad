@@ -78,10 +78,12 @@ function TutorialContent() {
     return (
         <div className="container py-12">
             <GameStatusBar />
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-                {assets.map(asset => (
-                     <AssetCard key={asset.id} asset={asset} />
-                ))}
+            <div className="flex justify-center mb-8">
+                <div className="w-full max-w-sm">
+                    {assets.map(asset => (
+                         <AssetCard key={asset.id} asset={asset} />
+                    ))}
+                </div>
             </div>
 
             <Alert>
