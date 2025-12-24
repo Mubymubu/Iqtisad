@@ -23,8 +23,7 @@ export default function HowToPlayPage() {
             immersing in the dynamics of real-world markets. The game is
             focused on managing capital, analyzing price movements and making
             strategic investment decisions in 3 levels of increasing
-            difficulty: Tech Stocks, Venture Capital and Crypto. Using
-            simulated data that is realistic in nature, Iqtisad allows players
+            difficulty: <strong>Tech Stocks</strong>, <strong>Venture Capital</strong> and <strong>Crypto</strong>. Using simulated data that is realistic in nature, Iqtisad allows players
             to experience the excitement and risk of trading without the real
             world consequences of the transactions while teaching critical
             financial concepts in the process.
