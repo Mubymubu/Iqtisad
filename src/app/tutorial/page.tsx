@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 
 const tutorialAssetConfig = [
-    { id: "AMV", name: "AMV COMPUTING", price: 17.00, volatility: 0.5 },
+    { id: "AMV", name: "AMV COMPUTING", price: 15.00, volatility: 5.0 },
 ];
 
 const HINTS = [
@@ -79,7 +79,7 @@ function TutorialContent() {
         <div className="container py-12">
             <GameStatusBar />
             <div className="mb-8 flex justify-center">
-              <div className="w-full">
+              <div className="w-full max-w-4xl">
                 {assets.map(asset => (
                       <AssetCard key={asset.id} asset={asset} />
                 ))}
