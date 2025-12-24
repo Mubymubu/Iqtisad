@@ -12,7 +12,7 @@ const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 420.69, volatility: 1.5 },
     { id: "HEX", name: "HEXIUM", price: 88.12, volatility: 1.8 },
     { id: "LEDG", name: "LEDGERA", price: 1234.56, volatility: 2.2 },
-    { id: "CRYPT", name: "CRYPTONEX", price: 5.43, volatility: 2.5 },
+    { id: "CRYPT", name: "CRYPTONEX", price: 30, volatility: 2.5 },
 ];
 
 
