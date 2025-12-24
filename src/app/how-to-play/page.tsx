@@ -183,12 +183,7 @@ export default function HowToPlayPage() {
         <section>
           <h2 className="font-headline text-2xl font-bold mb-4">Objective</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Iqtisad is not about finding a sure winning strategy. Its purpose
-            is to help players understand how markets behave, learn how to
-            balance risk and reward, and make better decisions under
-            uncertainty. The game rewards patience, discipline, and informed
-            strategy rather than luck, and serves as an ideal tool for
-            developing practical financial skills.
+            Iqtisad is not the search of definite winning strategy. It is directed toward getting players to learn market behaviour, learn to balance risk and reward, and make decision making in the uncertainty environment. The game does not rely much on luck but rather patience, discipline, and a well-educated strategy, which is a perfect way of learning some practical financial skills.
           </p>
         </section>
       </div>
