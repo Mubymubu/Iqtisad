@@ -51,14 +51,7 @@ export default function HowToPlayPage() {
             Understanding Asset Cards
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Each asset card is a representation of a unique investment
-            opportunity, such as a company or digital asset. These cards show
-            the current price, percentage change which represents profit/loss,
-            and a live chart of price trends over time. Charts are color-coded
-            for easy reference, with green showing a profit, and red indicating
-            a loss. The charts change in real-time, with realistic
-            fluctuations in the market, and players must adjust their
-            strategies constantly.
+            All the asset cards represent some separate investment opportunity, be it a company or a digital asset. Such cards indicate the actual price, change of percentage that displays profit/loss, and a live price trend chart over time. The charts are color-coded to enable easy use where a green chart represents a profit, and a red chart represents a loss. The graphs are dynamic, there is realistic movement in the market and the players have to keep on changing their strategies.
           </p>
         </section>
 
