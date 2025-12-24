@@ -15,7 +15,10 @@ export function Footer() {
               © {new Date().getFullYear()} Iqtisad. All rights reserved.
             </p>
           </div>
-          <nav className="flex gap-4 sm:gap-6">
+          <nav className="flex gap-4 sm:gap-6 flex-wrap justify-center">
+            <Link href="/how-to-play" className="text-sm text-muted-foreground hover:text-primary">
+              How To Play
+            </Link>
             <Link href="/iqtisad-times" className="text-sm text-muted-foreground hover:text-primary">
               The Iqtisad Times
             </Link>

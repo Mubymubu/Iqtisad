@@ -13,6 +13,7 @@ import { GameStateProvider, useGameStore } from '@/hooks/use-game-state.tsx';
 
 const navLinks = [
   { href: "/", label: "Home" },
+  { href: "/how-to-play", label: "How To Play" },
   { href: "/iqtisad-times", label: "The Iqtisad Times" },
   { href: "/tutorial", label: "Tutorial" },
   { href: "/level-1", label: "Level 1" },
