@@ -28,7 +28,7 @@ function Level3Content() {
         <LevelIntro 
           levelName="Level 3"
           levelTitle="Crypto"
-          startingCash={5000}
+          startingCash={500000}
           duration={7}
           objective="Navigate the highly volatile and unpredictable crypto market."
           onStart={startGame}
@@ -59,7 +59,7 @@ export default function Level3Page() {
             levelId="level3"
             initialAssets={cryptoAssetsConfig} 
             duration={420} 
-            startingBalance={5000}>
+            startingBalance={500000}>
             <Level3Content />
         </GameStateProvider>
     );
