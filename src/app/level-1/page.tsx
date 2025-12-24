@@ -10,7 +10,7 @@ import { NewsEventPopup } from "@/components/NewsEventPopup";
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1200, volatility: 0.8 },
     { id: "VANTIQ", name: "VANTIQ LABS", price: 850.72, volatility: 0.7 },
-    { id: "SYNERON", name: "SYNERON AI", price: 102.33, volatility: 0.9 },
+    { id: "SYNERON", name: "SYNERON AI", price: 949.28, volatility: 0.9 },
     { id: "KALYX", name: "KALYX DATAWORKS", price: 98.17, volatility: 1.1 },
 ];
 
