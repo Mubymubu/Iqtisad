@@ -116,7 +116,7 @@ export default function HowToPlayPage() {
             Progress and Scoring
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Performance measurement is done on a system that utilizes net worth growth, decision quality and risk management evaluation. They save and follow the stars and keep a number of them in each level, which means that a player can see his/her progress and refine the strategies.
+            Performance measurement is done on a system that utilizes net worth growth, decision quality and risk management evaluation. They save and follow the stars and keep a number of them in each level, which means that a player can see their progress and refine the strategies.
           </p>
         </section>
 
