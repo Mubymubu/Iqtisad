@@ -6,7 +6,7 @@ import { GameStateProvider, useGameStoreState } from "@/hooks/use-game-state.tsx
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
-
+import { NewsEventPopup } from "@/components/NewsEventPopup";
 
 const ventureAssetsConfig = [
     { id: "SEED", name: "SEEDLINE BIOTECH", price: 15000, isValuation: true, volatility: 0.5, maxPrice: 25000 },
@@ -43,6 +43,7 @@ function Level2Content() {
                      <AssetCard key={asset.id} asset={asset} />
                 ))}
             </div>
+            <NewsEventPopup />
         </div>
     )
 }

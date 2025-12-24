@@ -5,6 +5,7 @@ import { AssetCard } from "@/components/AssetCard";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
+import { NewsEventPopup } from "@/components/NewsEventPopup";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 105.42, volatility: 0.8 },
@@ -43,6 +44,7 @@ function Level1Content() {
                      <AssetCard key={asset.id} asset={asset} />
                 ))}
             </div>
+            <NewsEventPopup />
         </div>
     );
 }

@@ -21,6 +21,14 @@ export type Asset = {
 
 type GamePhase = 'intro' | 'trading' | 'debrief';
 
+type MarketEvent = {
+  headline: string;
+  assetId: string;
+  assetName: string;
+  impact: number; // e.g., 0.2 for +20%
+  impactType: 'gain' | 'loss';
+};
+
 type GameState = {
   assets: Asset[];
   cashBalance: number;
@@ -32,9 +40,12 @@ type GameState = {
   starRating: number;
   phase: GamePhase;
   duration: number;
+  profitGoal?: number; // Optional profit goal for tutorial
+  
+  // Market event state
   eventInProgress: boolean;
   timeToNextEvent: number;
-  profitGoal?: number; // Optional profit goal for tutorial
+  activeEvent: MarketEvent | null;
 };
 
 type GameActions = {
@@ -49,6 +60,7 @@ type GameActions = {
   playAgain: () => void;
   triggerEvent: () => void;
   setInitialEventTimer: () => void;
+  clearEvent: () => void;
 };
 
 type GameStore = GameState & GameActions;
@@ -70,13 +82,17 @@ const createGameStore = (
     netWorth: startingBalance,
     starRating: 0,
     phase: 'intro',
+    profitGoal: profitGoal,
+
     eventInProgress: false,
     timeToNextEvent: 0,
-    profitGoal: profitGoal,
+    activeEvent: null,
     
     setInitialEventTimer: () => {
-      const time = Math.floor(Math.random() * (75 - 60 + 1)) + 60; // 60-75 seconds
-      set({ timeToNextEvent: time });
+      // Events only trigger in non-tutorial levels
+      if (!get().profitGoal) {
+        set({ timeToNextEvent: 45 });
+      }
     },
 
     startGame: () => {
@@ -107,46 +123,64 @@ const createGameStore = (
         });
         get().calculatePortfolio();
     },
+    
+    clearEvent: () => {
+        set({
+            eventInProgress: false,
+            activeEvent: null,
+        });
+        get().setInitialEventTimer(); // Reset timer for the next event
+    },
 
     triggerEvent: () => {
-      if (get().assets.length < 2) {
-        // Not enough assets for an event
-        get().setInitialEventTimer();
-        return;
-      }
+      if (get().assets.length === 0) return;
+      
+      const isTutorial = !!get().profitGoal;
+      if (isTutorial) return; // No events in tutorial
+
       set({ eventInProgress: true });
 
       const assets = get().assets;
-      const upIndex = Math.floor(Math.random() * assets.length);
-      let downIndex = Math.floor(Math.random() * assets.length);
-      while (downIndex === upIndex) {
-        downIndex = Math.floor(Math.random() * assets.length);
+      const targetAssetIndex = Math.floor(Math.random() * assets.length);
+      const targetAsset = assets[targetAssetIndex];
+
+      const eventType = Math.random() < 0.5 ? 'merger' : 'breach';
+      const impact = 0.2 + Math.random() * 0.1; // 20% to 30% impact
+
+      let newPrice: number;
+      let event: MarketEvent;
+
+      if (eventType === 'merger') {
+          newPrice = targetAsset.price * (1 + impact);
+          event = {
+              headline: `${targetAsset.name} announces a major merger`,
+              assetId: targetAsset.id,
+              assetName: targetAsset.name,
+              impact: impact,
+              impactType: 'gain',
+          };
+      } else { // Data Breach
+          newPrice = targetAsset.price * (1 - impact);
+          event = {
+              headline: `${targetAsset.name} suffers a major data breach`,
+              assetId: targetAsset.id,
+              assetName: targetAsset.name,
+              impact: -impact,
+              impactType: 'loss',
+          };
       }
+      
+      set(state => {
+        const assetToUpdate = state.assets.find(a => a.id === targetAsset.id)!;
+        assetToUpdate.price = Math.max(1, newPrice);
+        state.activeEvent = event;
+      });
 
-      const upAssetId = assets[upIndex].id;
-      const downAssetId = assets[downIndex].id;
-      const upPercentage = 1 + (Math.random() * (0.15 - 0.1) + 0.1); // 10-15%
-      const downPercentage = 1 - (Math.random() * (0.15 - 0.1) + 0.1); // 10-15%
+      get().calculatePortfolio();
 
-      let counter = 0;
-      const eventInterval = setInterval(() => {
-        if (counter >= 5) {
-          clearInterval(eventInterval);
-          set({ eventInProgress: false });
-          get().setInitialEventTimer();
-          return;
-        }
-        
-        set(state => {
-          const upAsset = state.assets.find(a => a.id === upAssetId)!;
-          const downAsset = state.assets.find(a => a.id === downAssetId)!;
-          upAsset.price *= upPercentage / 5 + (1 - upPercentage/5);
-          downAsset.price *= downPercentage / 5 + (1- downPercentage/5);
-        });
-
-        get().calculatePortfolio();
-        counter++;
-      }, 1000);
+      setTimeout(() => {
+        get().clearEvent();
+      }, 5000); // Event lasts for 5 seconds
     },
 
     updatePrices: () => {
@@ -156,16 +190,16 @@ const createGameStore = (
                 const volatility = asset.volatility ?? 0.8;
                 let randomFactor;
 
-                if (volatility >= 5.0) { // Tutorial Asset high volatility
-                  const direction = Math.random() < 0.25 ? -1 : 1; // 75% chance of gain
+                if (asset.volatility && asset.volatility >= 5.0) { // Tutorial Asset high volatility logic
+                  const direction = Math.random() < 0.75 ? 1 : -1; // 75% chance of gain
                   let magnitude;
                   if (direction === 1) {
                     magnitude = Math.random() * (0.50 - 0.03) + 0.03; // 3% to 50% gain
                   } else {
                     magnitude = Math.random() * (0.10 - 0.01) + 0.01; // 1% to 10% loss
                   }
-                  randomFactor = direction * magnitude * 100;
-                } else {
+                  randomFactor = direction * magnitude;
+                } else { // Normal level volatility
                   randomFactor = (Math.random() - 0.49) * volatility;
                 }
 
@@ -230,7 +264,8 @@ const createGameStore = (
             return;
         }
 
-        if (!get().eventInProgress && get().assets.length > 1) {
+        // Event timing logic
+        if (!get().eventInProgress && !get().profitGoal && get().assets.length > 0) {
             if (timeToNextEvent <= 0) {
                 get().triggerEvent();
             } else {
@@ -251,9 +286,10 @@ const createGameStore = (
             portfolioValue: 0,
             netWorth: newStartingBalance,
             starRating: 0,
+            profitGoal: newProfitGoal,
             eventInProgress: false,
             timeToNextEvent: 0,
-            profitGoal: newProfitGoal,
+            activeEvent: null,
         });
     },
 
@@ -343,5 +379,3 @@ export const useGameStoreState = () => {
     const store = useSafeContext();
     return useStore(store);
 }
-
-    

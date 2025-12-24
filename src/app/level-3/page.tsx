@@ -6,6 +6,7 @@ import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
+import { NewsEventPopup } from "@/components/NewsEventPopup";
 
 const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 420.69, volatility: 1.5 },
@@ -47,6 +48,7 @@ function Level3Content() {
                      <AssetCard key={asset.id} asset={asset} />
                 ))}
             </div>
+            <NewsEventPopup />
         </div>
     );
 }
