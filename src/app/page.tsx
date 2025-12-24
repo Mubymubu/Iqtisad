@@ -10,22 +10,22 @@ import { cn } from "@/lib/utils";
 const levels = [
   {
     level: 1,
-    title: "Foundations of Markets",
-    description: "Learn the basics of financial markets, including supply and demand, price movement, and risk.",
+    title: "Level 1: Tech Stocks",
+    description: "Trade volatile tech stocks in a fast-paced market. Learn to manage risk and capitalize on rapid price movements.",
     href: "/level-1",
     progress: 0,
   },
   {
     level: 2,
-    title: "Tech Stocks",
-    description: "Tech stocks are volatile - they move fast. But high risk means high reward, if you're lucky. The old rule applies: try to buy low and sell high.",
+    title: "Level 2: Venture Capital",
+    description: "Invest in high-risk, high-reward private companies. Make strategic, long-term decisions to maximize your returns.",
     href: "/level-2",
     progress: 0,
   },
   {
     level: 3,
-    title: "Venture Capital",
-    description: "Step into the shoes of a venture capitalist with a starting budget of $100k. Your decisions must be strategic and well-informed to maximize profits in this high-stakes environment.",
+    title: "Level 3: Crypto",
+    description: "Navigate the unpredictable and highly volatile cryptocurrency market. Test your discipline against extreme market swings.",
     href: "/level-3",
     progress: 0,
   }
