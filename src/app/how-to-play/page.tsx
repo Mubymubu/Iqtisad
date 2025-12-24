@@ -140,7 +140,7 @@ export default function HowToPlayPage() {
                     2 Stars
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
-                  To earn 2 stars, the player must finish the level with a net worth increase of at least 15% and complete at least 5 trades.
+                  To earn 2 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 15%</strong> and complete at least 5 trades.
                 </p>
                 <p className="text-sm text-muted-foreground/80 italic mt-2">
                   This reflects stronger engagement with the market and the ability to grow capital through multiple, deliberate trading decisions rather than relying on chance.
