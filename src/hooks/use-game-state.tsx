@@ -157,8 +157,13 @@ const createGameStore = (
                 let randomFactor;
 
                 if (volatility >= 5.0) { // Tutorial Asset high volatility
-                  const direction = Math.random() < 0.5 ? -1 : 1;
-                  const magnitude = Math.random() * (0.50 - 0.03) + 0.03; // 3% to 50%
+                  const direction = Math.random() < 0.25 ? -1 : 1; // 75% chance of gain
+                  let magnitude;
+                  if (direction === 1) {
+                    magnitude = Math.random() * (0.50 - 0.03) + 0.03; // 3% to 50% gain
+                  } else {
+                    magnitude = Math.random() * (0.10 - 0.01) + 0.01; // 1% to 10% loss
+                  }
                   randomFactor = direction * magnitude * 100;
                 } else {
                   randomFactor = (Math.random() - 0.49) * volatility;
