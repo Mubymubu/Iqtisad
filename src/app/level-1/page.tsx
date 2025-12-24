@@ -26,7 +26,7 @@ function Level1Content() {
           levelName="Level 1"
           levelTitle="Tech Stocks"
           startingCash={10000}
-          duration={3}
+          duration={2}
           objective="Grow your initial investment by trading public tech stocks."
           onStart={startGame}
         />
@@ -56,7 +56,7 @@ export default function Level1Page() {
         <GameStateProvider 
             levelId="level1"
             initialAssets={techAssetsConfig} 
-            duration={180} 
+            duration={120} 
             startingBalance={10000}>
             <Level1Content />
         </GameStateProvider>
