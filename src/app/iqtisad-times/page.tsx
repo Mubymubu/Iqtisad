@@ -19,9 +19,9 @@ const articles = [
     title: "The 2008 Global Financial Crisis",
     author: "Sophia Smith",
     content: [
-        "The Global Financial Crisis, which lasted from January 2008 to March 2009, was one of the most severe economic downturns since the Great Depression. It originated in the United States due to the collapse of the housing market and the widespread use of high-risk mortgage-backed securities.",
-        "Major financial institutions faced insolvency, leading to bank failures, stock market crashes, and a sharp rise in unemployment worldwide. Governments and central banks intervened through large-scale bailouts, stimulus packages, and interest rate cuts to prevent total economic collapse.",
-        "The crisis exposed weaknesses in financial regulation and risk management. As a result, stricter banking regulations and oversight frameworks were introduced globally. The 2008 crisis reshaped modern financial systems and continues to influence economic policy decisions today."
+        "The Global Financial Crisis experienced between January 2008 and March 2009 was one of the worst economic recessions, since the Great Depression. It began in the United States because of the meltdown of the housing market and the prevalent use of high risk mortgage-backed securities.",
+        "Financial institutions of great size were insolvent and this resulted in the failure of banks causing stock market crashes and a high rate of unemployment across the world. Governments and the central banks came in to bail out the economy with massive bailouts, stimulus packages, and reduction of interest rates in order to avoid complete economic breakdown.",
+        "The weak financial regulation and risk management were revealed during the crisis. This saw the introduction of tougher banking laws and regulatory structures around the world. The crisis of 2008 redefined the current financial structures and still plays a role in economic policy making."
     ]
   },
   {
