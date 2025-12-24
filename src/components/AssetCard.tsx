@@ -49,7 +49,6 @@ export function AssetCard({ asset }: { asset: Asset }) {
             <CardContent className="flex-grow h-32">
                 <StockChart 
                     assetId={asset.id}
-                    isGain={changeType !== 'loss'} 
                 />
             </CardContent>
 

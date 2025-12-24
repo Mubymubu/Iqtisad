@@ -1,36 +1,36 @@
-
 "use client"
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 import { useGameStore } from '@/hooks/use-game-state.tsx';
 
-export const StockChart = ({ isGain = true, assetId }: { isGain?: boolean, isVolatile?: boolean, assetId: string }) => {
+export const StockChart = ({ assetId }: { assetId: string }) => {
   const { phase, getAssetById } = useGameStore(state => ({
     phase: state.phase,
     getAssetById: (id: string) => state.assets.find(a => a.id === id),
   }));
 
   const asset = getAssetById(assetId);
+  const isGain = asset?.changeType !== 'loss';
 
   const [data, setData] = useState(() => {
     if (!asset) return [];
     // Initialize with a single data point
-    return [{ date: new Date().toISOString(), value: asset.initialPrice }];
+    return [{ time: new Date().getTime(), value: asset.initialPrice }];
   });
 
   const color = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
   const gradientColor = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
-
+  const gradientId = `colorUv-${assetId}`;
 
   useEffect(() => {
     if (phase !== 'trading' || !asset) return;
 
     const priceUpdateInterval = setInterval(() => {
-      const currentAsset = getAssetById(assetId);
+      const currentAsset = getAssetById(assetId); // Fetch the latest asset state
       if (currentAsset) {
         setData(currentData => {
           const newData = [...currentData, {
-            date: new Date().toISOString(),
+            time: new Date().getTime(),
             value: currentAsset.price,
           }];
           // Keep the data array at a fixed size for a scrolling window effect
@@ -43,22 +43,25 @@ export const StockChart = ({ isGain = true, assetId }: { isGain?: boolean, isVol
     }, 2000); // Matches price update interval in use-game-state
 
     return () => clearInterval(priceUpdateInterval);
-  }, [phase, assetId, getAssetById]);
+  }, [phase, assetId, getAssetById, asset]);
 
   // Reset data when the game restarts
   useEffect(() => {
     if (phase === 'intro' && asset) {
-      setData([{ date: new Date().toISOString(), value: asset.initialPrice }]);
+      setData([{ time: new Date().getTime(), value: asset.initialPrice }]);
     }
   }, [phase, asset]);
   
+  if (!asset) {
+    return <div className="h-24 w-full bg-muted/30 rounded-md" />;
+  }
+  
   const minPrice = Math.min(...data.map(d => d.value));
   const maxPrice = Math.max(...data.map(d => d.value));
-  const domainMargin = (maxPrice - minPrice) * 0.2;
-
+  const domainMargin = (maxPrice - minPrice || 1) * 0.1; // Add a small margin to the domain
 
   return (
-    <div className="w-full h-24">
+    <div className="w-full h-full">
       <ResponsiveContainer>
         <AreaChart
           data={data}
@@ -70,7 +73,7 @@ export const StockChart = ({ isGain = true, assetId }: { isGain?: boolean, isVol
           }}
         >
           <defs>
-            <linearGradient id={`colorUv-${assetId}`} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={gradientColor} stopOpacity={0.4} />
               <stop offset="95%" stopColor={gradientColor} stopOpacity={0} />
             </linearGradient>
@@ -96,9 +99,9 @@ export const StockChart = ({ isGain = true, assetId }: { isGain?: boolean, isVol
             stroke={color}
             strokeWidth={2}
             fillOpacity={1}
-            fill={`url(#colorUv-${assetId})`}
+            fill={`url(#${gradientId})`}
             dot={false}
-            isAnimationActive={false}
+            isAnimationActive={false} // Important for smooth real-time updates
           />
         </AreaChart>
       </ResponsiveContainer>
