@@ -2,7 +2,7 @@
 "use client";
 
 import { AssetCard } from "@/components/AssetCard";
-import { GameStateProvider, useGameStoreState } from "@/hooks/use-game-state.tsx";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
@@ -16,7 +16,7 @@ const ventureAssetsConfig = [
 ];
 
 function Level2Content() {
-    const { assets, phase, startGame } = useGameStoreState();
+    const { assets, phase, startGame } = useGameStore(state => state);
     
     if (phase === 'intro') {
       return (
@@ -32,7 +32,7 @@ function Level2Content() {
     }
     
     if (phase === 'debrief') {
-      return <DebriefDialog />;
+      return <DebriefDialog levelId="level2" />;
     }
     
     return (
@@ -50,7 +50,11 @@ function Level2Content() {
 
 export default function Level2Page() {
     return (
-        <GameStateProvider initialAssets={ventureAssetsConfig} duration={300} startingBalance={100000}>
+        <GameStateProvider 
+            levelId="level2"
+            initialAssets={ventureAssetsConfig} 
+            duration={300} 
+            startingBalance={100000}>
             <Level2Content />
         </GameStateProvider>
     );

@@ -2,7 +2,7 @@
 "use client";
 
 import { AssetCard } from "@/components/AssetCard";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
@@ -37,7 +37,7 @@ function Level3Content() {
     }
     
     if (phase === 'debrief') {
-      return <DebriefDialog />;
+      return <DebriefDialog levelId="level3" />;
     }
 
     return (
@@ -55,7 +55,11 @@ function Level3Content() {
 
 export default function Level3Page() {
     return (
-        <GameStateProvider initialAssets={cryptoAssetsConfig} duration={420} startingBalance={5000}>
+        <GameStateProvider 
+            levelId="level3"
+            initialAssets={cryptoAssetsConfig} 
+            duration={420} 
+            startingBalance={5000}>
             <Level3Content />
         </GameStateProvider>
     );

@@ -3,8 +3,60 @@
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import React, { createContext, useContext, useRef, useEffect } from 'react';
-import { useStore } from 'zustand';
+import React, { createContext, useContext, useRef, useEffect, useState, useMemo } from 'react';
+import { useStore, type StoreApi } from 'zustand';
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
+import { doc, setDoc, getFirestore, onSnapshot, type DocumentReference, type Firestore } from 'firebase/firestore';
+import { initializeFirebase } from '@/firebase';
+
+
+export { useUser, useDoc };
+
+const firebaseApp = initializeFirebase();
+const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
+
+function useUser() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  return { user, auth, firestore };
+}
+
+function useDoc<T>(ref: DocumentReference<T> | null) {
+    const [data, setData] = useState<T | null>(null);
+
+    useEffect(() => {
+        if (!ref) {
+            setData(null);
+            return;
+        }
+        const unsubscribe = onSnapshot(ref, (doc) => {
+            setData(doc.exists() ? doc.data() : null);
+        });
+        return () => unsubscribe();
+    }, [ref]);
+
+    return { data };
+}
+
+
+export type LevelId = 'tutorial' | 'level1' | 'level2' | 'level3';
+
+export type Progress = {
+    [key in LevelId]?: {
+        stars: number;
+    }
+}
+export interface UserProgress {
+    progress: Progress;
+}
 
 export type Asset = {
   id: string;
@@ -12,6 +64,7 @@ export type Asset = {
   price: number;
   quantity: number;
   initialPrice: number;
+  purchasePrice?: number;
   change?: string;
   changeType?: 'gain' | 'loss';
   isValuation?: boolean;
@@ -29,7 +82,17 @@ type MarketEvent = {
   impactType: 'gain' | 'loss';
 };
 
+type Trade = {
+    type: 'buy' | 'sell';
+    assetId: string;
+    price: number;
+    quantity: number;
+    isWin?: boolean;
+    capitalUsed: number;
+}
+
 type GameState = {
+  levelId: LevelId,
   assets: Asset[];
   cashBalance: number;
   startingBalance: number;
@@ -47,6 +110,11 @@ type GameState = {
   timeToNextEvent: number;
   activeEvent: MarketEvent | null;
   eventCounter: number; // To track positive/negative sequence
+
+  // Star metrics
+  maxNetWorth: number;
+  minNetWorth: number;
+  trades: Trade[];
 };
 
 type GameActions = {
@@ -57,22 +125,25 @@ type GameActions = {
   calculatePortfolio: () => void;
   setStarRating: () => void;
   startGame: () => void;
-  reset: (initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number, profitGoal?: number) => void;
+  reset: (levelId: LevelId, initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number, profitGoal?: number) => void;
   playAgain: () => void;
   triggerEvent: () => void;
   setInitialEventTimer: () => void;
   clearEvent: () => void;
+  saveProgress: (levelId: LevelId) => void;
 };
 
 type GameStore = GameState & GameActions;
 
 const createGameStore = (
+    levelId: LevelId,
     initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], 
     duration: number, 
     startingBalance: number,
     profitGoal?: number
 ) => create<GameStore>()(
   immer((set, get) => ({
+    levelId,
     assets: initialAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
     cashBalance: startingBalance,
     startingBalance: startingBalance,
@@ -89,6 +160,10 @@ const createGameStore = (
     timeToNextEvent: 0,
     activeEvent: null,
     eventCounter: 0,
+
+    maxNetWorth: startingBalance,
+    minNetWorth: startingBalance,
+    trades: [],
     
     setInitialEventTimer: () => {
       // Events only trigger in non-tutorial levels
@@ -110,6 +185,20 @@ const createGameStore = (
             const boughtAsset = state.assets.find(a => a.id === assetId)!;
             state.cashBalance -= boughtAsset.price;
             boughtAsset.quantity += 1;
+            if (boughtAsset.purchasePrice === undefined) {
+                boughtAsset.purchasePrice = boughtAsset.price;
+            } else {
+                // Average purchase price
+                boughtAsset.purchasePrice = (boughtAsset.purchasePrice * (boughtAsset.quantity - 1) + boughtAsset.price) / boughtAsset.quantity;
+            }
+
+            state.trades.push({
+                type: 'buy',
+                assetId,
+                price: boughtAsset.price,
+                quantity: 1,
+                capitalUsed: boughtAsset.price
+            });
         });
         get().calculatePortfolio();
     },
@@ -118,10 +207,23 @@ const createGameStore = (
         const asset = get().assets.find(a => a.id === assetId);
         if (!asset || asset.quantity <= 0 || get().isFinished || get().phase !== 'trading') return;
 
+        const isWin = asset.price > (asset.purchasePrice || asset.initialPrice);
+
         set(state => {
             const soldAsset = state.assets.find(a => a.id === assetId)!;
             state.cashBalance += soldAsset.price;
             soldAsset.quantity -= 1;
+            if (soldAsset.quantity === 0) {
+                soldAsset.purchasePrice = undefined;
+            }
+            state.trades.push({
+                type: 'sell',
+                assetId,
+                price: soldAsset.price,
+                quantity: 1,
+                isWin,
+                capitalUsed: soldAsset.price
+            });
         });
         get().calculatePortfolio();
     },
@@ -226,12 +328,16 @@ const createGameStore = (
         set(state => {
             const assetsValue = state.assets.reduce((total, asset) => total + (asset.price * asset.quantity), 0);
             state.portfolioValue = assetsValue;
-            state.netWorth = state.cashBalance + assetsValue;
+            const newNetWorth = state.cashBalance + assetsValue;
+            state.netWorth = newNetWorth;
+
+            if(newNetWorth > state.maxNetWorth) state.maxNetWorth = newNetWorth;
+            if(newNetWorth < state.minNetWorth) state.minNetWorth = newNetWorth;
         });
     },
 
     setStarRating: () => {
-      const { netWorth, startingBalance, profitGoal } = get();
+      const { netWorth, startingBalance, profitGoal, trades, maxNetWorth } = get();
 
       if (profitGoal) { // Tutorial logic
         if (netWorth >= startingBalance + profitGoal) {
@@ -239,17 +345,44 @@ const createGameStore = (
         } else {
           set({ starRating: 0 }); // Failure
         }
-      } else { // Level logic
-        if (netWorth > startingBalance * 1.2) {
-          set({ starRating: 3 });
-        } else if (netWorth > startingBalance) {
-          set({ starRating: 2 });
-        } else if (netWorth === startingBalance) {
-          set({ starRating: 1 });
-        } else {
-          set({ starRating: 0 });
-        }
+        return;
+      } 
+      
+      // Level logic
+      const finalNetWorth = netWorth;
+      const tradeCount = trades.length;
+      const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
+      const sellTrades = trades.filter(t => t.type === 'sell').length;
+      const winRate = sellTrades > 0 ? winningTrades / sellTrades : 0;
+      const maxDrawdown = (maxNetWorth - finalNetWorth) / maxNetWorth;
+      const totalCapital = startingBalance;
+      const maxTradeSize = Math.max(...trades.map(t => t.capitalUsed), 0);
+
+      let stars = 0;
+      
+      // 1 Star
+      const oneStarMet = finalNetWorth >= startingBalance * 1.05;
+      
+      // 2 Stars
+      const twoStarMet = finalNetWorth >= startingBalance * 1.15 &&
+        maxDrawdown <= 0.20 &&
+        tradeCount >= 3;
+
+      // 3 Stars
+      const threeStarMet = finalNetWorth >= startingBalance * 1.30 &&
+        maxDrawdown <= 0.10 &&
+        winRate >= 0.60 &&
+        maxTradeSize <= (totalCapital * 0.40);
+
+      if(threeStarMet){
+        stars = 3;
+      } else if (twoStarMet) {
+        stars = 2;
+      } else if (oneStarMet) {
+        stars = 1;
       }
+      
+      set({ starRating: stars });
     },
     
     tick: () => {
@@ -302,8 +435,9 @@ const createGameStore = (
         }
     },
     
-    reset: (newAssets, newDuration, newStartingBalance, newProfitGoal) => {
+    reset: (newLevelId, newAssets, newDuration, newStartingBalance, newProfitGoal) => {
         set({
+            levelId: newLevelId,
             assets: newAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
             cashBalance: newStartingBalance,
             startingBalance: newStartingBalance,
@@ -319,51 +453,84 @@ const createGameStore = (
             timeToNextEvent: 0,
             activeEvent: null,
             eventCounter: 0,
+            maxNetWorth: newStartingBalance,
+            minNetWorth: newStartingBalance,
+            trades: [],
         });
     },
 
     playAgain: () => {
-      const { assets, duration, startingBalance, profitGoal } = get();
+      const { levelId, assets, duration, startingBalance, profitGoal } = get();
       const initialAssets = assets.map(({ id, name, initialPrice, isValuation, volatility, maxPrice }) => ({ id, name, price: initialPrice, isValuation, volatility, maxPrice }));
-      get().reset(initialAssets, duration, startingBalance, profitGoal);
+      get().reset(levelId, initialAssets, duration, startingBalance, profitGoal);
+    },
+    saveProgress: (levelId: LevelId) => {
+        // This is a placeholder. The actual implementation is injected in the provider.
     }
   }))
 );
 
 type GameStoreType = ReturnType<typeof createGameStore>;
-const GameContext = createContext<GameStoreType | null>(null);
+const GameContext = React.createContext<GameStoreType | null>(null);
 
-export function GameStateProvider({ children, initialAssets, duration, startingBalance, profitGoal }: { 
+export function GameStateProvider({ children, initialAssets, duration, startingBalance, profitGoal, levelId }: { 
     children: React.ReactNode; 
+    levelId: LevelId,
     initialAssets: Omit<Asset, 'quantity' | 'initialPrice' | 'change' | 'changeType'>[];
     duration: number;
     startingBalance: number;
     profitGoal?: number;
 }) {
-  const storeRef = useRef<GameStoreType>();
+  const storeRef = React.useRef<GameStoreType>();
+  const { user, firestore } = useUser();
+  
   if (!storeRef.current) {
-    storeRef.current = createGameStore(initialAssets, duration, startingBalance, profitGoal);
+    storeRef.current = createGameStore(levelId, initialAssets, duration, startingBalance, profitGoal);
   }
 
+  // Effect to inject the saveProgress implementation into the store
   useEffect(() => {
-    storeRef.current?.getState().reset(initialAssets, duration, startingBalance, profitGoal);
-  }, [initialAssets, duration, startingBalance, profitGoal]);
+    const saveProgress = async (levelId: LevelId) => {
+        if (!user || !firestore || !storeRef.current) return;
+
+        const { starRating } = storeRef.current.getState();
+        const userDocRef = doc(firestore, 'users', user.uid);
+        
+        // To prevent overwriting with a lower score, you might want to read first,
+        // but for simplicity, we'll just check against the current store state.
+        // A more robust implementation would use a transaction to read and then write.
+        const dataToUpdate = {
+            [`progress.${levelId}.stars`]: starRating
+        };
+        
+        try {
+            // Using set with merge avoids overwriting the whole document
+            await setDoc(userDocRef, { progress: { [levelId]: { stars: starRating } } }, { merge: true });
+        } catch (error) {
+            console.error("Failed to save progress:", error);
+        }
+    };
+    storeRef.current.setState({ saveProgress });
+  }, [user, firestore]);
+
+  useEffect(() => {
+    storeRef.current?.getState().reset(levelId, initialAssets, duration, startingBalance, profitGoal);
+  }, [levelId, initialAssets, duration, startingBalance, profitGoal]);
 
   useEffect(() => {
     let timerInterval: NodeJS.Timeout | undefined;
     let priceInterval: NodeJS.Timeout | undefined;
 
-    const unsubscribe = storeRef.current?.subscribe(state => {
+    const store = storeRef.current;
+    if (!store) return;
+
+    const unsubscribe = store.subscribe(state => {
       if (state.phase === 'trading') {
         if (!timerInterval) {
-          timerInterval = setInterval(() => {
-            storeRef.current?.getState().tick();
-          }, 1000);
+          timerInterval = setInterval(() => store.getState().tick(), 1000);
         }
         if (!priceInterval) {
-          priceInterval = setInterval(() => {
-            storeRef.current?.getState().updatePrices();
-          }, 2000);
+          priceInterval = setInterval(() => store.getState().updatePrices(), 2000);
         }
       } else {
         if (timerInterval) clearInterval(timerInterval);
@@ -376,7 +543,7 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
     return () => {
       if (timerInterval) clearInterval(timerInterval);
       if (priceInterval) clearInterval(priceInterval);
-      if (unsubscribe) unsubscribe();
+      unsubscribe();
     };
   }, []);
 
@@ -387,24 +554,18 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
   );
 }
 
-const useSafeContext = () => {
-  const context = useContext(GameContext);
-  if (!context) {
-    // This provides a dummy store when not in a provider.
-    // Useful for components like the Header that might render outside a specific level.
-    const dummyStore = createGameStore([], 0, 0);
-    return dummyStore;
-  }
-  return context;
-}
-
 export function useGameStore<T>(selector: (state: GameStore) => T) {
-  const store = useSafeContext();
+  const store = useContext(GameContext);
+  if (!store) {
+    throw new Error('useGameStore must be used within a GameStateProvider');
+  }
   return useStore(store, selector);
 }
 
-// A hook to get the entire state without selectors, useful for simple displays
 export const useGameStoreState = () => {
-    const store = useSafeContext();
+    const store = useContext(GameContext);
+    if (!store) {
+      throw new Error('useGameStoreState must be used within a GameStateProvider');
+    }
     return useStore(store);
 }

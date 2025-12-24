@@ -10,7 +10,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useGameStore } from "@/hooks/use-game-state.tsx";
+import { useGameStore, LevelId } from "@/hooks/use-game-state";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -44,18 +44,20 @@ function StarRating({ rating, isTutorial }: { rating: number; isTutorial?: boole
   );
 }
 
-export function DebriefDialog({ children, customTitle, customDescription }: {
+export function DebriefDialog({ children, customTitle, customDescription, levelId }: {
   children?: React.ReactNode;
   customTitle?: string;
   customDescription?: string;
+  levelId?: LevelId;
 }) {
-  const { phase, startingBalance, netWorth, starRating, playAgain, profitGoal } = useGameStore(state => ({
+  const { phase, startingBalance, netWorth, starRating, playAgain, profitGoal, saveProgress } = useGameStore(state => ({
     phase: state.phase,
     startingBalance: state.startingBalance,
     netWorth: state.netWorth,
     starRating: state.starRating,
     playAgain: state.playAgain,
     profitGoal: state.profitGoal,
+    saveProgress: state.saveProgress,
   }));
 
   const router = useRouter();
@@ -73,6 +75,9 @@ export function DebriefDialog({ children, customTitle, customDescription }: {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
+      if (levelId) {
+        saveProgress(levelId);
+      }
       playAgain();
     }
   };
@@ -115,8 +120,14 @@ export function DebriefDialog({ children, customTitle, customDescription }: {
         <DialogFooter className="flex-col gap-2 sm:flex-row">
             {children || (
               <>
-                <Button className="w-full" onClick={() => router.push('/strategies')}>Review Strategies</Button>
-                <Button className="w-full" variant="outline" onClick={playAgain}>Play Again</Button>
+                <Button className="w-full" onClick={() => {
+                  if (levelId) saveProgress(levelId);
+                  router.push('/strategies');
+                }}>Review Strategies</Button>
+                <Button className="w-full" variant="outline" onClick={() => {
+                  if (levelId) saveProgress(levelId);
+                  playAgain();
+                }}>Play Again</Button>
               </>
             )}
         </DialogFooter>

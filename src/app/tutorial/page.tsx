@@ -3,7 +3,7 @@
 
 import { AssetCard } from "@/components/AssetCard";
 import { DebriefDialog } from "@/components/DebriefDialog";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -58,6 +58,7 @@ function TutorialContent() {
       const isSuccess = starRating > 0;
       return (
          <DebriefDialog
+            levelId="tutorial"
             customTitle="Tutorial Complete"
             customDescription={isSuccess ? "Great job! You've learned the basics." : "You didn't make a profit this time. Let's try again!"}
           >
@@ -124,6 +125,7 @@ function TutorialStart() {
 export default function TutorialPage() {
     return (
         <GameStateProvider 
+          levelId="tutorial"
           initialAssets={tutorialAssetConfig} 
           duration={60} 
           startingBalance={100}

@@ -1,6 +1,6 @@
 
 "use client";
-import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state";
 import { AssetCard } from "@/components/AssetCard";
 import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
@@ -33,7 +33,7 @@ function Level1Content() {
     }
     
     if (phase === 'debrief') {
-      return <DebriefDialog />;
+      return <DebriefDialog levelId="level1"/>;
     }
 
     return (
@@ -51,7 +51,11 @@ function Level1Content() {
 
 export default function Level1Page() {
     return (
-        <GameStateProvider initialAssets={techAssetsConfig} duration={180} startingBalance={1000}>
+        <GameStateProvider 
+            levelId="level1"
+            initialAssets={techAssetsConfig} 
+            duration={180} 
+            startingBalance={1000}>
             <Level1Content />
         </GameStateProvider>
     )

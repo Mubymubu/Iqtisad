@@ -1,38 +1,52 @@
 
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Newspaper, TrendingUp, Cpu, Star } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import { useUser, useDoc, Progress, UserProgress } from "@/hooks/use-game-state";
+import { doc } from "firebase/firestore";
+import { useMemo } from "react";
 
 
-const levels = [
+const defaultLevels = [
   {
     level: 1,
+    id: "level1",
     title: "Level 1: Tech Stocks",
     description: "Trade volatile tech stocks in a fast-paced market. Learn to manage risk and capitalize on rapid price movements.",
     href: "/level-1",
-    progress: 0,
+    stars: 0,
   },
   {
     level: 2,
+    id: "level2",
     title: "Level 2: Venture Capital",
     description: "Invest in high-risk, high-reward private companies. Make strategic, long-term decisions to maximize your returns.",
     href: "/level-2",
-    progress: 0,
+    stars: 0,
   },
   {
     level: 3,
+    id: "level3",
     title: "Level 3: Crypto",
     description: "Navigate the unpredictable and highly volatile cryptocurrency market. Test your discipline against extreme market swings.",
     href: "/level-3",
-    progress: 0,
+    stars: 0,
   }
-]
+];
 
 
-function LevelCard({ level, title, description, href, progress }: (typeof levels)[0]) {
+function LevelCard({ level, title, description, href, stars }: {
+    level: number;
+    title: string;
+    description: string;
+    href: string;
+    stars: number;
+}) {
   return (
     <div className="w-full max-w-2xl text-center py-8 relative">
         
@@ -42,7 +56,7 @@ function LevelCard({ level, title, description, href, progress }: (typeof levels
             <span className="text-sm text-muted-foreground">Your progress:</span>
             <div className="flex gap-1">
                 {[...Array(3)].map((_, i) => (
-                    <Star key={i} className={cn("h-5 w-5", i < progress ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30')} />
+                    <Star key={i} className={cn("h-5 w-5", i < stars ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30')} />
                 ))}
             </div>
         </div>
@@ -59,6 +73,27 @@ function LevelCard({ level, title, description, href, progress }: (typeof levels
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+  const { user, firestore } = useUser();
+  
+  const userProgressRef = useMemo(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, "users", user.uid);
+  }, [firestore, user]);
+
+  const { data: userProgress } = useDoc<{ progress: Progress }>(userProgressRef);
+
+  const levels = useMemo(() => {
+    if (!userProgress) return defaultLevels;
+
+    return defaultLevels.map(level => {
+      const progress = userProgress.progress?.[level.id as keyof Progress];
+      return {
+        ...level,
+        stars: progress?.stars || 0
+      }
+    });
+
+  }, [userProgress]);
 
   return (
     <div className="flex flex-col">
@@ -142,7 +177,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[radial-gradient(ellipse_80%_50%_at_50%_50%,hsl(var(--card)_/_0.5),hsl(var(--background)))]">
+      <section className="bg-background py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold font-headline">Explore the Simulation</h2>
