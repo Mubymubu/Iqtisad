@@ -28,9 +28,9 @@ const articles = [
     title: "The COVID-19 Economic Shock",
     author: "N’golo Robert",
     content: [
-      "The COVID-19 economic crisis, which began in early 2020, caused a sudden and severe disruption to the global economy. Government-imposed lockdowns and travel restrictions halted production, reduced consumer spending, and led to widespread job losses across multiple sectors.",
-      "Financial markets experienced extreme volatility as uncertainty spread, with major stock indices falling sharply in the early months of the pandemic. In response, governments and central banks implemented unprecedented fiscal stimulus measures, including emergency spending programs and near-zero interest rates.",
-      "While these actions helped stabilize economies, they also increased public debt and inflationary pressures in the years that followed. The COVID-19 shock highlighted the interconnected nature of global economies and the importance of resilience in financial systems."
+      "The COVID-19 economic crisis which led to an abrupt and negative shock in the economy of the world. Lockdowns and travel restrictions brought by governments stopped production and consumer spending and caused massive layoffs in various industries.",
+      "There was extreme volatility in financial markets and the major stock markets plummeted at the beginning of the pandemic as uncertainty crept in. Governments and central banks responded with the highest levels of fiscal stimulus plans in history fiscal policies such as emergency spending programs and low-interest rates.",
+      "Although these measures played the role of stabilizing economies they also added public debt and inflation pressures during the years that followed. The COVID-19 shock revealed the interdependence of the world economies and the significance of the resilience of financial systems."
     ]
   }
 ];
