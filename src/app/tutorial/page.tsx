@@ -106,7 +106,7 @@ function TutorialStart() {
       <div className="container flex-1 flex flex-col items-center justify-center py-12 text-center">
         <Card className="w-full max-w-md">
            <CardHeader>
-                <CardTitle className="font-headline text-3xl">Onboarding Tutorial</CardTitle>
+                <CardTitle className="font-headline text-3xl italic">Onboarding Tutorial</CardTitle>
                 <CardDescription>
                   Learn the basics of trading in this 1-minute guided session. Your goal is to make a profit of at least $5.
                 </CardDescription>
