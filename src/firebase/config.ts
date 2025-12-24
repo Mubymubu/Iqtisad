@@ -4,14 +4,7 @@ import { initializeApp, getApps, getApp, type FirebaseApp, type FirebaseOptions 
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+const firebaseConfig: FirebaseOptions = {"apiKey":"API_KEY","authDomain":"PROJECT_ID.firebaseapp.com","projectId":"PROJECT_ID","storageBucket":"PROJECT_ID.appspot.com","messagingSenderId":"SENDER_ID","appId":"APP_ID"};
 
 export function initializeFirebase(config: FirebaseOptions = firebaseConfig) {
   const apps = getApps();
