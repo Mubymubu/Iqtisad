@@ -1,14 +1,64 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Newspaper, TrendingUp, Cpu } from "lucide-react";
+import { ArrowRight, Newspaper, TrendingUp, Cpu, Star } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+
+const levels = [
+  {
+    level: 1,
+    title: "Foundations of Markets",
+    description: "Learn the basics of financial markets, including supply and demand, price movement, and risk.",
+    href: "/level-1",
+    progress: 0,
+  },
+  {
+    level: 2,
+    title: "Tech Stocks",
+    description: "Tech stocks are volatile - they move fast. But high risk means high reward, if you're lucky. The old rule applies: try to buy low and sell high.",
+    href: "/level-2",
+    progress: 0,
+  },
+  {
+    level: 3,
+    title: "Venture Capital",
+    description: "Step into the shoes of a venture capitalist with a starting budget of $100k. Your decisions must be strategic and well-informed to maximize profits in this high-stakes environment.",
+    href: "/level-3",
+    progress: 0,
+  }
+]
+
+
+function LevelCard({ level, title, description, href, progress }: (typeof levels)[0]) {
+  return (
+    <div className="w-full max-w-2xl text-center py-8 relative">
+        <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
+        <h2 className="text-3xl font-bold mb-3 font-headline">{title}</h2>
+        <p className="text-muted-foreground max-w-lg mx-auto mb-6">{description}</p>
+        <div className="flex items-center justify-center gap-4 mb-6">
+            <span className="text-sm text-muted-foreground">Your progress:</span>
+            <div className="flex gap-1">
+                {[...Array(3)].map((_, i) => (
+                    <Star key={i} className={cn("h-5 w-5", i < progress ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30')} />
+                ))}
+            </div>
+        </div>
+        <Button asChild className="group">
+            <Link href={href}>
+                Play Level {level}
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+        </Button>
+    </div>
+  )
+}
+
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
-  const logoImage = PlaceHolderImages.find(p => p.id === 'iqtisad-logo-full');
 
   return (
     <div className="flex flex-col">
@@ -92,26 +142,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 py-16 md:px-6 lg:px-8">
-        <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold font-headline">Explore the Simulation</h2>
-            <p className="text-muted-foreground mt-2">Three levels of increasing complexity to test your skills.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <section className="py-16 md:py-24 bg-[radial-gradient(ellipse_80%_50%_at_50%_50%,hsl(var(--card)_/_0.5),hsl(var(--background)))]">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold font-headline">Explore the Simulation</h2>
+                <p className="text-muted-foreground mt-2">Three levels of increasing complexity to test your skills.</p>
+            </div>
             <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 border-2 border-primary/20 text-primary font-bold text-2xl mb-4">1</div>
-                <h3 className="text-xl font-semibold mb-2">Level 1: Tech Stocks</h3>
-                <p className="text-muted-foreground">Learn the basics by trading stocks in a stable, established market.</p>
-            </div>
-             <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 border-2 border-primary/20 text-primary font-bold text-2xl mb-4">2</div>
-                <h3 className="text-xl font-semibold mb-2">Level 2: Venture Capital</h3>
-                <p className="text-muted-foreground">Invest in high-risk, high-reward private companies with limited information.</p>
-            </div>
-             <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 border-2 border-primary/20 text-primary font-bold text-2xl mb-4">3</div>
-                <h3 className="text-xl font-semibold mb-2">Level 3: Cryptocurrency</h3>
-                <p className="text-muted-foreground">Navigate the highly volatile and unpredictable crypto market.</p>
+              {levels.map((level) => (
+                <LevelCard key={level.level} {...level} />
+              ))}
             </div>
         </div>
       </section>
