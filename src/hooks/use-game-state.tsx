@@ -137,9 +137,6 @@ const createGameStore = (
     triggerEvent: () => {
       if (get().assets.length === 0) return;
       
-      const isTutorial = !!get().profitGoal;
-      if (isTutorial) return; // No events in tutorial
-
       set({ eventInProgress: true });
       
       const assets = get().assets;
@@ -199,14 +196,9 @@ const createGameStore = (
                 let randomFactor;
 
                 if (asset.volatility && asset.volatility >= 5.0) { // Tutorial Asset high volatility logic
-                  const direction = Math.random() < 0.75 ? 1 : -1; // 75% chance of gain
-                  let magnitude;
-                  if (direction === 1) {
-                    magnitude = Math.random() * (0.50 - 0.03) + 0.03; // 3% to 50% gain
-                  } else {
-                    magnitude = Math.random() * (0.10 - 0.01) + 0.01; // 1% to 10% loss
-                  }
-                  randomFactor = direction * magnitude;
+                  const direction = Math.random() < 0.5 ? 1 : -1;
+                  const magnitude = Math.random() * (0.07 - 0.04) + 0.04; // 4% to 7%
+                  randomFactor = direction * magnitude * 100; // Adjust for division
                 } else { // Normal level volatility
                   randomFactor = (Math.random() - 0.49) * volatility;
                 }
@@ -262,7 +254,7 @@ const createGameStore = (
     
     tick: () => {
         if (get().phase !== 'trading') return;
-        const { timeRemaining, timeToNextEvent } = get();
+        const { timeRemaining, timeToNextEvent, duration, profitGoal, assets } = get();
 
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
@@ -271,9 +263,37 @@ const createGameStore = (
             set({ isFinished: true, phase: 'debrief' });
             return;
         }
+        
+        // Tutorial-specific scripted event
+        if (profitGoal && timeRemaining === duration - 20) {
+            set({ eventInProgress: true });
+            const targetAsset = assets[0];
+            const impact = 0.20; // 20% increase
+            const newPrice = targetAsset.price * (1 + impact);
+            const event = { 
+                headline: `${targetAsset.name} announces a breakthrough innovation!`, 
+                assetId: targetAsset.id, 
+                assetName: targetAsset.name, 
+                impact, 
+                impactType: 'gain' as const
+            };
+            
+            set(state => {
+              const assetToUpdate = state.assets[0];
+              assetToUpdate.price = newPrice;
+              state.activeEvent = event;
+            });
 
-        // Event timing logic
-        if (!get().eventInProgress && !get().profitGoal && get().assets.length > 0) {
+            get().calculatePortfolio();
+
+            setTimeout(() => {
+                get().clearEvent();
+            }, 5000);
+            return; // Don't run regular event logic
+        }
+
+        // Regular Event timing logic for levels
+        if (!get().eventInProgress && !profitGoal && get().assets.length > 0) {
             if (timeToNextEvent <= 0) {
                 get().triggerEvent();
             } else {
