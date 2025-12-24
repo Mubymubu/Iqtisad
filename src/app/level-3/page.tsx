@@ -7,6 +7,7 @@ import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
+import { GameControls } from "@/components/GameControls";
 
 const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 69410, volatility: 1.5 },
@@ -49,6 +50,7 @@ function Level3Content() {
                 ))}
             </div>
             <NewsEventPopup />
+            <GameControls />
         </div>
     );
 }

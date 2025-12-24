@@ -11,6 +11,7 @@ import { Lightbulb } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { GameControls } from "@/components/GameControls";
 
 
 const tutorialAssetConfig = [
@@ -94,7 +95,7 @@ function TutorialContent() {
                 {HINTS[hintIndex].description}
               </AlertDescription>
             </Alert>
-
+            <GameControls />
         </div>
     );
 }

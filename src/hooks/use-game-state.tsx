@@ -66,6 +66,7 @@ type GameState = {
   phase: GamePhase;
   duration: number;
   profitGoal?: number; // Optional profit goal for tutorial
+  isPaused: boolean;
   
   // Market event state
   eventInProgress: boolean;
@@ -87,6 +88,9 @@ type GameActions = {
   calculatePortfolio: () => void;
   setStarRating: () => void;
   startGame: () => void;
+  pauseGame: () => void;
+  resumeGame: () => void;
+  endGame: () => void;
   reset: (levelId: LevelId, initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number, profitGoal?: number) => void;
   playAgain: () => void;
   triggerEvent: () => void;
@@ -117,6 +121,7 @@ const createGameStore = (
     starRating: 0,
     phase: 'intro',
     profitGoal: profitGoal,
+    isPaused: false,
 
     eventInProgress: false,
     timeToNextEvent: 0,
@@ -135,8 +140,22 @@ const createGameStore = (
     },
 
     startGame: () => {
-      set({ phase: 'trading' });
+      set({ phase: 'trading', isPaused: false });
       get().setInitialEventTimer();
+    },
+
+    pauseGame: () => {
+        set({ isPaused: true });
+    },
+
+    resumeGame: () => {
+        set({ isPaused: false });
+    },
+
+    endGame: () => {
+        if(get().phase !== 'trading') return;
+        get().setStarRating();
+        set({ isFinished: true, phase: 'debrief' });
     },
 
     buyAsset: (assetId) => {
@@ -253,7 +272,7 @@ const createGameStore = (
     },
 
     updatePrices: () => {
-        if (get().phase !== 'trading' || get().eventInProgress) return;
+        if (get().phase !== 'trading' || get().isPaused || get().eventInProgress) return;
         set(state => {
             state.assets.forEach(asset => {
                 const volatility = asset.volatility ?? 0.8;
@@ -334,14 +353,13 @@ const createGameStore = (
     },
     
     tick: () => {
-        if (get().phase !== 'trading') return;
+        if (get().phase !== 'trading' || get().isPaused) return;
         const { timeRemaining, timeToNextEvent, duration, profitGoal, assets } = get();
 
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
         } else {
-            get().setStarRating();
-            set({ isFinished: true, phase: 'debrief' });
+            get().endGame();
             return;
         }
         
@@ -350,6 +368,7 @@ const createGameStore = (
             set({ eventInProgress: true });
             const targetAsset = assets[0];
             const impact = 0.20; // 20% increase
+            const newPrice = targetAsset.price * (1 + impact);
             const event = { 
                 headline: `${targetAsset.name} announces a breakthrough innovation!`, 
                 assetId: targetAsset.id, 
@@ -396,6 +415,7 @@ const createGameStore = (
             netWorth: newStartingBalance,
             starRating: 0,
             profitGoal: newProfitGoal,
+            isPaused: false,
             eventInProgress: false,
             timeToNextEvent: 0,
             activeEvent: null,
@@ -470,7 +490,7 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
     if (!store) return;
 
     const unsubscribe = store.subscribe(state => {
-      if (state.phase === 'trading') {
+      if (state.phase === 'trading' && !state.isPaused) {
         if (!timerInterval) {
           timerInterval = setInterval(() => store.getState().tick(), 1000);
         }

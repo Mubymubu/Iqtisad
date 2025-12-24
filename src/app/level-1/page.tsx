@@ -6,6 +6,7 @@ import { DebriefDialog } from "@/components/DebriefDialog";
 import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
+import { GameControls } from "@/components/GameControls";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1200, volatility: 0.8 },
@@ -45,6 +46,7 @@ function Level1Content() {
                 ))}
             </div>
             <NewsEventPopup />
+            <GameControls />
         </div>
     );
 }
