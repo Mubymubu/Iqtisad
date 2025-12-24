@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useUser, useDoc, type Progress, type UserProgress } from "@/hooks/use-game-state";
+import { useUser, useDoc, type UserProgress } from "@/hooks/use-game-state";
 import { doc } from "firebase/firestore";
 import { useMemo } from "react";
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
-import { GameStateProvider, useGameStore } from '@/hooks/use-game-state';
+import { useGameStoreState } from '@/hooks/use-game-state';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -56,9 +56,9 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
 };
 
 const GameStateDisplay = () => {
-    const state = useGameStore(s => s);
+    const state = useGameStoreState();
 
-    if (state.phase === 'intro' || state.phase === 'debrief' || !state.phase) return null;
+    if (!state || state.phase === 'intro' || state.phase === 'debrief' || !state.phase) return null;
 
     const minutes = Math.floor(state.timeRemaining / 60);
     const seconds = state.timeRemaining % 60;
@@ -94,6 +94,13 @@ const GameStateDisplay = () => {
     )
 }
 
+function HeaderContent() {
+    const pathname = usePathname();
+    const isGameLevel = /^\/level-\d/.test(pathname) || pathname === '/tutorial';
+
+    return isGameLevel ? <GameStateDisplay /> : null;
+}
+
 export function Header() {
   const pathname = usePathname();
   const isGameLevel = /^\/level-\d/.test(pathname) || pathname === '/tutorial';
@@ -126,11 +133,7 @@ export function Header() {
         </nav>
         
         <div className="ml-auto">
-            {isGameLevel && (
-              <GameStateProvider levelId='level1' initialAssets={[]} duration={0} startingBalance={0}>
-                <GameStateDisplay />
-              </GameStateProvider>
-            )}
+            <HeaderContent/>
         </div>
 
         <div className="flex md:hidden ml-4">

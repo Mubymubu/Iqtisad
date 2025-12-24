@@ -31,7 +31,7 @@ function useUser() {
   return { user, auth, firestore };
 }
 
-function useDoc<T>(ref: DocumentReference<T> | null) {
+function useDoc<T>(ref: DocumentReference | null) {
     const [data, setData] = useState<T | null>(null);
 
     useEffect(() => {
@@ -40,7 +40,7 @@ function useDoc<T>(ref: DocumentReference<T> | null) {
             return;
         }
         const unsubscribe = onSnapshot(ref, (doc) => {
-            setData(doc.exists() ? doc.data() : null);
+            setData(doc.exists() ? doc.data() as T : null);
         });
         return () => unsubscribe();
     }, [ref]);
