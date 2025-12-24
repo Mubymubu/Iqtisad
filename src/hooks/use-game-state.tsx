@@ -3,50 +3,10 @@
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import React, { createContext, useContext, useRef, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useRef, useEffect } from 'react';
 import { useStore, type StoreApi } from 'zustand';
-import { getAuth, onAuthStateChanged, type User, signInAnonymously } from 'firebase/auth';
-import { doc, setDoc, getFirestore, onSnapshot, type DocumentReference, type Firestore } from 'firebase/firestore';
-import { auth, firestore } from '@/firebase';
-
-
-export { useUser, useDoc };
-
-function useUser() {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        signInAnonymously(auth).catch((error) => {
-          console.error("Anonymous sign-in failed:", error);
-        });
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  return { user, auth, firestore };
-}
-
-function useDoc<T>(ref: DocumentReference | null) {
-    const [data, setData] = useState<T | null>(null);
-
-    useEffect(() => {
-        if (!ref) {
-            setData(null);
-            return;
-        }
-        const unsubscribe = onSnapshot(ref, (doc) => {
-            setData(doc.exists() ? doc.data() as T : null);
-        });
-        return () => unsubscribe();
-    }, [ref]);
-
-    return { data };
-}
+import { doc, setDoc } from 'firebase/firestore';
+import { useUser } from '@/firebase';
 
 
 export type LevelId = 'tutorial' | 'level1' | 'level2' | 'level3';

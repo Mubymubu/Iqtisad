@@ -1,20 +1,34 @@
-import { initializeApp, getApps, getApp, type FirebaseOptions } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import firebaseConfig from './config';
+// src/firebase/index.ts
+import { type FirebaseApp } from 'firebase/app';
+import { type Firestore } from 'firebase/firestore';
+import { type Auth } from 'firebase/auth';
 
-function initializeFirebase(config: FirebaseOptions = {}) {
-  const apps = getApps();
-  const app = apps.length > 0 ? getApp() : initializeApp(config);
-  return app;
+import { useUser } from './auth/use-user';
+import { useDoc } from './firestore/use-doc';
+import { FirebaseProvider, useFirebase } from './provider';
+import { FirebaseClientProvider } from './client-provider';
+import { initializeFirebase } from './config';
+
+function useFirebaseApp(): FirebaseApp {
+  return useFirebase().firebaseApp;
 }
 
-// This is the easiest way to make sure that the app is only initialized once
-// and you don't produce an error.
-const firebaseApp = initializeFirebase(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const firestore = getFirestore(firebaseApp);
+function useFirestore(): Firestore {
+  return useFirebase().firestore;
+}
 
-export { firebaseApp, auth, firestore, initializeFirebase };
+function useAuth(): Auth {
+  return useFirebase().auth;
+}
 
-export default firebaseApp;
+export {
+  FirebaseProvider,
+  FirebaseClientProvider,
+  useDoc,
+  useUser,
+  useFirebase,
+  useFirebaseApp,
+  useFirestore,
+  useAuth,
+  initializeFirebase,
+};
