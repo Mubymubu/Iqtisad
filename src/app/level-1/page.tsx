@@ -8,7 +8,7 @@ import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 
 const techAssetsConfig = [
-    { id: "AUREX", name: "AUREX COMPUTING", price: 105.42, volatility: 0.8 },
+    { id: "AUREX", name: "AUREX COMPUTING", price: 1200, volatility: 0.8 },
     { id: "VANTIQ", name: "VANTIQ LABS", price: 100.50, volatility: 0.7 },
     { id: "SYNERON", name: "SYNERON AI", price: 102.33, volatility: 0.9 },
     { id: "KALYX", name: "KALYX DATAWORKS", price: 98.17, volatility: 1.1 },
