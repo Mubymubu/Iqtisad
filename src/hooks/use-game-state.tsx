@@ -5,7 +5,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import React, { createContext, useContext, useRef, useEffect } from 'react';
 import { useStore, type StoreApi } from 'zustand';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useUser } from '@/firebase';
 
 
@@ -299,7 +299,7 @@ const createGameStore = (
     },
 
     setStarRating: () => {
-      const { netWorth, startingBalance, profitGoal, trades, maxNetWorth, minNetWorth } = get();
+      const { netWorth, startingBalance, profitGoal, trades } = get();
 
       if (profitGoal) { // Tutorial logic
         if (netWorth >= startingBalance + profitGoal) {
@@ -312,28 +312,17 @@ const createGameStore = (
       
       // Level logic
       const finalNetWorth = netWorth;
-      const tradeCount = trades.filter(t => t.type === 'buy' || t.type === 'sell').length;
+      const tradeCount = trades.length;
       const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
-      const sellTradesCount = trades.filter(t => t.type === 'sell').length;
-      const winRate = sellTradesCount > 0 ? winningTrades / sellTradesCount : 0;
-      const maxDrawdown = maxNetWorth > startingBalance ? (maxNetWorth - minNetWorth) / maxNetWorth : 0;
-      const totalCapital = startingBalance + trades.filter(t=>t.type === 'sell').reduce((acc, trade) => acc + trade.price, 0);
-      const maxTradeSize = Math.max(...trades.map(t => t.capitalUsed), 0);
+      const losingTrades = trades.filter(t => t.type === 'sell' && t.isWin === false).length;
 
       let stars = 0;
       
-      const oneStarMet = finalNetWorth >= startingBalance * 1.05;
-      
-      const twoStarMet = finalNetWorth >= startingBalance * 1.15 &&
-        maxDrawdown <= 0.20 &&
-        tradeCount >= 3;
+      const oneStarMet = finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2;
+      const twoStarMet = finalNetWorth >= startingBalance * 1.15 && tradeCount >= 5;
+      const threeStarMet = finalNetWorth >= startingBalance * 1.30 && winningTrades > losingTrades;
 
-      const threeStarMet = finalNetWorth >= startingBalance * 1.30 &&
-        maxDrawdown <= 0.10 &&
-        winRate >= 0.60 &&
-        maxTradeSize <= (startingBalance * 0.40);
-
-      if(threeStarMet){
+      if (threeStarMet) {
         stars = 3;
       } else if (twoStarMet) {
         stars = 2;
@@ -361,7 +350,6 @@ const createGameStore = (
             set({ eventInProgress: true });
             const targetAsset = assets[0];
             const impact = 0.20; // 20% increase
-            const newPrice = targetAsset.price * (1 + impact);
             const event = { 
                 headline: `${targetAsset.name} announces a breakthrough innovation!`, 
                 assetId: targetAsset.id, 
@@ -456,13 +444,19 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
         const userDocRef = doc(firestore, 'users', user.uid);
         
         try {
-            await setDoc(userDocRef, { progress: { [levelId]: { stars: starRating } } }, { merge: true });
+            const userDocSnap = await getDoc(userDocRef);
+            const existingData = userDocSnap.data() as UserProgress | undefined;
+            const existingStars = existingData?.progress?.[levelId]?.stars || 0;
+
+            if (starRating > existingStars) {
+                await setDoc(userDocRef, { progress: { [levelId]: { stars: starRating } } }, { merge: true });
+            }
         } catch (error) {
             console.error("Failed to save progress:", error);
         }
     };
     storeRef.current.setState({ saveProgress });
-  }, [user, firestore]);
+  }, [user, firestore, levelId]);
 
   useEffect(() => {
     storeRef.current?.getState().reset(levelId, initialAssets, duration, startingBalance, profitGoal);
@@ -520,5 +514,3 @@ export const useGameStoreState = () => {
     }
     return useStore(store);
 }
-
-    
