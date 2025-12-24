@@ -92,21 +92,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-card/20 py-16">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 flex justify-center">
-           {logoImage && (
-              <Image 
-                src={logoImage.imageUrl} 
-                alt={logoImage.description}
-                width={400} 
-                height={400} 
-                className="rounded-lg" 
-                data-ai-hint={logoImage.imageHint}
-              />
-           )}
-        </div>
-      </section>
-
       <section className="container mx-auto px-4 py-16 md:px-6 lg:px-8">
         <div className="text-center mb-12">
             <h2 className="text-3xl font-bold font-headline">Explore the Simulation</h2>
