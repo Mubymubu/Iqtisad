@@ -112,6 +112,39 @@ export default function HowToPlayPage() {
         </section>
 
         <section>
+          <h2 className="font-headline text-2xl font-bold mb-4">How to Earn Stars</h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />1 Star</h3>
+              <p className="text-muted-foreground leading-relaxed mt-1">
+                To earn 1 star, the player must finish the level with a net worth increase of at least 5% compared to the starting capital and complete at least 2 trades.
+              </p>
+              <p className="text-sm text-muted-foreground/80 italic mt-2">
+                This shows that the player understands the basic idea of trading, actively participates in the market, and is able to make simple profitable decisions.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />2 Stars</h3>
+              <p className="text-muted-foreground leading-relaxed mt-1">
+                To earn 2 stars, the player must finish the level with a net worth increase of at least 15% and complete at least 5 trades.
+              </p>
+              <p className="text-sm text-muted-foreground/80 italic mt-2">
+                This reflects stronger engagement with the market and the ability to grow capital through multiple, deliberate trading decisions rather than relying on chance.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />3 Stars</h3>
+              <p className="text-muted-foreground leading-relaxed mt-1">
+                To earn 3 stars, the player must finish the level with a net worth increase of at least 30% and have more winning trades than losing trades.
+              </p>
+              <p className="text-sm text-muted-foreground/80 italic mt-2">
+                This represents consistent performance and good judgment, showing that the player can remain profitable across several trades while adapting to market conditions.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
           <h2 className="font-headline text-2xl font-bold mb-4">Objective</h2>
           <p className="text-muted-foreground leading-relaxed">
             Iqtisad is not the search of definite winning strategy. It is directed toward getting players to learn market behaviour, learn to balance risk and reward, and make decision making in the uncertainty environment. The game does not rely much on luck but rather patience, discipline, and a well-educated strategy, which is a perfect way of learning some practical financial skills.
