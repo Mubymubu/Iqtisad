@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { BookText, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function HowToPlayPage() {
   return (
@@ -117,7 +118,12 @@ export default function HowToPlayPage() {
           <div className="space-y-6">
             <Card className="bg-card/50">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />1 Star</h3>
+                <h3 className="font-semibold text-lg flex items-center">
+                    <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
+                    <Star className={cn("h-5 w-5 mr-1 text-muted-foreground/30")} />
+                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30")} />
+                    1 Star
+                </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
                   To earn 1 star, the player must finish the level with a net worth increase of at least 5% compared to the starting capital and complete at least 2 trades.
                 </p>
@@ -128,7 +134,12 @@ export default function HowToPlayPage() {
             </Card>
             <Card className="bg-card/50">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />2 Stars</h3>
+                <h3 className="font-semibold text-lg flex items-center">
+                    <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
+                    <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
+                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30")} />
+                    2 Stars
+                </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
                   To earn 2 stars, the player must finish the level with a net worth increase of at least 15% and complete at least 5 trades.
                 </p>
@@ -139,7 +150,12 @@ export default function HowToPlayPage() {
             </Card>
             <Card className="bg-card/50">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-lg flex items-center"><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" /><Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />3 Stars</h3>
+                <h3 className="font-semibold text-lg flex items-center">
+                    <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
+                    <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
+                    <Star className="h-5 w-5 mr-2 text-yellow-400 fill-yellow-400" />
+                    3 Stars
+                </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
                   To earn 3 stars, the player must finish the level with a net worth increase of at least 30% and have more winning trades than losing trades.
                 </p>
