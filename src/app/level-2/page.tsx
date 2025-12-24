@@ -25,7 +25,7 @@ function Level2Content() {
           levelName="Level 2"
           levelTitle="Venture Capital"
           startingCash={100000}
-          duration={5}
+          duration={3}
           objective="Invest in high-risk, high-reward private companies."
           onStart={startGame}
         />
@@ -55,7 +55,7 @@ export default function Level2Page() {
         <GameStateProvider 
             levelId="level2"
             initialAssets={ventureAssetsConfig} 
-            duration={300} 
+            duration={180} 
             startingBalance={100000}>
             <Level2Content />
         </GameStateProvider>
