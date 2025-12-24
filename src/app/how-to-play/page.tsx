@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { BookText } from "lucide-react";
+import { BookText, Star } from "lucide-react";
 
 export default function HowToPlayPage() {
   return (
@@ -126,6 +126,63 @@ export default function HowToPlayPage() {
             saved and kept track of individually for each level, meaning
             players can track their progress and improve their strategies.
           </p>
+        </section>
+
+        <section>
+            <h2 className="font-headline text-2xl font-bold mb-4">How to Earn Stars</h2>
+            <div className="space-y-6">
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center gap-4 mb-3">
+                            <div className="flex gap-1">
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                                <Star className="h-5 w-5 text-muted-foreground/30" />
+                                <Star className="h-5 w-5 text-muted-foreground/30" />
+                            </div>
+                            <h3 className="font-semibold text-xl">1 Star</h3>
+                        </div>
+                        <p className="text-muted-foreground">Finish the level with a net worth increase of at least 5% compared to the starting capital.</p>
+                        <p className="text-sm text-muted-foreground/80 mt-2">This indicates the player successfully made profitable decisions and understands the basics of market movement.</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center gap-4 mb-3">
+                           <div className="flex gap-1">
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                                <Star className="h-5 w-5 text-muted-foreground/30" />
+                            </div>
+                            <h3 className="font-semibold text-xl">2 Stars</h3>
+                        </div>
+                         <p className="text-muted-foreground">Finish the level with a net worth increase of at least 15%.</p>
+                        <ul className="list-disc list-inside text-muted-foreground mt-2 pl-2 space-y-1">
+                            <li>Maximum drawdown during the level must not exceed 20%.</li>
+                            <li>The player must complete at least 3 trades.</li>
+                        </ul>
+                         <p className="text-sm text-muted-foreground/80 mt-2">This rewards consistent performance and basic risk management.</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center gap-4 mb-3">
+                            <div className="flex gap-1">
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                            </div>
+                            <h3 className="font-semibold text-xl">3 Stars</h3>
+                        </div>
+                        <p className="text-muted-foreground">Finish the level with a net worth increase of at least 30%.</p>
+                        <ul className="list-disc list-inside text-muted-foreground mt-2 pl-2 space-y-1">
+                            <li>Maximum drawdown must remain below 10%.</li>
+                            <li>The win rate must be at least 60%.</li>
+                            <li>No single trade may use more than 40% of total available capital.</li>
+                        </ul>
+                         <p className="text-sm text-muted-foreground/80 mt-2">This represents disciplined, high-skill decision-making and strong market awareness.</p>
+                    </CardContent>
+                </Card>
+            </div>
         </section>
 
         <section>
