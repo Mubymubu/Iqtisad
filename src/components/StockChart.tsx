@@ -3,61 +3,53 @@
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { useGameStore } from '@/hooks/use-game-state.tsx';
+import type { Asset } from '@/hooks/use-game-state.tsx';
 
-const generateInitialChartData = () => {
-  const data = [];
-  let value = 50 + Math.random() * 50;
-  for (let i = 0; i < 30; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() - (29 - i));
-    value += (Math.random() - 0.5) * 5;
-    data.push({
-      date: date.toISOString().slice(0, 10),
-      value: Math.max(10, value),
-    });
-  }
-  return data;
-};
-
-export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boolean, isVolatile?: boolean }) => {
-  const { phase, eventInProgress } = useGameStore(state => ({
+export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isGain?: boolean, isVolatile?: boolean, assetId: string }) => {
+  const { phase, getAssetById } = useGameStore(state => ({
     phase: state.phase,
-    eventInProgress: state.eventInProgress
+    getAssetById: (id: string) => state.assets.find(a => a.id === id),
   }));
 
-  const [data, setData] = useState(generateInitialChartData());
+  const asset = getAssetById(assetId);
+
+  const [data, setData] = useState(() => {
+    if (!asset) return [];
+    return [{ date: new Date().toISOString(), value: asset.initialPrice }];
+  });
+
   const color = isGain ? '#10B981' : '#F43F5E';
 
   useEffect(() => {
-    if (phase !== 'trading') return;
+    if (phase !== 'trading' || !asset) return;
 
-    const interval = setInterval(() => {
-      setData(currentData => {
-        const newData = [...currentData];
-        const lastValue = newData[newData.length - 1].value;
-        let newValue = lastValue;
-
-        // Normal fluctuation only if no event is happening
-        if (!eventInProgress) {
-            const volatilityFactor = isVolatile ? 10 : 5;
-            newValue = lastValue + (Math.random() - 0.5) * volatilityFactor;
-            
-            // Add a trend based on gain/loss
-            const trend = isGain ? 0.1 : -0.1;
-            newValue += trend * volatilityFactor;
-        }
-
-        newData.shift();
-        newData.push({
-          date: new Date().toISOString().slice(0, 10),
-          value: Math.max(10, newValue),
+    const priceUpdateInterval = setInterval(() => {
+      const currentAsset = getAssetById(assetId);
+      if (currentAsset) {
+        setData(currentData => {
+          const newData = [...currentData];
+          if (newData.length >= 30) {
+            newData.shift();
+          }
+          newData.push({
+            date: new Date().toISOString(),
+            value: currentAsset.price,
+          });
+          return newData;
         });
-        return newData;
-      });
-    }, 2000); // Same interval as price updates in store
+      }
+    }, 2000); // Matches price update interval in use-game-state
 
-    return () => clearInterval(interval);
-  }, [phase, isGain, isVolatile, eventInProgress]);
+    return () => clearInterval(priceUpdateInterval);
+  }, [phase, assetId, getAssetById]);
+
+  // Reset data when the game restarts
+  useEffect(() => {
+    if (phase === 'intro' && asset) {
+      setData([{ date: new Date().toISOString(), value: asset.initialPrice }]);
+    }
+  }, [phase, asset]);
+
 
   return (
     <div className="w-full h-24">
@@ -84,11 +76,11 @@ export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boo
               borderRadius: '0.5rem',
               fontSize: '0.75rem',
             }}
-            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            labelStyle={{ display: 'none' }}
             itemStyle={{ color: color }}
             formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
-            labelFormatter={() => ''}
             cursor={{ stroke: 'hsl(var(--foreground))', strokeWidth: 1, strokeDasharray: '3 3' }}
+            animationDuration={200}
           />
           <Area
             type="monotone"
@@ -98,6 +90,7 @@ export const StockChart = ({ isGain = true, isVolatile = false }: { isGain?: boo
             fillOpacity={1}
             fill={`url(#colorUv-${color.replace('#', '')})`}
             dot={false}
+            isAnimationActive={false}
           />
         </AreaChart>
       </ResponsiveContainer>
