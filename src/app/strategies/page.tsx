@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ShieldCheck, Scale, Target, BrainCog } from "lucide-react";
+import { ShieldCheck, Scale, Target, BrainCog, Eye, LineChart, BookOpen } from "lucide-react";
 
 const strategies = [
   {
@@ -73,6 +73,73 @@ export default function StrategiesPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="mt-24 space-y-16">
+        <section>
+            <div className="text-center mb-12">
+                <Eye className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h2 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">The Power of Prediction</h2>
+            </div>
+            <div className="max-w-3xl mx-auto space-y-4 text-muted-foreground text-lg text-center">
+                <p>
+                    As you progress from Levels 1 to 3, the challenges become sharper. Your success depends on observing levels of risk at each company.
+                </p>
+                <ul className="list-none space-y-2 text-left bg-card/50 p-6 rounded-lg border">
+                    <li className="flex items-start"><span className="text-primary mr-3 mt-1">●</span>Some are volatile - they flip when the markets are trending.</li>
+                    <li className="flex items-start"><span className="text-primary mr-3 mt-1">●</span>Others remain steady providing consistent performance.</li>
+                    <li className="flex items-start"><span className="text-primary mr-3 mt-1">●</span>A few react dramatically to the news, moving prices every time there is a headline.</li>
+                </ul>
+                <p>
+                    Play the game a few times and you'll recognise those patterns. Use what you learn to identify companies that will rise and those that stumble. Adjust your playing accordingly, increase gains, and reduce losses.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div className="text-center mb-12">
+                 <BookOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                 <h2 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">Mastering Trading</h2>
+                 <p className="mt-4 text-lg text-muted-foreground">Trading in the stock market requires both technical and fundamental tools.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-3 font-headline"><LineChart className="h-6 w-6" />Technical Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-muted-foreground">Technical analysis focuses on past price and volume data in order to identify trends and patterns. Key tactics:</p>
+                        <ul className="list-none space-y-2 text-muted-foreground">
+                             <li><strong>Trend Following</strong> - Buy and hold stocks which move in a steady fashion (up or down) until the trend changes.</li>
+                             <li><strong>Momentum Trading</strong> - Trade with stocks that have high short-term gains and move heavily.</li>
+                        </ul>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-3 font-headline"><BookOpen className="h-6 w-6" />Fundamental Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-muted-foreground">Fundamental analysis looks at the financial status and future potential of a company. Traders focus on:</p>
+                        <ul className="list-none space-y-2 text-muted-foreground">
+                            <li>● Earnings reports</li>
+                            <li>● Revenue growth</li>
+                            <li>● Industry trends</li>
+                            <li>● Market sentiment</li>
+                        </ul>
+                        <p className="text-muted-foreground">News matters too:</p>
+                         <ul className="list-none space-y-2 text-muted-foreground">
+                            <li>● Positive news like beating earnings or introducing a new product may boost stock prices.</li>
+                            <li>● Negative news - including regulatory concerns or economic slowdowns - can sink a stock.</li>
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+            <p className="text-center mt-12 text-lg text-muted-foreground max-w-3xl mx-auto">
+                The best traders combine technical and fundamental knowledge, stay up-to-date, and react quickly to market fluctuations.
+            </p>
+        </section>
       </div>
     </div>
   );
