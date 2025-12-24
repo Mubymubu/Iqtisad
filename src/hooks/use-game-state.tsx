@@ -154,7 +154,16 @@ const createGameStore = (
         set(state => {
             state.assets.forEach(asset => {
                 const volatility = asset.volatility ?? 0.8;
-                const randomFactor = (Math.random() - 0.49) * volatility;
+                let randomFactor;
+
+                if (volatility >= 5.0) { // Tutorial Asset high volatility
+                  const direction = Math.random() < 0.5 ? -1 : 1;
+                  const magnitude = Math.random() * (0.50 - 0.03) + 0.03; // 3% to 50%
+                  randomFactor = direction * magnitude * 100;
+                } else {
+                  randomFactor = (Math.random() - 0.49) * volatility;
+                }
+
                 let newPrice = asset.price * (1 + randomFactor / 100);
 
                 if (asset.maxPrice && newPrice > asset.maxPrice) {
@@ -329,3 +338,5 @@ export const useGameStoreState = () => {
     const store = useSafeContext();
     return useStore(store);
 }
+
+    
