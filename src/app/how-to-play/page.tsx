@@ -17,13 +17,14 @@ export default function HowToPlayPage() {
         <section>
           <h2 className="font-headline text-2xl font-bold mb-4">Overview</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Iqtisad is a financial simulation educational game designed to
-            immerse in the dynamics of real-world markets. The game focuses on
-            managing capital, analyzing price movements, and making strategic
-            investment decisions in three levels of increasing difficulty: Tech
-            Stocks, Venture Capital, and Crypto. Using simulated data that is
-            realistic, Iqtisad lets players feel the excitement and risk of
-            trading without the real-world consequences while teaching critical
+            Iqtisad is a financial simulation educational game that is aimed at
+            immersing in the dynamics of real-world markets. The game is
+            focused on managing capital, analyzing price movements and making
+            strategic investment decisions in 3 levels of increasing
+            difficulty: Tech Stocks, Venture Capital and Crypto. Using
+            simulated data that is realistic in nature, Iqtisad allows players
+            to experience the excitement and risk of trading without the real
+            world consequences of the transactions while teaching critical
             financial concepts in the process.
           </p>
         </section>
@@ -39,6 +40,7 @@ export default function HowToPlayPage() {
             dashboard gives all the necessary information at a glance,
             including the time left, the current cash balance, the value of the
             portfolio, and the overall net worth. Players will need to pay
+
             close attention to these indicators to make sure their strategy is
             effective throughout the level.
           </p>
