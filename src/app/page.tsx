@@ -169,7 +169,7 @@ export default function Home() {
       </section>
 
       <section className="bg-background py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl text-left">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 text-left">
              <h2 className="text-3xl font-bold font-headline mb-6">Iqtisad: an Education in the Real Markets.</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>Iqtisad is a simulated investment game whereby adolescents are supposed to learn about the operations of real markets by experience rather than memorizing. Rather, players control capital, learn about price changes, and strategically decide in changing market settings instead of passively learning. In a structured and age-appropriate manner, the game imparts fundamental economic theories like risk, reward, volatility, and long-term thinking. With the help of the simulation process based on the technology stocks, venture capital, and digital assets, players can learn to think analytically, be financially aware, and emotionally managed. The Iqtisad objective is to establish a solid ground on market literacy and decision making enabling adolescents to face economic systems with clarity, discipline and confidence.</p>
