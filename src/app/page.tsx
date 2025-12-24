@@ -35,7 +35,7 @@ const levels = [
 function LevelCard({ level, title, description, href, progress }: (typeof levels)[0]) {
   return (
     <div className="w-full max-w-2xl text-center py-8 relative">
-        <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
+        
         <h2 className="text-3xl font-bold mb-3 font-headline">{title}</h2>
         <p className="text-muted-foreground max-w-lg mx-auto mb-6">{description}</p>
         <div className="flex items-center justify-center gap-4 mb-6">
