@@ -90,10 +90,7 @@ export default function HowToPlayPage() {
                 </p>
                 <h3 className="font-semibold text-lg">Level 2: Venture Capital</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                    This level simulates investments in early-stage startups. These
-                    assets have a greater risk and potential for greater returns.
-                    Price changes can be unpredictable, and players need to develop
-                    long-term strategies and good risk management skills.
+                    This level resembles investment in start-ups. Such assets are more risky and can higher returns be achieved. The price fluctuations are unreliable and the players must be good risk managers and have long-term strategies.
                 </p>
                 <h3 className="font-semibold text-lg">Level 3: Crypto</h3>
                 <p className="text-muted-foreground leading-relaxed">
