@@ -46,11 +46,10 @@ export function AssetCard({ asset }: { asset: Asset }) {
                 </div>
             </CardHeader>
 
-            <CardContent className="flex-grow h-24">
+            <CardContent className="flex-grow h-32">
                 <StockChart 
                     assetId={asset.id}
                     isGain={changeType !== 'loss'} 
-                    isVolatile={asset.volatility ? asset.volatility > 1.5 : false}
                 />
             </CardContent>
 

@@ -1,11 +1,10 @@
 
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 import { useGameStore } from '@/hooks/use-game-state.tsx';
-import type { Asset } from '@/hooks/use-game-state.tsx';
 
-export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isGain?: boolean, isVolatile?: boolean, assetId: string }) => {
+export const StockChart = ({ isGain = true, assetId }: { isGain?: boolean, isVolatile?: boolean, assetId: string }) => {
   const { phase, getAssetById } = useGameStore(state => ({
     phase: state.phase,
     getAssetById: (id: string) => state.assets.find(a => a.id === id),
@@ -15,10 +14,13 @@ export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isG
 
   const [data, setData] = useState(() => {
     if (!asset) return [];
+    // Initialize with a single data point
     return [{ date: new Date().toISOString(), value: asset.initialPrice }];
   });
 
-  const color = isGain ? '#10B981' : '#F43F5E';
+  const color = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
+  const gradientColor = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
+
 
   useEffect(() => {
     if (phase !== 'trading' || !asset) return;
@@ -27,14 +29,14 @@ export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isG
       const currentAsset = getAssetById(assetId);
       if (currentAsset) {
         setData(currentData => {
-          const newData = [...currentData];
-          if (newData.length >= 30) {
-            newData.shift();
-          }
-          newData.push({
+          const newData = [...currentData, {
             date: new Date().toISOString(),
             value: currentAsset.price,
-          });
+          }];
+          // Keep the data array at a fixed size for a scrolling window effect
+          if (newData.length > 30) {
+            return newData.slice(newData.length - 30);
+          }
           return newData;
         });
       }
@@ -49,6 +51,10 @@ export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isG
       setData([{ date: new Date().toISOString(), value: asset.initialPrice }]);
     }
   }, [phase, asset]);
+  
+  const minPrice = Math.min(...data.map(d => d.value));
+  const maxPrice = Math.max(...data.map(d => d.value));
+  const domainMargin = (maxPrice - minPrice) * 0.2;
 
 
   return (
@@ -64,9 +70,9 @@ export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isG
           }}
         >
           <defs>
-            <linearGradient id={`colorUv-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.4} />
-              <stop offset="95%" stopColor={color} stopOpacity={0} />
+            <linearGradient id={`colorUv-${assetId}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={gradientColor} stopOpacity={0.4} />
+              <stop offset="95%" stopColor={gradientColor} stopOpacity={0} />
             </linearGradient>
           </defs>
           <Tooltip
@@ -81,14 +87,16 @@ export const StockChart = ({ isGain = true, isVolatile = false, assetId }: { isG
             formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
             cursor={{ stroke: 'hsl(var(--foreground))', strokeWidth: 1, strokeDasharray: '3 3' }}
             animationDuration={200}
+            position={{ y: -20 }}
           />
+          <YAxis domain={[minPrice - domainMargin, maxPrice + domainMargin]} hide={true} />
           <Area
             type="monotone"
             dataKey="value"
             stroke={color}
             strokeWidth={2}
             fillOpacity={1}
-            fill={`url(#colorUv-${color.replace('#', '')})`}
+            fill={`url(#colorUv-${assetId})`}
             dot={false}
             isAnimationActive={false}
           />
