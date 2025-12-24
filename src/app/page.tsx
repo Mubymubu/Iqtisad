@@ -182,7 +182,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold font-headline mb-6">Why The Name Iqtisad(اقتصاد)?</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>The name Iqtisad is based on the Arabic word for economics and represents the important role played by Arab scholars in establishing basic economic and financial concepts that affect modern markets today. During the Islamic Golden Age, Arab thinkers began to establish early ideas on ethics of trade, regulation of markets, and contracts, sharing of risk, and financial accountability, as the foundation of today's stock markets and financial systems.</p>
-              <p>Practices such as partnerships, profit and loss sharing, transparent record keeping, and regulated marketplaces had all been formalized long before today's exchanges. By choosing the name Iqtisad, this platform recognizes those historical contributions but puts the focus on balance, structured decision-making, and responsible economic thinking, which play a central role in understanding today's global financial markets.</p>
+              <p>Partnerships, profit, and loss sharing, open record keeping, controlled market places have all been institutionalized way before the modern day engagements. Through the name, Iqtisad, this platform serves as a tribute to those historical inputs but puts emphasis on the balance, systematic decision-making, and accountable economic reasoning which holds a key position in the interpretation of the modern world financial markets.</p>
             </div>
         </div>
       </section>
