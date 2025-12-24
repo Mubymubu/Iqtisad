@@ -12,7 +12,7 @@ const articles = [
     content: [
       "On November 9, 2016, the Government of India announced the demonetisation of ₹500 and ₹1,000 currency notes, rendering them invalid overnight. This decision aimed to curb black money, counterfeit currency, and illegal financial activities, while also encouraging a shift toward digital payments.",
       "The abrupt loss of high-value notes disrupted the situation on a short basis. Small businesses, daily wage earners and rural markets relying mostly on cash transactions were impacted by crunch in terms of cash shortages. There was a huge congestion in banks and ATMs as the citizens were changing old notes with new ones.",
-      "In the long term, demonetisation accelerated the adoption of digital payment systems and increased formal banking participation. However, economists continue to debate its effectiveness in eliminating black money. The event remains one of the most significant and controversial monetary policy decisions in India’s economic history."
+      "In the long run, demonetisation boosted the use of digital payment systems and formal banking involvement. Its effectiveness in removing black money is, however, still disputed among the economists. The incident has stood out to be one of the most prominent and contentious monetary policy moves in the Indian economic history."
     ]
   },
   {
