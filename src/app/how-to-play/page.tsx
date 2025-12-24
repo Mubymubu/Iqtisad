@@ -7,7 +7,7 @@ export default function HowToPlayPage() {
     <div className="container max-w-4xl py-12 md:py-24">
       <div className="text-center mb-12">
         <BookText className="mx-auto h-12 w-12 text-primary mb-4" />
-        <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
+        <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl italic">
           Iqtisad — Game Manual
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">How to Play</p>
