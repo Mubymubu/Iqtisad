@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 
 const tutorialAssetConfig = [
-    { id: "AMV", name: "AMV COMPUTING", price: 53.00, volatility: 0.5 },
+    { id: "AMV", name: "AMV COMPUTING", price: 17.00, volatility: 0.5 },
 ];
 
 const HINTS = [
