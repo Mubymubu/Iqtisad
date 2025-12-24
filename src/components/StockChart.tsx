@@ -27,9 +27,9 @@ export const StockChart = ({ assetId }: { assetId: string }) => {
   const isGain = asset?.changeType !== 'loss';
 
   const [data, setData] = useState(() => {
-    if (!asset) return [];
-    // Initialize with multiple data points to avoid the "single dot" issue
-    return generateInitialData(asset.initialPrice);
+    const currentAsset = getAssetById(assetId);
+    if (!currentAsset) return [];
+    return generateInitialData(currentAsset.initialPrice);
   });
 
   const color = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
@@ -37,27 +37,23 @@ export const StockChart = ({ assetId }: { assetId: string }) => {
   const gradientId = `colorUv-${assetId}`;
 
   useEffect(() => {
-    if (phase !== 'trading' || !asset) return;
-
-    const priceUpdateInterval = setInterval(() => {
-      const currentAsset = getAssetById(assetId); // Fetch the latest asset state
-      if (currentAsset) {
+    // This effect now exclusively listens to the asset's price change.
+    // The setInterval for updating the chart data has been removed to ensure
+    // the chart is only driven by the central game state.
+    if (phase === 'trading' && asset) {
         setData(currentData => {
-          const newData = [...currentData, {
-            time: new Date().getTime(),
-            value: currentAsset.price,
-          }];
-          // Keep the data array at a fixed size for a scrolling window effect
-          if (newData.length > 30) {
-            return newData.slice(newData.length - 30);
-          }
-          return newData;
+            const newData = [...currentData, {
+                time: new Date().getTime(),
+                value: asset.price,
+            }];
+            // Keep the data array at a fixed size for a scrolling window effect
+            if (newData.length > 30) {
+                return newData.slice(newData.length - 30);
+            }
+            return newData;
         });
-      }
-    }, 2000); // Matches price update interval in use-game-state
-
-    return () => clearInterval(priceUpdateInterval);
-  }, [phase, assetId, getAssetById, asset]);
+    }
+  }, [asset?.price, phase]); // Dependency array now correctly watches asset.price and phase
 
   // Reset data when the game restarts
   useEffect(() => {
