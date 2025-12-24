@@ -22,7 +22,7 @@ export default function HowToPlayPage() {
             immersing in the dynamics of real-world markets. The game is
             focused on managing capital, analyzing price movements and making
             strategic investment decisions in 3 levels of increasing
-            difficulty: <strong>Tech Stocks</strong>, <strong>Venture Capital</strong> and <strong>Crypto</strong>. Using simulated data that is realistic in nature, Iqtisad allows players
+            difficulty: <strong className="text-foreground">Tech Stocks</strong>, <strong className="text-foreground">Venture Capital</strong> and <strong className="text-foreground">Crypto</strong>. Using simulated data that is realistic in nature, Iqtisad allows players
             to experience the excitement and risk of trading without the real
             world consequences of the transactions while teaching critical
             financial concepts in the process.
@@ -118,8 +118,8 @@ export default function HowToPlayPage() {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg flex items-center">
                     <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
-                    <Star className={cn("h-5 w-5 mr-1 text-muted-foreground/30")} />
-                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30")} />
+                    <Star className={cn("h-5 w-5 mr-1 text-muted-foreground/30 fill-muted-foreground/30")} />
+                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30 fill-muted-foreground/30")} />
                     1 Star
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
@@ -135,7 +135,7 @@ export default function HowToPlayPage() {
                 <h3 className="font-semibold text-lg flex items-center">
                     <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
                     <Star className="h-5 w-5 mr-1 text-yellow-400 fill-yellow-400" />
-                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30")} />
+                    <Star className={cn("h-5 w-5 mr-2 text-muted-foreground/30 fill-muted-foreground/30")} />
                     2 Stars
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
@@ -155,7 +155,7 @@ export default function HowToPlayPage() {
                     3 Stars
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
-                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 30%</strong> and have more winning trades than losing trades.
+                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 30%</strong> and have <strong className="text-foreground">more winning trades than losing trades</strong>.
                 </p>
                 <p className="text-sm text-muted-foreground/80 italic mt-2">
                   This represents consistent performance and good judgment, showing that the player can remain profitable across several trades while adapting to market conditions.
