@@ -1,7 +1,21 @@
+
 "use client"
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 import { useGameStore } from '@/hooks/use-game-state.tsx';
+
+const generateInitialData = (initialPrice: number, points = 30) => {
+  const data = [];
+  let price = initialPrice;
+  const now = new Date().getTime();
+  for (let i = 0; i < points; i++) {
+    data.push({ time: now - (points - i - 1) * 2000, value: price });
+    const randomFactor = (Math.random() - 0.5) * 0.5; // smaller fluctuations for pre-history
+    price = price * (1 + randomFactor / 100);
+    price = Math.max(price, initialPrice * 0.95); // Don't let it dip too low initially
+  }
+  return data;
+};
 
 export const StockChart = ({ assetId }: { assetId: string }) => {
   const { phase, getAssetById } = useGameStore(state => ({
@@ -14,8 +28,8 @@ export const StockChart = ({ assetId }: { assetId: string }) => {
 
   const [data, setData] = useState(() => {
     if (!asset) return [];
-    // Initialize with a single data point
-    return [{ time: new Date().getTime(), value: asset.initialPrice }];
+    // Initialize with multiple data points to avoid the "single dot" issue
+    return generateInitialData(asset.initialPrice);
   });
 
   const color = isGain ? 'hsl(var(--chart-1))' : '#F43F5E';
@@ -48,7 +62,7 @@ export const StockChart = ({ assetId }: { assetId: string }) => {
   // Reset data when the game restarts
   useEffect(() => {
     if (phase === 'intro' && asset) {
-      setData([{ time: new Date().getTime(), value: asset.initialPrice }]);
+      setData(generateInitialData(asset.initialPrice));
     }
   }, [phase, asset]);
   
