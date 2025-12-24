@@ -1,126 +1,133 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { AssetCard } from "@/components/AssetCard";
+import { DebriefDialog } from "@/components/DebriefDialog";
+import { GameStateProvider, useGameStore } from "@/hooks/use-game-state.tsx";
+import { GameStatusBar } from "@/components/GameStatusBar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Lightbulb } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StockChart } from "@/components/StockChart";
-import { ArrowRight, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-    }).format(value);
-};
 
-const StatCard = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex flex-col items-center justify-center">
-        <span className="text-sm text-muted-foreground/80">{label}</span>
-        <span className="text-2xl font-bold tracking-tight text-foreground">{value}</span>
-    </div>
-);
+const tutorialAssetConfig = [
+    { id: "TUT", name: "Tutorial Asset (TUT)", price: 53.00, volatility: 0.5 },
+];
 
-export default function TutorialPage() {
-    const [cash, setCash] = useState(100);
-    const [portfolioValue, setPortfolioValue] = useState(0);
-    const [stockPrice, setStockPrice] = useState(53);
-    const [owned, setOwned] = useState(false);
+const HINTS = [
+  {
+    title: "How to Trade",
+    description: "Click 'Buy' to purchase a share of the asset. Your cash will decrease, and your portfolio value will increase. Click 'Sell' to do the opposite.",
+  },
+  {
+    title: "What's the Goal?",
+    description: "Your objective is to make a profit of at least $5. Your Net Worth must be $105 or more when the timer runs out.",
+  },
+  {
+    title: "Understanding Value",
+    description: "Profit comes from selling an asset for more than you paid for it. Watch the price movements in the chart to time your trades.",
+  },
+];
+
+
+function TutorialContent() {
+    const { assets, phase, netWorth, startingBalance, playAgain, starRating } = useGameStore(state => state);
+    const [hintIndex, setHintIndex] = useState(0);
     const router = useRouter();
 
-    const netWorth = cash + portfolioValue;
-    const tutorialPassed = netWorth > 100 && owned;
-
     useEffect(() => {
-        let priceInterval: NodeJS.Timeout | undefined;
-        if (owned) {
-            priceInterval = setInterval(() => {
-                setStockPrice(prev => {
-                    const newPrice = prev * 1.02;
-                    setPortfolioValue(newPrice);
-                    return newPrice;
-                });
-            }, 1500);
-        }
-        return () => {
-            if (priceInterval) clearInterval(priceInterval);
-        };
-    }, [owned]);
+        if (phase !== 'trading') return;
+
+        const hintInterval = setInterval(() => {
+            setHintIndex(prev => (prev + 1) % HINTS.length);
+        }, 15000); // Change hint every 15 seconds
+
+        return () => clearInterval(hintInterval);
+    }, [phase]);
+
+    if (phase === 'intro') {
+      // The tutorial starts immediately, so we don't need an intro screen.
+      // We'll have a custom start UI instead.
+      return <TutorialStart />;
+    }
     
-    const handleBuy = () => {
-        if (cash >= stockPrice && !owned) {
-            setCash(cash - stockPrice);
-            setPortfolioValue(stockPrice);
-            setOwned(true);
-        }
-    };
+    if (phase === 'debrief') {
+      const isSuccess = starRating > 0;
+      return (
+         <DebriefDialog
+            customTitle="Tutorial Complete"
+            customDescription={isSuccess ? "Great job! You've learned the basics." : "You didn't make a profit this time. Let's try again!"}
+          >
+              <div className="flex flex-col sm:flex-row gap-2">
+                 {isSuccess && (
+                  <Button className="w-full" onClick={() => router.push('/level-1')}>
+                    Start Level 1
+                  </Button>
+                )}
+                 <Button className="w-full" variant="outline" onClick={playAgain}>
+                   {isSuccess ? 'Play Again' : 'Retry Tutorial'}
+                </Button>
+              </div>
+          </DebriefDialog>
+      );
+    }
 
-    const handleSell = () => {
-        if (owned) {
-            setCash(cash + stockPrice);
-            setPortfolioValue(0);
-            setOwned(false);
-        }
-    };
-
-  if (tutorialPassed) {
     return (
-       <div className="container flex-1 flex items-center justify-center py-12">
-            <Card className="w-full max-w-lg text-center">
-                 <CardContent className="pt-8">
-                     <CheckCircle className="mx-auto h-16 w-16 text-green-400 mb-4" />
-                     <h2 className="text-3xl font-bold mb-2 font-headline">You have passed the tutorial!</h2>
-                     <p className="text-muted-foreground mb-6">You've learned the basics of buying and selling. Ready to test your skills?</p>
-                     <Button size="lg" onClick={() => router.push('/level-1')}>
-                         Go to Level 1 <ArrowRight className="ml-2 h-5 w-5" />
-                     </Button>
-                 </CardContent>
-            </Card>
-        </div>
-    )
-  }
+        <div className="container py-12">
+            <GameStatusBar />
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+                {assets.map(asset => (
+                     <AssetCard key={asset.id} asset={asset} />
+                ))}
+            </div>
 
+            <Alert>
+              <Lightbulb className="h-4 w-4" />
+              <AlertTitle>{HINTS[hintIndex].title}</AlertTitle>
+              <AlertDescription>
+                {HINTS[hintIndex].description}
+              </AlertDescription>
+            </Alert>
+
+        </div>
+    );
+}
+
+function TutorialStart() {
+  const { startGame } = useGameStore(state => state);
+  
   return (
-    <div className="container max-w-2xl py-12">
-        <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold font-headline">Onboarding Tutorial</h1>
-            <p className="text-muted-foreground mt-2">Learn how to trade! Follow the instructions below to become a successful trader.</p>
-        </div>
-
-         <div className="bg-card/50 border rounded-lg p-4 grid grid-cols-1 md:grid-cols-3 items-center justify-items-center gap-4 mb-8">
-            <StatCard label="Cash Balance" value={formatCurrency(cash)} />
-            <StatCard label="Portfolio Value" value={formatCurrency(portfolioValue)} />
-            <StatCard label="Net Worth" value={formatCurrency(netWorth)} />
-        </div>
-
-        <Card>
-            <CardHeader>
-                <div className="flex justify-between items-baseline">
-                    <CardTitle className="text-2xl">AMVLBS</CardTitle>
-                    <CardDescription className="text-3xl font-bold text-foreground">{formatCurrency(stockPrice)}</CardDescription>
-                </div>
+      <div className="container flex-1 flex flex-col items-center justify-center py-12 text-center">
+        <Card className="w-full max-w-md">
+           <CardHeader>
+                <CardTitle className="font-headline text-3xl">Onboarding Tutorial</CardTitle>
+                <CardDescription>
+                  Learn the basics of trading in this 1-minute guided session. Your goal is to make a profit of at least $5.
+                </CardDescription>
             </CardHeader>
             <CardContent>
-                 <div className="h-48 mb-6">
-                    <StockChart isGain={true} isVolatile={false} />
-                 </div>
-                 <div className="bg-muted/50 rounded-lg p-4 flex items-center justify-between">
-                     <div>
-                        <p className="text-sm text-muted-foreground">Trade this stock:</p>
-                        <p className="font-bold text-lg">AMVLBS</p>
-                     </div>
-                     <div className="flex items-center gap-4">
-                        <Button onClick={handleBuy} disabled={owned || cash < stockPrice}>
-                            Buy
-                        </Button>
-                        <Button variant="outline" onClick={handleSell} disabled={!owned}>
-                            Sell
-                        </Button>
-                     </div>
-                 </div>
+                <Button size="lg" className="w-full" onClick={startGame}>
+                    Start Tutorial
+                </Button>
             </CardContent>
         </Card>
     </div>
-  );
+  )
+}
+
+
+export default function TutorialPage() {
+    return (
+        <GameStateProvider 
+          initialAssets={tutorialAssetConfig} 
+          duration={60} 
+          startingBalance={100}
+          profitGoal={5}
+        >
+            <TutorialContent />
+        </GameStateProvider>
+    )
 }

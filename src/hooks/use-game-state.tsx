@@ -34,6 +34,7 @@ type GameState = {
   duration: number;
   eventInProgress: boolean;
   timeToNextEvent: number;
+  profitGoal?: number; // Optional profit goal for tutorial
 };
 
 type GameActions = {
@@ -44,7 +45,7 @@ type GameActions = {
   calculatePortfolio: () => void;
   setStarRating: () => void;
   startGame: () => void;
-  reset: (initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number) => void;
+  reset: (initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number, profitGoal?: number) => void;
   playAgain: () => void;
   triggerEvent: () => void;
   setInitialEventTimer: () => void;
@@ -55,7 +56,8 @@ type GameStore = GameState & GameActions;
 const createGameStore = (
     initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], 
     duration: number, 
-    startingBalance: number
+    startingBalance: number,
+    profitGoal?: number
 ) => create<GameStore>()(
   immer((set, get) => ({
     assets: initialAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
@@ -70,6 +72,7 @@ const createGameStore = (
     phase: 'intro',
     eventInProgress: false,
     timeToNextEvent: 0,
+    profitGoal: profitGoal,
     
     setInitialEventTimer: () => {
       const time = Math.floor(Math.random() * (75 - 60 + 1)) + 60; // 60-75 seconds
@@ -106,6 +109,11 @@ const createGameStore = (
     },
 
     triggerEvent: () => {
+      if (get().assets.length < 2) {
+        // Not enough assets for an event
+        get().setInitialEventTimer();
+        return;
+      }
       set({ eventInProgress: true });
 
       const assets = get().assets;
@@ -175,15 +183,24 @@ const createGameStore = (
     },
 
     setStarRating: () => {
-      const { netWorth, startingBalance } = get();
-      if (netWorth > startingBalance * 1.2) {
-        set({ starRating: 3 });
-      } else if (netWorth > startingBalance) {
-        set({ starRating: 2 });
-      } else if (netWorth === startingBalance) {
-        set({ starRating: 1 });
-      } else {
-        set({ starRating: 0 });
+      const { netWorth, startingBalance, profitGoal } = get();
+
+      if (profitGoal) { // Tutorial logic
+        if (netWorth >= startingBalance + profitGoal) {
+          set({ starRating: 1 }); // Success
+        } else {
+          set({ starRating: 0 }); // Failure
+        }
+      } else { // Level logic
+        if (netWorth > startingBalance * 1.2) {
+          set({ starRating: 3 });
+        } else if (netWorth > startingBalance) {
+          set({ starRating: 2 });
+        } else if (netWorth === startingBalance) {
+          set({ starRating: 1 });
+        } else {
+          set({ starRating: 0 });
+        }
       }
     },
     
@@ -199,7 +216,7 @@ const createGameStore = (
             return;
         }
 
-        if (!get().eventInProgress) {
+        if (!get().eventInProgress && get().assets.length > 1) {
             if (timeToNextEvent <= 0) {
                 get().triggerEvent();
             } else {
@@ -208,7 +225,7 @@ const createGameStore = (
         }
     },
     
-    reset: (newAssets, newDuration, newStartingBalance) => {
+    reset: (newAssets, newDuration, newStartingBalance, newProfitGoal) => {
         set({
             assets: newAssets.map(asset => ({ ...asset, quantity: 0, initialPrice: asset.price })),
             cashBalance: newStartingBalance,
@@ -222,13 +239,14 @@ const createGameStore = (
             starRating: 0,
             eventInProgress: false,
             timeToNextEvent: 0,
+            profitGoal: newProfitGoal,
         });
     },
 
     playAgain: () => {
-      const { assets, duration, startingBalance } = get();
+      const { assets, duration, startingBalance, profitGoal } = get();
       const initialAssets = assets.map(({ id, name, initialPrice, isValuation, volatility, maxPrice }) => ({ id, name, price: initialPrice, isValuation, volatility, maxPrice }));
-      get().reset(initialAssets, duration, startingBalance);
+      get().reset(initialAssets, duration, startingBalance, profitGoal);
     }
   }))
 );
@@ -236,20 +254,21 @@ const createGameStore = (
 type GameStoreType = ReturnType<typeof createGameStore>;
 const GameContext = createContext<GameStoreType | null>(null);
 
-export function GameStateProvider({ children, initialAssets, duration, startingBalance }: { 
+export function GameStateProvider({ children, initialAssets, duration, startingBalance, profitGoal }: { 
     children: React.ReactNode; 
     initialAssets: Omit<Asset, 'quantity' | 'initialPrice' | 'change' | 'changeType'>[];
     duration: number;
     startingBalance: number;
+    profitGoal?: number;
 }) {
   const storeRef = useRef<GameStoreType>();
   if (!storeRef.current) {
-    storeRef.current = createGameStore(initialAssets, duration, startingBalance);
+    storeRef.current = createGameStore(initialAssets, duration, startingBalance, profitGoal);
   }
 
   useEffect(() => {
-    storeRef.current?.getState().reset(initialAssets, duration, startingBalance);
-  }, [initialAssets, duration, startingBalance]);
+    storeRef.current?.getState().reset(initialAssets, duration, startingBalance, profitGoal);
+  }, [initialAssets, duration, startingBalance, profitGoal]);
 
   useEffect(() => {
     let timerInterval: NodeJS.Timeout | undefined;
