@@ -556,7 +556,9 @@ export function useGameStore<T>(selector: (state: GameStore) => T) {
 export const useGameStoreState = () => {
     const store = useContext(GameContext);
     if (!store) {
-      throw new Error('useGameStoreState must be used within a GameStateProvider');
+      return null;
     }
     return useStore(store);
 }
+
+    
