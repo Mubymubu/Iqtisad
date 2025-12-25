@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, User, ShieldAlert } from "lucide-react";
+import { Mail, User, ShieldAlert, Share2 } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -63,14 +63,14 @@ export default function ContactPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
-            <ShieldAlert className="h-8 w-8 text-primary" />
+            <Share2 className="h-8 w-8 text-primary" />
             <div>
-              <CardTitle>Disclaimer</CardTitle>
+              <CardTitle>Social Media Pages</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Iqtisad is an educational project. The content provided is for learning purposes only and does not constitute financial or investment advice.
+              Connect with Iqtisad on social media.
             </p>
           </CardContent>
         </Card>
