@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp, type FirebaseApp, type FirebaseOptions 
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
 
-const firebaseConfig: FirebaseOptions = {"apiKey":"API_KEY","authDomain":"PROJECT_ID.firebaseapp.com","projectId":"PROJECT_ID","storageBucket":"PROJECT_ID.appspot.com","messagingSenderId":"SENDER_ID","appId":"APP_ID"};
+const firebaseConfig: FirebaseOptions = {"projectId":"studio-4985838886-a6fd7","appId":"1:69181687762:web:e6ebba32f8f20e32ce6a0b","apiKey":"AIzaSyDU42dOnHboQEawP5IHv5tgN8kgETVvH5A","authDomain":"studio-4985838886-a6fd7.firebaseapp.com","measurementId":"","messagingSenderId":"69181687762","storageBucket":"studio-4985838886-a6fd7.appspot.com"};
 
 export function initializeFirebase(config: FirebaseOptions = firebaseConfig) {
   const apps = getApps();
