@@ -1,9 +1,175 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All data is considered private and is
+ * only accessible by the user who owns it. This is achieved by nesting all user-related data within a
+ * top-level `/users/{userId}` collection, making authorization checks simple, fast, and secure.
+ *
+ * Data Structure: The data is organized hierarchically. A root `/users` collection holds individual user documents.
+ * All other data, such as level progress and feedback, are stored in subcollections under the specific user's
+ * document. For example: `/users/{userId}/levelProgress/{levelProgressId}`.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All paths are closed by default. Access is only granted through explicit `allow` statements.
+ * - User Privacy: Users can only read and write data within their own document tree (`/users/{their_own_userId}/...`).
+ * - No User Listing: The root `/users` collection cannot be listed to prevent enumeration of all users in the system.
+ * - Path-Based Security: Authorization relies on the `{userId}` wildcard in the document path, which is compared
+ *   against the authenticated user's UID. This avoids slow and costly `get()` calls to other documents for
+ *   authorization checks.
+ *
+ * Denormalization for Authorization: To maintain relational integrity and support simple rules, documents in
+ * subcollections (e.g., LevelProgress) contain a `userId` field. On creation, the rules enforce that this
+ * field correctly matches the `{userId}` from the path, ensuring a permanent and verifiable link to the owner.
+ *
+ * Structural Segregation: The entire data model is based on user-private data. There are no public collections,
+ * so all data is segregated by user ID in the document path. This provides a strong security boundary for all
+ * operations, including queries.
+ */
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Helper Functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the authenticated user's UID matches the provided userId.
+     * This is the primary function for enforcing data ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on existing documents. Used for update and delete.
+     * Ensures the operation targets a document that actually exists.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * Validates that the user's ID is correctly set in the document body during creation.
+     */
+    function isValidUserCreate(userId) {
+      return request.resource.data.id == userId;
+    }
+
+    /**
+     * Enforces that the user ID field within the document cannot be changed after creation.
+     */
+    function isImmutableUserId() {
+      return request.resource.data.id == resource.data.id;
+    }
+    
+    /**
+     * Validates that the owner's userId is correctly set in a subcollection document during creation.
+     */
+    function isValidChildDocCreate(userId) {
+      return request.resource.data.userId == userId;
+    }
+    
+    /**
+     * Enforces that the owner's userId in a subcollection document cannot be changed after creation.
+     */
+    function isImmutableChildDocUserId() {
+        return request.resource.data.userId == resource.data.userId;
+    }
+    
+    /**
+     * Validates that the parent ID is correctly set in a nested subcollection document during creation.
+     */
+    function isValidGrandchildDocCreate(parentId, parentIdField) {
+      return request.resource.data[parentIdField] == parentId;
+    }
+    
+    /**
+     * Enforces that the parent ID in a nested subcollection document cannot be changed after creation.
+     */
+    function isImmutableGrandchildDocParentId(parentIdField) {
+      return request.resource.data[parentIdField] == resource.data[parentIdField];
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Collection Rules
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Manages user profile documents.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user can create their own profile document.
+     * @deny  (list) No user can list all the user profiles in the system.
+     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     */
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && isValidUserCreate(userId);
+      allow update: if isExistingOwner(userId) && isImmutableUserId();
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Stores a user's progress in each simulation level.
+       * @path /users/{userId}/levelProgress/{levelProgressId}
+       * @allow (create) An authenticated user can create a progress document for themselves.
+       * @deny  (get) An authenticated user cannot get the progress of another user.
+       * @principle Enforces that all user-specific data is private to that user.
+       */
+      match /levelProgress/{levelProgressId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidChildDocCreate(userId);
+        allow update: if isExistingOwner(userId) && isImmutableChildDocUserId();
+        allow delete: if isExistingOwner(userId);
+
+        /**
+         * @description Stores a user's responses to debriefing questions for a level.
+         * @path /users/{userId}/levelProgress/{levelProgressId}/debriefResponses/{debriefResponseId}
+         * @allow (create) An authenticated user can create a debrief response for their own level progress.
+         * @deny  (get) An authenticated user cannot read another user's debrief responses.
+         * @principle Path-based security ensures that access to nested data is inherited from the root owner.
+         */
+        match /debriefResponses/{debriefResponseId} {
+          allow get, list: if isOwner(userId);
+          allow create: if isOwner(userId) && isValidGrandchildDocCreate(levelProgressId, 'levelProgressId');
+          allow update: if isExistingOwner(userId) && isImmutableGrandchildDocParentId('levelProgressId');
+          allow delete: if isExistingOwner(userId);
+        }
+
+        /**
+         * @description Stores records of strategies used by a user during a level.
+         * @path /users/{userId}/levelProgress/{levelProgressId}/strategyUsages/{strategyUsageId}
+         * @allow (create) An authenticated user can create a strategy usage record for their own level progress.
+         * @deny  (list) An authenticated user cannot list strategy usages for another user's level.
+         * @principle Path-based security ensures that access to nested data is inherited from the root owner.
+         */
+        match /strategyUsages/{strategyUsageId} {
+          allow get, list: if isOwner(userId);
+          allow create: if isOwner(userId) && isValidGrandchildDocCreate(levelProgressId, 'levelProgressId');
+          allow update: if isExistingOwner(userId) && isImmutableGrandchildDocParentId('levelProgressId');
+          allow delete: if isExistingOwner(userId);
+        }
+      }
+
+      /**
+       * @description Stores a user's emotional feedback during the tutorial.
+       * @path /users/{userId}/tutorialFeedback/{tutorialFeedbackId}
+       * @allow (create) An authenticated user can create feedback documents for themselves.
+       * @deny  (get) An authenticated user cannot get the tutorial feedback of another user.
+       * @principle Enforces that all user-specific data is private to that user.
+       */
+      match /tutorialFeedback/{tutorialFeedbackId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidChildDocCreate(userId);
+        allow update: if isExistingOwner(userId) && isImmutableChildDocUserId();
+        allow delete: if isExistingOwner(userId);
+      }
     }
   }
 }

@@ -1,62 +1,265 @@
 {
   "entities": {
-    "user-progress": {
-      "title": "User Progress",
-      "description": "Stores the progress of a user in the simulation.",
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
       "type": "object",
+      "description": "Represents a user of the Iqtisad simulation.",
       "properties": {
-        "progress": {
-          "type": "object",
-          "description": "An object mapping level IDs to their star count.",
-          "properties": {
-            "tutorial": {
-              "type": "object",
-              "properties": {
-                "stars": {
-                  "type": "number"
-                }
-              }
-            },
-            "level1": {
-              "type": "object",
-              "properties": {
-                "stars": {
-                  "type": "number"
-                }
-              }
-            },
-            "level2": {
-              "type": "object",
-              "properties": {
-                "stars": {
-                  "type": "number"
-                }
-              }
-            },
-            "level3": {
-              "type": "object",
-              "properties": {
-                "stars": {
-                  "type": "number"
-                }
-              }
-            }
-          }
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "tutorialCompleted": {
+          "type": "boolean",
+          "description": "Indicates whether the user has completed the tutorial."
         }
-      }
+      },
+      "required": [
+        "id",
+        "tutorialCompleted"
+      ]
+    },
+    "LevelProgress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LevelProgress",
+      "type": "object",
+      "description": "Represents a user's progress in a specific level of the simulation.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the LevelProgress entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N LevelProgress)"
+        },
+        "level": {
+          "type": "string",
+          "description": "The level number (e.g., 'Level I', 'Level II', 'Level III')."
+        },
+        "score": {
+          "type": "number",
+          "description": "The user's score for the level."
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Indicates whether the user has completed the level."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "level",
+        "score",
+        "completed"
+      ]
+    },
+    "TutorialFeedback": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TutorialFeedback",
+      "type": "object",
+      "description": "Represents a user's emotional feedback during the tutorial.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the TutorialFeedback entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N TutorialFeedback)"
+        },
+        "step": {
+          "type": "number",
+          "description": "The tutorial step number."
+        },
+        "emotion": {
+          "type": "string",
+          "description": "The user's reported emotion (e.g., 'calm', 'excited', 'anxious', 'regretful')."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "step",
+        "emotion"
+      ]
+    },
+    "DebriefResponse": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DebriefResponse",
+      "type": "object",
+      "description": "Represents a user's response to a debriefing question at the end of a level.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DebriefResponse entity."
+        },
+        "levelProgressId": {
+          "type": "string",
+          "description": "Reference to LevelProgress. (Relationship: LevelProgress 1:N DebriefResponse)"
+        },
+        "question": {
+          "type": "string",
+          "description": "The debriefing question."
+        },
+        "response": {
+          "type": "string",
+          "description": "The user's answer to the debriefing question."
+        }
+      },
+      "required": [
+        "id",
+        "levelProgressId",
+        "question",
+        "response"
+      ]
+    },
+    "UserStrategyUsage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserStrategyUsage",
+      "type": "object",
+      "description": "Represents a record of a user utilizing a strategy during a level.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserStrategyUsage entity."
+        },
+        "levelProgressId": {
+          "type": "string",
+          "description": "Reference to LevelProgress. (Relationship: LevelProgress 1:N UserStrategyUsage)"
+        },
+        "strategyName": {
+          "type": "string",
+          "description": "The name of the strategy used (e.g., 'Diversification', 'Dollar-cost averaging')."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the strategy was used.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "levelProgressId",
+        "strategyName",
+        "timestamp"
+      ]
     }
   },
   "auth": {
     "providers": [
+      "password",
       "anonymous"
     ]
   },
   "firestore": {
-    "/users/{userId}": {
-      "schema": {
-        "$ref": "#/entities/user-progress"
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Access is restricted to the authenticated user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
       },
-      "description": "Stores user-specific data, including their progress in the game levels."
-    }
+      {
+        "path": "/users/{userId}/levelProgress/{levelProgressId}",
+        "definition": {
+          "entityName": "LevelProgress",
+          "schema": {
+            "$ref": "#/backend/entities/LevelProgress"
+          },
+          "description": "Stores level progress data for each user. Access is restricted to the authenticated user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "levelProgressId",
+              "description": "The unique identifier for the level progress record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/tutorialFeedback/{tutorialFeedbackId}",
+        "definition": {
+          "entityName": "TutorialFeedback",
+          "schema": {
+            "$ref": "#/backend/entities/TutorialFeedback"
+          },
+          "description": "Stores tutorial feedback data for each user. Access is restricted to the authenticated user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "tutorialFeedbackId",
+              "description": "The unique identifier for the tutorial feedback record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/levelProgress/{levelProgressId}/debriefResponses/{debriefResponseId}",
+        "definition": {
+          "entityName": "DebriefResponse",
+          "schema": {
+            "$ref": "#/backend/entities/DebriefResponse"
+          },
+          "description": "Stores debrief responses related to a specific level progress record. Authorization is implicitly tied to the parent levelProgressId and userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "levelProgressId",
+              "description": "The unique identifier for the level progress record."
+            },
+            {
+              "name": "debriefResponseId",
+              "description": "The unique identifier for the debrief response record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/levelProgress/{levelProgressId}/strategyUsages/{strategyUsageId}",
+        "definition": {
+          "entityName": "UserStrategyUsage",
+          "schema": {
+            "$ref": "#/backend/entities/UserStrategyUsage"
+          },
+          "description": "Stores strategy usages by a user in a specific level. Authorization is implicitly tied to the parent levelProgressId and userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "levelProgressId",
+              "description": "The unique identifier for the level progress record."
+            },
+            {
+              "name": "strategyUsageId",
+              "description": "The unique identifier for the strategy usage record."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to provide a secure, scalable, and easily maintainable data model for the Iqtisad application. The structure prioritizes authorization independence by avoiding hierarchical authorization dependencies (`get()`). Instead, it leverages path-based ownership for user-specific data and denormalization where collaborative access is needed.  This ensures that security rules are simple, robust, and easily debuggable, without relying on complex document hierarchies or custom claims.\n\n**Authorization Independence (CRITICAL):**  All entities related to a user are stored under the `/users/{userId}` path, ensuring that ownership is inherent in the path itself.  For example, `LevelProgress`, `TutorialFeedback`, and associated `DebriefResponse` and `UserStrategyUsage` documents are stored under the respective user's document. This eliminates the need for `get()` calls in security rules to verify ownership.\n\n**QAPs (Rules are not Filters):**  The path-based ownership structure enables secure `list` operations. Listing level progress is limited to the authenticated user's data only. This prevents unauthorized access to other users' data. Segregation of user data into individual user paths is the mechanism that supports QAPs.\n\n**Detailed Explanation:**\n\n*   `/users/{userId}`:  This collection stores user profiles.  Access is restricted to the authenticated user (for read/write) and administrators (if applicable, though not defined in the input, this structure could support it).\n*   `/users/{userId}/levelProgress/{levelProgressId}`: This subcollection stores the progress for each level a user has attempted. Only the user can read/write their level progress data.\n*   `/users/{userId}/tutorialFeedback/{tutorialFeedbackId}`:  This subcollection stores feedback provided by the user during the tutorial. Only the user can read/write their tutorial feedback data.\n*   `/users/{userId}/levelProgress/{levelProgressId}/debriefResponses/{debriefResponseId}`: Stores the debrief responses related to a specific level progress record.  Authorization is implicitly tied to the parent `levelProgressId` and `userId`.\n*   `/users/{userId}/levelProgress/{levelProgressId}/strategyUsages/{strategyUsageId}`: Stores the strategy usages by a user in a specific level. Authorization is implicitly tied to the parent `levelProgressId` and `userId`."
   }
 }
