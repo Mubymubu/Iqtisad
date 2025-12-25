@@ -1,6 +1,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, User, ShieldAlert, Share2 } from "lucide-react";
+import { Mail, User, ShieldAlert, Share2, Linkedin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ContactPage() {
   return (
@@ -69,9 +71,15 @@ export default function ContactPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-4">
               Connect with Iqtisad on social media.
             </p>
+            <Button asChild>
+              <Link href="https://www.linkedin.com/in/ammar-vasee-66621a324/?originalSubdomain=in" target="_blank" rel="noopener noreferrer">
+                <Linkedin className="mr-2 h-4 w-4" />
+                View LinkedIn Profile
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
