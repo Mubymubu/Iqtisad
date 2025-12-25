@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, User, ShieldAlert } from "lucide-react";
 
@@ -42,6 +43,20 @@ export default function ContactPage() {
           <CardContent>
             <p className="text-muted-foreground">
               Hello! My name is <span className="font-semibold text-foreground">Ammar Vasee</span>. I am a Grade 10 student at Sreenidhi International School, Hyderabad. I created Iqtisad as an educational project to explore financial markets, economics, and trading concepts through interactive learning.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-4">
+            <ShieldAlert className="h-8 w-8 text-primary" />
+            <div>
+              <CardTitle>Disclaimer</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              Iqtisad is an educational project. The content provided is for learning purposes only and does not constitute financial or investment advice.
             </p>
           </CardContent>
         </Card>
