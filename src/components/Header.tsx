@@ -122,7 +122,7 @@ export function Header() {
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Image src="/logo.svg" alt={logoAltText} width={28} height={28} />
-            <span className="hidden font-bold sm:inline-block font-headline text-lg text-yellow-400">
+            <span className="hidden font-bold sm:inline-block font-headline text-lg text-[#d2aa68]">
               Iqtisad
             </span>
           </Link>
