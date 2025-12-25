@@ -14,7 +14,7 @@ import { useGameStoreState } from '@/hooks/use-game-state';
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/how-to-play", label: "How To Play" },
-  { href: "/iqtisad-times", label: "The Iqtisad Times" },
+  { href: "/iqtisad-times", label: "The Iqtisad Chronicles" },
   { href: "/tutorial", label: "Tutorial" },
   { href: "/level-1", label: "Level 1" },
   { href: "/level-2", label: "Level 2" },

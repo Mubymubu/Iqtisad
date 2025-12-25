@@ -20,7 +20,7 @@ export function Footer() {
               How To Play
             </Link>
             <Link href="/iqtisad-times" className="text-sm text-muted-foreground hover:text-primary">
-              The Iqtisad Times
+              The Iqtisad Chronicles
             </Link>
             <Link href="/core-concepts" className="text-sm text-muted-foreground hover:text-primary">
               Core Concepts
