@@ -28,7 +28,7 @@ const concepts = [
     {
       value: "confirmation-bias",
       title: "Confirmation Bias",
-      definition: "This is the tendency to search for, interpret, favor, and recall information that confirms or supports one's prior beliefs or values. We like to be right, so we subconsciously look for evidence that proves we are.",
+      definition: "It is the tendency to interpret, favor, judge and remember information that maintains or reinforces previous beliefs or values. We prefer to be correct and, therefore, we unconsciously seek some evidence that will establish the fact that we are.",
       example: "If you believe a tech company is the 'next big thing,' you might only pay attention to positive news articles about it and ignore any negative reports or signs of trouble.",
       inGame: "In Level I, you will see ambiguous news headlines. If you've just bought an asset and it's doing well, you might interpret a vague headline like 'Aurex Computing Faces New Challenge' as a sign of the company's strength, while ignoring the potential risk.",
       mistake: "Only listening to information that agrees with your decision, creating an echo chamber.",
