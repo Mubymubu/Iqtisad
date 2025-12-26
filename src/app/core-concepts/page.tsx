@@ -10,7 +10,7 @@ const concepts = [
     {
       value: "prospect-theory",
       title: "Prospect Theory",
-      definition: "Prospect Theory suggests that people make decisions based on potential gains and losses from a specific starting point (a 'reference point'), rather than on the final outcome. We tend to feel the pain of a loss more strongly than the pleasure of an equal-sized gain.",
+      definition: "According to Prospect Theory, individuals decide based on the potential gains and losses in comparison to a standard level, as opposed to analyzing the end result alone. It further demonstrates that losses tend to be more pronounced than the gains of equal magnitude and this affects our risk perception and decision-making process significantly.",
       example: "Finding $20 feels good, but losing $20 feels much worse. Because of this, someone might turn down a fair 50/50 bet to either win $100 or lose $100, because the fear of losing outweighs the excitement of winning.",
       inGame: "You will notice that when one of your assets loses value, your emotional reaction might be stronger than when it gains the same amount. This can lead you to sell a losing asset too quickly to avoid more pain, even if it's a good long-term investment.",
       mistake: "Selling a good asset in a panic just because its price dipped slightly.",
