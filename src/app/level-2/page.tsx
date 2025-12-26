@@ -10,7 +10,7 @@ import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
 
 const ventureAssetsConfig = [
-    { id: "SEED", name: "SEEDLINE BIOTECH", price: 850.72, isValuation: true, volatility: 0.5, maxPrice: 25000 },
+    { id: "SEED", name: "SEEDLINE BIOTECH", price: 5750.69, isValuation: true, volatility: 0.5, maxPrice: 25000 },
     { id: "ORBIT", name: "ORBITA ENERGY", price: 22000, isValuation: true, volatility: 0.8, maxPrice: 25000 },
     { id: "NEX", name: "NEXFIELD MOBILITY", price: 18000, isValuation: true, volatility: 0.6, maxPrice: 25000 },
     { id: "CORTEXA", name: "CORTEXA HEALTH", price: 20000, isValuation: true, volatility: 0.4, maxPrice: 25000 },
