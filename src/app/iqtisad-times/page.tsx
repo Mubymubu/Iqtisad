@@ -43,7 +43,7 @@ export default function IqtisadTimesPage() {
           The اقتصاد Chronicles
         </h1>
         <p className="max-w-2xl mx-auto text-muted-foreground md:text-lg mt-2">
-          Stay informed with the latest market news, analysis, and historical insights.
+          Stay updated with the latest market news, analysis, and historical insights.
         </p>
       </section>
 
