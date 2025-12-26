@@ -160,7 +160,7 @@ const createGameStore = (
 
     buyAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || get().isFinished || get().phase !== 'trading') return;
+        if (!asset || get().isFinished || get().phase !== 'trading' || get().isPaused) return;
 
         if (get().cashBalance < asset.price) {
             toast({
@@ -193,7 +193,7 @@ const createGameStore = (
 
     sellAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || asset.quantity <= 0 || get().isFinished || get().phase !== 'trading') return;
+        if (!asset || asset.quantity <= 0 || get().isFinished || get().phase !== 'trading' || get().isPaused) return;
 
         const isWin = asset.price > (asset.purchasePrice || asset.initialPrice);
 
@@ -224,7 +224,7 @@ const createGameStore = (
     },
 
     triggerEvent: () => {
-      const { assets, levelId, eventCounter } = get();
+      const { assets, eventCounter } = get();
       if (assets.length === 0) return;
       
       set({ eventInProgress: true });
@@ -234,79 +234,47 @@ const createGameStore = (
 
       let headline: string;
       let impact: number;
-      let isPositiveEvent: boolean;
+      let impactType: 'gain' | 'loss';
 
-      if (levelId === 'level3') {
-          const cryptoPositiveHeadlines = [
-              `${targetAsset.name} rises by 20% as on-chain activity increases, with more users and applications adopting the network.`,
-              `${targetAsset.name} jumps after increased institutional interest, with large investors expanding their exposure to the asset.`
-          ];
-          const cryptoNegativeHeadlines = [
-              `${targetAsset.name} drops sharply following regulatory uncertainty affecting cryptocurrency markets.`,
-              `${targetAsset.name} declines after concerns emerge over network congestion and slower transaction processing.`
-          ];
-
-          if (eventCounter === 0) { // First event is positive
-              isPositiveEvent = true;
-          } else if (eventCounter === 1) { // Second event is negative
-              isPositiveEvent = false;
-          } else { // Subsequent events are random
-              isPositiveEvent = Math.random() < 0.5;
-          }
-
-          if (isPositiveEvent) {
-              headline = cryptoPositiveHeadlines[Math.floor(Math.random() * cryptoPositiveHeadlines.length)];
-              impact = 0.2 + Math.random() * 0.05; // 20% to 25%
-          } else {
-              headline = cryptoNegativeHeadlines[Math.floor(Math.random() * cryptoNegativeHeadlines.length)];
-              impact = 0.2 + Math.random() * 0.05; // 20% to 25%
-          }
-
-      } else { // Logic for Level 1 and 2
-          isPositiveEvent = get().eventCounter % 2 === 0;
-
-          if (isPositiveEvent) {
-              const eventType = Math.random() < 0.5 ? 'merger' : 'growth';
-              if (eventType === 'merger') {
-                  impact = 0.2 + Math.random() * 0.05; // 20% to 25%
-                  headline = `${targetAsset.name} announces a major merger`;
-              } else { // growth
-                  impact = 0.15 + Math.random() * 0.07; // 15% to 22%
-                  headline = `${targetAsset.name} reports strong growth and increased adoption`;
-              }
-          } else { // Negative Event
-              const eventType = Math.random() < 0.5 ? 'breach' : 'regulatory';
-              if (eventType === 'breach') {
-                  impact = 0.2 + Math.random() * 0.05; // 20% to 25%
-                  headline = `${targetAsset.name} suffers a major data breach`;
-              } else { // regulatory
-                  impact = 0.15 + Math.random() * 0.07; // 15% to 22%
-                  headline = `${targetAsset.name} faces increased regulatory scrutiny`;
-              }
-          }
+      // Determine if the event is positive or negative based on the counter
+      if (eventCounter === 0) { // First event is always positive
+        impactType = 'gain';
+      } else if (eventCounter === 1) { // Second event is always negative
+        impactType = 'loss';
+      } else { // Subsequent events are random
+        impactType = Math.random() < 0.5 ? 'gain' : 'loss';
       }
 
-      const newPrice = targetAsset.price * (1 + (isPositiveEvent ? impact : -impact));
+      // Set impact and headline based on event type
+      if (impactType === 'gain') {
+          impact = 0.20 + Math.random() * 0.05; // 20% to 25% gain
+          headline = `${targetAsset.name} reports strong growth and increased adoption.`;
+      } else { // 'loss'
+          impact = 0.20 + Math.random() * 0.05; // 20% to 25% loss
+          headline = `${targetAsset.name} faces increased regulatory scrutiny.`;
+      }
+      
+      const newPrice = targetAsset.price * (1 + (impactType === 'gain' ? impact : -impact));
       const event: MarketEvent = { 
           headline, 
           assetId: targetAsset.id, 
           assetName: targetAsset.name, 
-          impact: isPositiveEvent ? impact : -impact, 
-          impactType: isPositiveEvent ? 'gain' : 'loss' 
+          impact: impactType === 'gain' ? impact : -impact, 
+          impactType: impactType
       };
       
       set(state => {
         const assetToUpdate = state.assets.find(a => a.id === targetAsset.id)!;
         assetToUpdate.price = Math.max(1, newPrice);
         state.activeEvent = event;
-        state.eventCounter++;
+        state.eventCounter++; // Increment counter for every event
       });
 
       get().calculatePortfolio();
 
       setTimeout(() => {
         get().clearEvent();
-      }, 5000); // Event lasts for 5 seconds
+      }, 5000); // Event popup visible for 5 seconds
     },
 
     updatePrices: () => {
