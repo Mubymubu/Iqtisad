@@ -1,3 +1,4 @@
+
 "use client";
 
 import { create } from 'zustand';
@@ -375,7 +376,7 @@ const createGameStore = (
       let stars = 0;
       
       const oneStarMet = finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2;
-      const twoStarMet = finalNetWorth >= startingBalance * 1.15 && tradeCount >= 5;
+      const twoStarMet = finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5;
       const threeStarMet = finalNetWorth >= startingBalance * 1.30 && winningTrades > losingTrades;
 
       if (threeStarMet) {
