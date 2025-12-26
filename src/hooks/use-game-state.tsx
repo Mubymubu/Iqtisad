@@ -70,9 +70,9 @@ type GameState = {
   
   // Market event state
   eventInProgress: boolean;
-  timeToNextEvent: number;
   activeEvent: MarketEvent | null;
   eventCounter: number; // To track positive/negative sequence
+  lastEventTime: number; // Tracks time of the last event trigger
 
   // Star metrics
   maxNetWorth: number;
@@ -94,7 +94,6 @@ type GameActions = {
   reset: (levelId: LevelId, initialAssets: Omit<Asset, 'quantity' | 'initialPrice'>[], duration: number, startingBalance: number, profitGoal?: number) => void;
   playAgain: () => void;
   triggerEvent: () => void;
-  setInitialEventTimer: () => void;
   clearEvent: () => void;
   saveProgress: (levelId: LevelId) => void;
 };
@@ -124,24 +123,23 @@ const createGameStore = (
     isPaused: false,
 
     eventInProgress: false,
-    timeToNextEvent: 0,
     activeEvent: null,
     eventCounter: 0,
+    lastEventTime: duration,
 
     maxNetWorth: startingBalance,
     minNetWorth: startingBalance,
     trades: [],
     
-    setInitialEventTimer: () => {
-      // Events only trigger in non-tutorial levels
-      if (!get().profitGoal) {
-        set({ timeToNextEvent: 30 });
-      }
-    },
-
     startGame: () => {
-      set({ phase: 'trading', isPaused: false });
-      get().setInitialEventTimer();
+      set(state => {
+        state.phase = 'trading';
+        state.isPaused = false;
+        // Events only trigger in non-tutorial levels
+        if (!state.profitGoal) {
+          state.lastEventTime = state.duration;
+        }
+      });
     },
 
     pauseGame: () => {
@@ -220,14 +218,13 @@ const createGameStore = (
             eventInProgress: false,
             activeEvent: null,
         });
-        get().setInitialEventTimer(); // Reset timer for the next event
     },
 
     triggerEvent: () => {
-      const { assets, eventCounter } = get();
+      const { assets, eventCounter, timeRemaining } = get();
       if (assets.length === 0) return;
       
-      set({ eventInProgress: true });
+      set({ eventInProgress: true, lastEventTime: timeRemaining });
       
       const targetAssetIndex = Math.floor(Math.random() * assets.length);
       const targetAsset = assets[targetAssetIndex];
@@ -360,7 +357,7 @@ const createGameStore = (
     
     tick: () => {
         if (get().phase !== 'trading' || get().isPaused) return;
-        const { timeRemaining, timeToNextEvent, duration, profitGoal, assets } = get();
+        const { timeRemaining, lastEventTime, duration, profitGoal, assets, eventInProgress } = get();
 
         if (timeRemaining > 0) {
             set({ timeRemaining: timeRemaining - 1 });
@@ -398,11 +395,10 @@ const createGameStore = (
         }
 
         // Regular Event timing logic for levels
-        if (!get().eventInProgress && !profitGoal && get().assets.length > 0) {
-            if (timeToNextEvent <= 0) {
+        if (!profitGoal && !eventInProgress && assets.length > 0) {
+            const timeSinceLastEvent = lastEventTime - timeRemaining;
+            if (timeSinceLastEvent >= 30) {
                 get().triggerEvent();
-            } else {
-                set({ timeToNextEvent: timeToNextEvent - 1 });
             }
         }
     },
@@ -423,9 +419,9 @@ const createGameStore = (
             profitGoal: newProfitGoal,
             isPaused: false,
             eventInProgress: false,
-            timeToNextEvent: 0,
             activeEvent: null,
             eventCounter: 0,
+            lastEventTime: newDuration,
             maxNetWorth: newStartingBalance,
             minNetWorth: newStartingBalance,
             trades: [],
