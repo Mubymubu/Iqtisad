@@ -60,7 +60,7 @@ export default function HowToPlayPage() {
             Buying and Selling
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Players can purchase an asset by clicking the Buy button at the current market price, and the owned assets can be sold by clicking the Sell button. Even after the transactions are made, asset prices are in a constant movement and therefore timing is a very important factor. All the transactions update instantaneously on the cash balance and portfolio value of the player, which gives them an incentive to plan and make careful decisions.
+            Players can purchase an asset by clicking the Invest button at the current market price, and the owned assets can be sold by clicking the Sell button. Even after the transactions are made, asset prices are in a constant movement and therefore timing is a very important factor. All the transactions update instantaneously on the cash balance and portfolio value of the player, which gives them an incentive to plan and make careful decisions.
           </p>
           <Card className="mt-6 bg-card/50">
             <CardContent className="p-4">
