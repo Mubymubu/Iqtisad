@@ -56,7 +56,7 @@ export function AssetCard({ asset }: { asset: Asset }) {
                 <Button 
                     onClick={() => buyAsset(id)} 
                     disabled={!isTrading || cashBalance < price} 
-                    className="flex-1"
+                    className="flex-1 text-black"
                 >
                     Invest
                 </Button>
