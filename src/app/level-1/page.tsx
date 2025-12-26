@@ -10,7 +10,7 @@ import { GameControls } from "@/components/GameControls";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1200, volatility: 0.8 },
-    { id: "VANTIQ", name: "VANTIQ LABS", price: 850.72, volatility: 0.7 },
+    { id: "VANTIQ", name: "VANTIQ LABS", price: 950.72, volatility: 0.7 },
     { id: "SYNERON", name: "SYNERON AI", price: 949.28, volatility: 0.9 },
     { id: "KALYX", name: "KALYX DATAWORKS", price: 1004.59, volatility: 1.1 },
 ];
