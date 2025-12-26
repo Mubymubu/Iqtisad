@@ -123,7 +123,6 @@ export default function StrategiesPage() {
                     <CardContent className="space-y-4">
                         <p className="text-muted-foreground">Fundamental analysis looks at the financial status and future potential of a company. Traders focus on:</p>
                         <ul className="list-none space-y-2 text-muted-foreground">
-                            <li>● Earnings reports</li>
                             <li>● Revenue growth</li>
                             <li>● Industry trends</li>
                             <li>● Market sentiment</li>
