@@ -12,7 +12,7 @@ const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1200, volatility: 0.8 },
     { id: "VANTIQ", name: "VANTIQ LABS", price: 950.72, volatility: 0.7 },
     { id: "SYNERON", name: "SYNERON AI", price: 1049.28, volatility: 0.9 },
-    { id: "KALYX", name: "KALYX DATAWORKS", price: 1004.59, volatility: 1.1 },
+    { id: "KALYX", name: "KALYX DATAWORKS", price: 800.2, volatility: 1.1 },
 ];
 
 function Level1Content() {
