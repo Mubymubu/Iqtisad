@@ -12,7 +12,7 @@ const concepts = [
       title: "Prospect Theory",
       definition: "According to Prospect Theory, individuals decide based on the potential gains and losses in comparison to a standard level, as opposed to analyzing the end result alone. It further demonstrates that losses tend to be more pronounced than the gains of equal magnitude and this affects our risk perception and decision-making process significantly.",
       example: "Finding $20 feels good, but losing $20 feels much worse. Because of this, someone might turn down a fair 50/50 bet to either win $100 or lose $100, because the fear of losing outweighs the excitement of winning.",
-      inGame: "You will notice that when one of your assets loses value, your emotional reaction might be stronger than when it gains the same amount. This can lead you to sell a losing asset too quickly to avoid more pain, even if it's a good long-term investment.",
+      inGame: "You will see that the loss of one of your assets may have a stronger emotional reaction compared to the gain of the same. This may cause you to sell a losing investment too fast so as to reduce the suffering even though it may be a good long-term investment.",
       mistake: "Selling a good asset in a panic just because its price dipped slightly.",
       alternative: "Focus on the asset's long-term potential, not short-term price movements. Make decisions based on your original plan, not on fear."
     },
