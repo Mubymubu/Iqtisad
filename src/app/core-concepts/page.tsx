@@ -48,7 +48,7 @@ const concepts = [
       title: "Herd Behaviour",
       definition: "This is the tendency of individuals to act in ways that a larger number of people do regardless of whether the action is reasonable or not. It is motivated by a need to be with the crowd and fear of being left behind or being wrong all by themselves.",
       example: "During a market bubble, everyone seems to be buying a certain type of asset (like tech stocks in the late 1990s). People jump in, not because they've done research, but because they see others getting rich and fear missing out.",
-      inGame: "In Level II, you will see what other 'investors' in the simulation are doing. You may feel pressure to invest in a startup just because it's popular, even if you have little information about its potential.",
+      inGame: "In Level 2, you will see what other 'investors' in the simulation are doing. You may feel pressure to invest in a startup just because it's popular, even if you have little information about its potential.",
       mistake: "Buying an asset simply because everyone else is, without doing your own thinking.",
       alternative: "Base your decisions on your own research and strategy. Be comfortable with being different from the crowd if your plan supports it."
     }
