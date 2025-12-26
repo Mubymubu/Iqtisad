@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signInAnonymously, type User } from 'firebase/auth';
 import { useAuth, useFirestore } from '..';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export function useUser() {
   const auth = useAuth();
@@ -13,12 +13,15 @@ export function useUser() {
   useEffect(() => {
     if (!auth || !firestore) return;
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
         // Create user document if it doesn't exist
         const userRef = doc(firestore, 'users', currentUser.uid);
-        setDoc(userRef, { id: currentUser.uid, tutorialCompleted: false }, { merge: true });
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists()) {
+          setDoc(userRef, { id: currentUser.uid, tutorialCompleted: false }, { merge: true });
+        }
 
       } else {
         signInAnonymously(auth).catch((error) => {

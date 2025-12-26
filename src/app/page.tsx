@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useUser, useDoc } from "@/firebase";
+import { useUser, useDoc, useFirestore, useFirebaseApp } from "@/firebase";
 import { doc } from "firebase/firestore";
 import { useMemo } from "react";
 import type { UserProgress } from "@/hooks/use-game-state";
@@ -74,7 +74,8 @@ function LevelCard({ level, title, description, href, stars }: {
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
-  const { user, firestore } = useUser();
+  const { user } = useUser();
+  const firestore = useFirestore();
   
   const userProgressRef = useMemo(() => {
     if (!firestore || !user) return null;
