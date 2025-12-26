@@ -52,7 +52,7 @@ export default function IqtisadTimesPage() {
             <MarketNews />
 
             <section>
-                 <h2 className="text-2xl font-bold font-headline mb-4 flex items-center"><BookOpen className="mr-3 h-6 w-6" /> Past & Profit – Lessons from the past that still matter. (Articles)</h2>
+                 <h2 className="text-2xl font-bold font-headline mb-4 flex items-center"><BookOpen className="mr-3 h-6 w-6" /> Past & Profit – Lessons from the past that still matter</h2>
                  <div className="space-y-8">
                     {articles.map((article, index) => (
                         <Card key={index} className="bg-card/50">
