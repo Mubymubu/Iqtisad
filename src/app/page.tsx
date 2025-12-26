@@ -132,7 +132,7 @@ export default function Home() {
             <div>
                  <h2 className="text-3xl font-bold font-headline mb-4">Overview</h2>
                  <div className="space-y-4 text-muted-foreground">
-                    <p>Iqtisad is designed to help students learn how financial markets work in a clear and structured way. The platform uses simplified explanations and real-world examples to make complex concepts easier to understand.</p>
+                    <p>Iqtisad is an educational game that involves trading and modern gaming to render the process of learning about financial markets in an interesting and interactive manner. The platform transforms the complex ideas in the stock market by incorporating levels, resources and simulated decision-making into a game. Within a well-organized, risk free learning rather than real investment environment, students study how markets operate, how trading decisions are made and how to respond to the economic happenings in terms of price.</p>
                     <p>Rather than focusing on real investing, Iqtisad emphasizes learning. Users can explore how markets behave, how trading decisions are made, and how economic events influence financial systems—all in a risk-free environment.</p>
                  </div>
             </div>
