@@ -10,11 +10,12 @@ import { Badge } from "./ui/badge";
 export function AssetCard({ asset }: { asset: Asset }) {
     const { name, price, change, changeType, isValuation, id, quantity } = asset;
     
-    const { buyAsset, sellAsset, cashBalance, phase } = useGameStore(state => ({
+    const { buyAsset, sellAsset, cashBalance, phase, isPaused } = useGameStore(state => ({
         buyAsset: state.buyAsset,
         sellAsset: state.sellAsset,
         cashBalance: state.cashBalance,
-        phase: state.phase
+        phase: state.phase,
+        isPaused: state.isPaused,
     }));
 
     const isTrading = phase === 'trading';
@@ -55,14 +56,14 @@ export function AssetCard({ asset }: { asset: Asset }) {
             <CardFooter className="flex gap-2">
                 <Button 
                     onClick={() => buyAsset(id)} 
-                    disabled={!isTrading || cashBalance < price} 
+                    disabled={!isTrading || cashBalance < price || isPaused} 
                     className="flex-1 text-black"
                 >
                     Invest
                 </Button>
                 <Button 
                     onClick={() => sellAsset(id)} 
-                    disabled={!isTrading || quantity === 0} 
+                    disabled={!isTrading || quantity === 0 || isPaused} 
                     variant="outline" 
                     className="flex-1"
                 >
