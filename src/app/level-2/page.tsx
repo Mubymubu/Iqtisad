@@ -12,7 +12,7 @@ import { GameControls } from "@/components/GameControls";
 const ventureAssetsConfig = [
     { id: "SEED", name: "SEEDLINE BIOTECH", price: 5750.69, volatility: 0.5, maxPrice: 25000 },
     { id: "ORBIT", name: "ORBITA ENERGY", price: 4249.31, volatility: 0.8, maxPrice: 25000 },
-    { id: "NEX", name: "NEXFIELD MOBILITY", price: 18000, volatility: 0.6, maxPrice: 25000 },
+    { id: "NEX", name: "NEXFIELD MOBILITY", price: 6200.45, volatility: 0.6, maxPrice: 25000 },
     { id: "CORTEXA", name: "CORTEXA HEALTH", price: 20000, volatility: 0.4, maxPrice: 25000 },
 ];
 
