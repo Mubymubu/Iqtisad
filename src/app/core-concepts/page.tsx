@@ -19,7 +19,7 @@ const concepts = [
     {
       value: "loss-aversion",
       title: "Loss Aversion",
-      definition: "This is a key part of Prospect Theory. It's our natural human tendency to prefer avoiding losses over acquiring equivalent gains. Psychological studies suggest that the pain of losing is about twice as powerful as the pleasure of winning.",
+      definition: "This is a major aspect of Prospect theory. It is our human instinct to want to evade any losses rather than gain the same. Psychological research indicates that loss pain is approximately two times stronger than the win pleasure.",
       example: "An investor holds onto a failing stock, hoping it will 'come back,' because selling would mean officially accepting the loss. They might sell a winning stock too early to 'lock in' the profit, fearing the gain will disappear.",
       inGame: "The tutorial directly demonstrates this. After a small loss, you may feel a strong urge to sell. In later levels, you might find yourself holding onto a poorly performing asset, thinking 'I'll just wait until it gets back to what I paid for it.'",
       mistake: "Holding onto losing investments for too long (and selling winning ones too soon).",
