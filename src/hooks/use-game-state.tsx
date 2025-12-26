@@ -377,7 +377,7 @@ const createGameStore = (
       
       const oneStarMet = finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2;
       const twoStarMet = finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5;
-      const threeStarMet = finalNetWorth >= startingBalance * 1.30 && winningTrades > losingTrades;
+      const threeStarMet = finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades;
 
       if (threeStarMet) {
         stars = 3;

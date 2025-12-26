@@ -60,7 +60,7 @@ export default function HowToPlayPage() {
             Buying and Selling
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Players can purchase an asset by clicking the <strong>Invest</strong> button at the current market price, and the owned assets can be sold by clicking the <strong>Sell</strong> button. Even after the transactions are made, asset prices are in a constant movement and therefore timing is a very important factor. All the transactions update instantaneously on the cash balance and portfolio value of the player, which gives them an incentive to plan and make careful decisions.
+            Players can purchase an asset by clicking the <strong className="text-foreground">Invest</strong> button at the current market price, and the owned assets can be sold by clicking the <strong className="text-foreground">Sell</strong> button. Even after the transactions are made, asset prices are in a constant movement and therefore timing is a very important factor. All the transactions update instantaneously on the cash balance and portfolio value of the player, which gives them an incentive to plan and make careful decisions.
           </p>
           <Card className="mt-6 bg-card/50">
             <CardContent className="p-4">
@@ -155,7 +155,7 @@ export default function HowToPlayPage() {
                     3 Stars
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
-                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 30%</strong> and have <strong className="text-foreground">more winning trades than losing trades</strong>.
+                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 15%</strong> and have <strong className="text-foreground">more winning trades than losing trades</strong>.
                 </p>
                 <p className="text-sm text-muted-foreground/80 italic mt-2">
                   This represents consistent performance and good judgment, showing that the player can remain profitable across several trades while adapting to market conditions.
