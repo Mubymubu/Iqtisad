@@ -1,4 +1,3 @@
-
 "use client";
 
 import { create } from 'zustand';
@@ -7,6 +6,7 @@ import React, { createContext, useContext, useRef, useEffect } from 'react';
 import { useStore, type StoreApi } from 'zustand';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useUser } from '@/firebase';
+import { toast } from './use-toast';
 
 
 export type LevelId = 'tutorial' | 'level1' | 'level2' | 'level3';
@@ -159,7 +159,15 @@ const createGameStore = (
 
     buyAsset: (assetId) => {
         const asset = get().assets.find(a => a.id === assetId);
-        if (!asset || get().cashBalance < asset.price || get().isFinished || get().phase !== 'trading') return;
+        if (!asset || get().isFinished || get().phase !== 'trading') return;
+
+        if (get().cashBalance < asset.price) {
+            toast({
+                variant: 'insufficient_funds',
+                duration: 5000,
+            })
+            return;
+        }
 
         set(state => {
             const boughtAsset = state.assets.find(a => a.id === assetId)!;

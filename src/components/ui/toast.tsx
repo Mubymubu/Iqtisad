@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
+import { X, AlertCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -112,6 +112,15 @@ const ToastDescription = React.forwardRef<
 ))
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
+const InsufficientFundsToast = () => {
+    return (
+      <div className="flex items-center gap-3">
+        <AlertCircle className="text-red-500 h-6 w-6" />
+        <span className="font-semibold">Insufficient funds</span>
+      </div>
+    );
+};
+
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
 
 type ToastActionElement = React.ReactElement<typeof ToastAction>
@@ -126,4 +135,5 @@ export {
   ToastDescription,
   ToastClose,
   ToastAction,
+  InsufficientFundsToast
 }
