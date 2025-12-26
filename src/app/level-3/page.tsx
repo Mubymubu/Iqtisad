@@ -11,7 +11,7 @@ import { GameControls } from "@/components/GameControls";
 
 const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 69410, volatility: 1.5 },
-    { id: "HEX", name: "HEXIUM", price: 41670.92, volatility: 1.8 },
+    { id: "HEX", name: "HEXIUM", price: 52724.49, volatility: 1.8 },
     { id: "LEDG", name: "LEDGERA", price: 15700.89, volatility: 2.2 },
     { id: "CRYPT", name: "CRYPTONEX", price: 30590, volatility: 2.5 },
 ];
