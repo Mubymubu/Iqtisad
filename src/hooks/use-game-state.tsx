@@ -193,7 +193,7 @@ const createGameStore = (
         const asset = get().assets.find(a => a.id === assetId);
         if (!asset || asset.quantity <= 0 || get().isFinished || get().phase !== 'trading' || get().isPaused) return;
 
-        const isWin = asset.price > (asset.purchasePrice || asset.initialPrice);
+        const isWin = asset.price >= (asset.purchasePrice || asset.initialPrice);
 
         set(state => {
             const soldAsset = state.assets.find(a => a.id === assetId)!;
