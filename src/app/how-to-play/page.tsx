@@ -155,10 +155,10 @@ export default function HowToPlayPage() {
                     3 Stars
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mt-2">
-                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 15%</strong> and have <strong className="text-foreground">more winning trades than losing trades</strong>.
+                  To earn 3 stars, the player must finish the level with a <strong className="text-foreground">net worth increase of at least 15%</strong> and complete at least <strong className="text-foreground">10 trades</strong>.
                 </p>
                 <p className="text-sm text-muted-foreground/80 italic mt-2">
-                  This represents consistent performance and good judgment, showing that the player can remain profitable across several trades while adapting to market conditions.
+                  This represents a highly engaged and successful trading session, showing the ability to achieve significant growth through active market participation.
                 </p>
               </CardContent>
             </Card>

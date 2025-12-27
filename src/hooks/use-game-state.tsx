@@ -330,28 +330,26 @@ const createGameStore = (
 
         const finalNetWorth = netWorth;
         const tradeCount = trades.length;
-        const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
-        const losingTrades = trades.filter(t => t.type === 'sell' && !t.isWin).length;
 
-        // 3-Star Condition: 15%+ growth AND more winning than losing trades
-        if (finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades) {
+        // 3-Star Condition
+        if (finalNetWorth >= startingBalance * 1.15 && tradeCount >= 10) {
             set({ starRating: 3 });
-            return; // MUST exit here to prevent being downgraded
+            return;
         }
 
-        // 2-Star Condition: 10%+ growth AND at least 5 trades
+        // 2-Star Condition
         if (finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5) {
             set({ starRating: 2 });
             return;
         }
 
-        // 1-Star Condition: 5%+ growth AND at least 2 trades
+        // 1-Star Condition
         if (finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2) {
             set({ starRating: 1 });
             return;
         }
 
-        // Default to 0 stars if no conditions are met
+        // Default to 0 stars
         set({ starRating: 0 });
     },
     
