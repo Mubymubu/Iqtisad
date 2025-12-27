@@ -332,7 +332,7 @@ const createGameStore = (
         const tradeCount = trades.length;
 
         // 3-Star Condition
-        if (finalNetWorth >= startingBalance * 1.15 && tradeCount >= 10) {
+        if (finalNetWorth >= startingBalance * 1.15 && tradeCount >= 7) {
             set({ starRating: 3 });
             return;
         }
