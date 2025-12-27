@@ -321,38 +321,38 @@ const createGameStore = (
     },
 
     setStarRating: () => {
-      const { netWorth, startingBalance, profitGoal, trades } = get();
+        const { netWorth, startingBalance, profitGoal, trades } = get();
 
-      if (profitGoal) { // Tutorial logic
-        set({ starRating: netWorth >= startingBalance + profitGoal ? 1 : 0 });
-        return;
-      } 
-      
-      const finalNetWorth = netWorth;
-      const tradeCount = trades.length;
-      const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
-      const losingTrades = trades.filter(t => t.type === 'sell' && !t.isWin).length;
+        if (profitGoal) { // Tutorial logic
+            set({ starRating: netWorth >= startingBalance + profitGoal ? 1 : 0 });
+            return;
+        }
 
-      // 3-Star Condition Check
-      if (finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades) {
-        set({ starRating: 3 });
-        return; // Exit after setting 3 stars
-      }
+        const finalNetWorth = netWorth;
+        const tradeCount = trades.length;
+        const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
+        const losingTrades = trades.filter(t => t.type === 'sell' && !t.isWin).length;
 
-      // 2-Star Condition Check
-      if (finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5) {
-        set({ starRating: 2 });
-        return; // Exit after setting 2 stars
-      }
+        // 3-Star Condition: 15%+ growth AND more winning than losing trades
+        if (finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades) {
+            set({ starRating: 3 });
+            return; // MUST exit here to prevent being downgraded
+        }
 
-      // 1-Star Condition Check
-      if (finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2) {
-        set({ starRating: 1 });
-        return; // Exit after setting 1 star
-      }
-      
-      // Default to 0 stars if no conditions are met
-      set({ starRating: 0 });
+        // 2-Star Condition: 10%+ growth AND at least 5 trades
+        if (finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5) {
+            set({ starRating: 2 });
+            return;
+        }
+
+        // 1-Star Condition: 5%+ growth AND at least 2 trades
+        if (finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2) {
+            set({ starRating: 1 });
+            return;
+        }
+
+        // Default to 0 stars if no conditions are met
+        set({ starRating: 0 });
     },
     
     tick: () => {
