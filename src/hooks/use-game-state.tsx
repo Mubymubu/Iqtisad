@@ -324,35 +324,35 @@ const createGameStore = (
       const { netWorth, startingBalance, profitGoal, trades } = get();
 
       if (profitGoal) { // Tutorial logic
-        if (netWorth >= startingBalance + profitGoal) {
-          set({ starRating: 1 }); // Success
-        } else {
-          set({ starRating: 0 }); // Failure
-        }
+        set({ starRating: netWorth >= startingBalance + profitGoal ? 1 : 0 });
         return;
       } 
       
-      // Level logic
       const finalNetWorth = netWorth;
       const tradeCount = trades.length;
       const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
       const losingTrades = trades.filter(t => t.type === 'sell' && !t.isWin).length;
 
-      let stars = 0;
-      
-      const threeStarMet = finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades;
-      const twoStarMet = finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5;
-      const oneStarMet = finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2;
+      // 3-Star Condition Check
+      if (finalNetWorth >= startingBalance * 1.15 && winningTrades > losingTrades) {
+        set({ starRating: 3 });
+        return; // Exit after setting 3 stars
+      }
 
-      if (threeStarMet) {
-        stars = 3;
-      } else if (twoStarMet) {
-        stars = 2;
-      } else if (oneStarMet) {
-        stars = 1;
+      // 2-Star Condition Check
+      if (finalNetWorth >= startingBalance * 1.10 && tradeCount >= 5) {
+        set({ starRating: 2 });
+        return; // Exit after setting 2 stars
+      }
+
+      // 1-Star Condition Check
+      if (finalNetWorth >= startingBalance * 1.05 && tradeCount >= 2) {
+        set({ starRating: 1 });
+        return; // Exit after setting 1 star
       }
       
-      set({ starRating: stars });
+      // Default to 0 stars if no conditions are met
+      set({ starRating: 0 });
     },
     
     tick: () => {
