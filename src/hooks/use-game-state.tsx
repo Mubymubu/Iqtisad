@@ -336,7 +336,7 @@ const createGameStore = (
       const finalNetWorth = netWorth;
       const tradeCount = trades.length;
       const winningTrades = trades.filter(t => t.type === 'sell' && t.isWin).length;
-      const losingTrades = trades.filter(t => t.type === 'sell' && t.isWin === false).length;
+      const losingTrades = trades.filter(t => t.type === 'sell' && !t.isWin).length;
 
       let stars = 0;
       
