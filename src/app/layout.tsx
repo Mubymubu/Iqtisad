@@ -6,6 +6,8 @@ import { Footer } from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { AudioProvider } from '@/context/AudioContext';
+import { AudioRouteListener } from "@/components/AudioRouteListener";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -27,12 +29,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
           <FirebaseClientProvider>
+            <AudioProvider>
+              <AudioRouteListener /> 
             <div className="relative flex min-h-screen flex-col bg-background">
               <Header />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>
             <Toaster />
+            </AudioProvider>
           </FirebaseClientProvider>
       </body>
     </html>

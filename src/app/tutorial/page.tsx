@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { GameControls } from "@/components/GameControls";
+import { useAudio } from "@/context/AudioContext";
 
 
 const tutorialAssetConfig = [
@@ -38,6 +39,13 @@ function TutorialContent() {
     const { assets, phase, netWorth, startingBalance, playAgain, starRating } = useGameStore(state => state);
     const [hintIndex, setHintIndex] = useState(0);
     const router = useRouter();
+    const { stop } = useAudio()
+
+    useEffect(() => {
+      if(phase === "debrief"){
+        stop()
+      }
+    }, [phase])
 
     useEffect(() => {
         if (phase !== 'trading') return;
@@ -102,6 +110,13 @@ function TutorialContent() {
 
 function TutorialStart() {
   const { startGame } = useGameStore(state => state);
+  const { play } = useAudio()
+
+
+  const handleStart = () =>{
+    play("tutorial")
+    startGame()
+  }
   
   return (
       <div className="container flex-1 flex flex-col items-center justify-center py-12 text-center">
@@ -113,7 +128,7 @@ function TutorialStart() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Button size="lg" className="w-full" onClick={startGame}>
+                <Button size="lg" className="w-full" onClick={handleStart}>
                     Start Tutorial
                 </Button>
             </CardContent>

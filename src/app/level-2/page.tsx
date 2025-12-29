@@ -8,6 +8,7 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
+import { useAudio } from "@/context/AudioContext";
 
 const ventureAssetsConfig = [
     { id: "SEED", name: "SEEDLINE BIOTECH", price: 5750.69, volatility: 0.5, maxPrice: 25000 },
@@ -18,6 +19,13 @@ const ventureAssetsConfig = [
 
 function Level2Content() {
     const { assets, phase, startGame } = useGameStore(state => state);
+    const { play, stop } = useAudio();
+
+    const handleStart = () => {
+  play("level2");
+  startGame();
+};
+
     
     if (phase === 'intro') {
       return (
@@ -27,12 +35,13 @@ function Level2Content() {
           startingCash={100000}
           duration={3}
           objective="Invest in high-risk, high-reward private companies."
-          onStart={startGame}
+          onStart={handleStart}
         />
       );
     }
     
     if (phase === 'debrief') {
+      stop()
       return <DebriefDialog levelId="level2" />;
     }
     

@@ -7,6 +7,7 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
+import { useAudio } from "@/context/AudioContext";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1199.50, volatility: 0.8 },
@@ -18,6 +19,12 @@ const techAssetsConfig = [
 function Level1Content() {
     const state = useGameStore(state => state);
     const { assets, phase, startGame } = state;
+    const { play, stop } = useAudio();
+
+    const handleStart = () => {
+    play("level1");   // 🎵 Level 1 music
+    startGame();
+  };
 
 
     if (phase === 'intro') {
@@ -28,12 +35,13 @@ function Level1Content() {
           startingCash={10000}
           duration={2}
           objective="Grow your initial investment by trading public tech stocks."
-          onStart={startGame}
+          onStart={handleStart}
         />
       );
     }
     
     if (phase === 'debrief') {
+      stop()
       return <DebriefDialog levelId="level1"/>;
     }
 

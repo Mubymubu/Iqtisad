@@ -121,10 +121,18 @@ export function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Image src="/logo.svg" alt={logoAltText} width={28} height={28} />
-            <span className="hidden font-bold sm:inline-block font-headline text-lg text-[#d2aa68]">
+            <Image
+  src="/logo.svg"
+  alt={logoAltText}
+  width={80}
+  height={80}
+  className="h-16 w-auto object-contain"
+  priority
+/>
+
+            {/* <span className="hidden font-bold sm:inline-block font-headline text-lg text-[#d2aa68]">
               Iqtisad
-            </span>
+            </span> */}
           </Link>
         </div>
         

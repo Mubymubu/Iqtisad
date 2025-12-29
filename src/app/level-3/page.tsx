@@ -8,6 +8,7 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
+import { useAudio } from "@/context/AudioContext";
 
 const cryptoAssetsConfig = [
     { id: "ZYNT", name: "ZYNTRA", price: 69410, volatility: 1.5 },
@@ -23,6 +24,13 @@ function Level3Content() {
       phase: state.phase,
       startGame: state.startGame,
     }));
+    const { play, stop } = useAudio();
+
+    const handleStart = () => {
+  play("level3");
+  startGame();
+};
+
 
     if (phase === 'intro') {
       return (
@@ -32,12 +40,13 @@ function Level3Content() {
           startingCash={500000}
           duration={5}
           objective="Navigate the highly volatile and unpredictable crypto market."
-          onStart={startGame}
+          onStart={handleStart}
         />
       );
     }
     
     if (phase === 'debrief') {
+      stop()
       return <DebriefDialog levelId="level3" />;
     }
 
