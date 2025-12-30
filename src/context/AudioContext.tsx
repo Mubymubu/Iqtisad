@@ -31,7 +31,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       const audio = new Audio(AUDIO_MAP[track].src);
       audio.loop = AUDIO_MAP[track].loop;
       audio.volume = 0.6;
-
+      audio.preload = "auto"
       audioRef.current = audio;
       currentTrack.current = track;
     }
