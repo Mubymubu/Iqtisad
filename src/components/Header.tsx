@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import React from 'react';
 import Image from 'next/image';
 import { useGameStoreState } from '@/hooks/use-game-state';
@@ -153,6 +153,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
+               <SheetHeader>
+                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+               </SheetHeader>
                <div className="p-4">
                  <Link href="/" className="flex items-center space-x-2 mb-8">
                    <Image src="/logo.svg" alt={logoAltText} width={28} height={28} />

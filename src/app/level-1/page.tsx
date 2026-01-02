@@ -7,7 +7,8 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
-import { useAudio } from "@/context/AudioContext";
+import { useAudio } from "@/hooks/use-audio";
+import { useEffect, useRef } from "react";
 
 const techAssetsConfig = [
     { id: "AUREX", name: "AUREX COMPUTING", price: 1199.50, volatility: 0.8 },
@@ -19,13 +20,30 @@ const techAssetsConfig = [
 function Level1Content() {
     const state = useGameStore(state => state);
     const { assets, phase, startGame } = state;
-    const { play, stop } = useAudio();
+    const { playLevelAudio, stopAudio } = useAudio();
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const handleStart = () => {
-    play("level1");   // 🎵 Level 1 music
-    startGame();
-  };
+        startGame();
+        // Start level background music
+        audioRef.current = playLevelAudio(1);
+    };
 
+    useEffect(() => {
+        // Cleanup audio when component unmounts or phase changes
+        return () => {
+            if (audioRef.current) {
+                stopAudio(audioRef.current);
+            }
+        };
+    }, [stopAudio]);
+
+    // Stop audio when game ends
+    useEffect(() => {
+        if (phase === 'debrief' && audioRef.current) {
+            stopAudio(audioRef.current);
+        }
+    }, [phase, stopAudio]);
 
     if (phase === 'intro') {
       return (
@@ -41,7 +59,6 @@ function Level1Content() {
     }
     
     if (phase === 'debrief') {
-      stop()
       return <DebriefDialog levelId="level1"/>;
     }
 

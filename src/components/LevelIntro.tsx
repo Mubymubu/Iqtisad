@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Clock, Target, Star } from "lucide-react";
 import Link from "next/link";
+import { useAudio } from "@/hooks/use-audio";
 
 interface LevelIntroProps {
   levelName: string;
@@ -31,6 +32,17 @@ export function LevelIntro({
   objective,
   onStart,
 }: LevelIntroProps) {
+  const { playOpeningBell } = useAudio();
+
+  const handleStartTrading = () => {
+    try {
+      playOpeningBell(); // Play opening bell sound
+    } catch (error) {
+      console.warn('Opening bell sound failed:', error);
+    }
+    onStart(); // Start the game
+  };
+
   return (
     <div className="container flex-1 flex flex-col items-center justify-center py-12 text-center">
       <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm">
@@ -69,7 +81,7 @@ export function LevelIntro({
             </div>
           </div>
 
-          <Button size="xl" className="w-full" onClick={onStart}>
+          <Button size="xl" className="w-full" onClick={handleStartTrading} disableSound={true}>
             Start Trading
           </Button>
         </CardContent>

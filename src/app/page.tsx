@@ -178,12 +178,25 @@ export default function Home() {
       </section>
 
       <section className="bg-background py-16">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 text-left">
-            <h2 className="text-3xl font-bold font-headline mb-6">Why The Name Iqtisad(اقتصاد)?</h2>
-            <div className="space-y-4 text-muted-foreground">
-              <p>The name Iqtisad is based on the Arabic word for economics and represents the important role played by Arab scholars in establishing basic economic and financial concepts that affect modern markets today. During the Islamic Golden Age, Arab thinkers began to establish early ideas on ethics of trade, regulation of markets, and contracts, sharing of risk, and financial accountability, as the foundation of today's stock markets and financial systems.</p>
-              <p>Partnerships, profit, and loss sharing, open record keeping, controlled market places have all been institutionalized way before the modern day engagements. Through the name, Iqtisad, this platform serves as a tribute to those historical inputs but puts emphasis on the balance, systematic decision-making, and accountable economic reasoning which holds a key position in the interpretation of the modern world financial markets.</p>
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold font-headline mb-6">Why The Name Iqtisad(اقتصاد)?</h2>
+              <div className="space-y-4 text-muted-foreground">
+                <p>The name Iqtisad is based on the Arabic word for economics and represents the important role played by Arab scholars in establishing basic economic and financial concepts that affect modern markets today. During the Islamic Golden Age, Arab thinkers began to establish early ideas on ethics of trade, regulation of markets, and contracts, sharing of risk, and financial accountability, as the foundation of today's stock markets and financial systems.</p>
+                <p>Partnerships, profit, and loss sharing, open record keeping, controlled market places have all been institutionalized way before the modern day engagements. Through the name, Iqtisad, this platform serves as a tribute to those historical inputs but puts emphasis on the balance, systematic decision-making, and accountable economic reasoning which holds a key position in the interpretation of the modern world financial markets.</p>
+              </div>
             </div>
+            <div className="flex justify-center">
+              <Image
+                src="/home1.png"
+                alt="Historical Islamic economics illustration"
+                width={600}
+                height={450}
+                className="object-cover shadow-lg border-2 border-black"
+              />
+            </div>
+          </div>
         </div>
       </section>
 

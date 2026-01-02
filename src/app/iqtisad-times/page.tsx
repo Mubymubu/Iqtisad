@@ -4,6 +4,7 @@ import { TopMovers } from "@/components/TopMovers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen } from "lucide-react";
+import Image from "next/image";
 
 const articles = [
   {
@@ -47,34 +48,59 @@ export default function IqtisadTimesPage() {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-12">
-            <MarketNews />
+      <div className="grid grid-cols-1 gap-12">
+        <div className="w-full space-y-12">
+          <MarketNews />
 
-            <section>
-                 <h2 className="text-2xl font-bold font-headline mb-4 flex items-center"><BookOpen className="mr-3 h-6 w-6" /> Past & Profit – Lessons from the past that still matter</h2>
-                 <div className="space-y-8">
-                    {articles.map((article, index) => (
-                        <Card key={index} className="bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="font-headline text-2xl">{article.title}</CardTitle>
-                                <CardDescription>By {article.author}</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-muted-foreground">
-                                {article.content.map((paragraph, pIndex) => (
-                                    <p key={pIndex}>{paragraph}</p>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    ))}
-                 </div>
-            </section>
+          <section>
+            <h2 className="text-2xl font-bold font-headline mb-4 flex items-center">
+              <BookOpen className="mr-3 h-6 w-6" />
+              Past & Profit – Lessons from the past that still matter
+            </h2>
+
+            <div className="space-y-8">
+              {articles.map((article, index) => (
+                <div key={index} className="flex flex-col lg:flex-row gap-6 items-stretch w-full">
+                  {/* LEFT CONTENT CARD */}
+                  <Card className="w-full lg:w-1/2 bg-card/50 flex flex-col">
+                    <CardHeader>
+                      <CardTitle className="font-headline text-xl lg:text-2xl">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription>
+                        By {article.author}
+                      </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="flex-1 space-y-4 text-muted-foreground text-sm lg:text-base">
+                      {article.content.map((paragraph, pIndex) => (
+                        <p key={pIndex}>{paragraph}</p>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  {/* RIGHT IMAGE CARD */}
+                  <Card className="w-full lg:w-1/2 bg-card/50 p-0 overflow-hidden">
+                    <div className="relative h-64 lg:h-full lg:min-h-[400px]">
+                      <Image
+                        src={`/chronicle${index + 1}.png`}
+                        alt={`Chronicle ${index + 1} illustration`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        priority
+                      />
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
         
-        <div className="lg:col-span-1">
-            <TopMovers />
+        <div className="w-full">
+          <TopMovers />
         </div>
-
       </div>
     </div>
   );

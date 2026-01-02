@@ -8,7 +8,8 @@ import { LevelIntro } from "@/components/LevelIntro";
 import { GameStatusBar } from "@/components/GameStatusBar";
 import { NewsEventPopup } from "@/components/NewsEventPopup";
 import { GameControls } from "@/components/GameControls";
-import { useAudio } from "@/context/AudioContext";
+import { useAudio } from "@/hooks/use-audio";
+import { useEffect, useRef } from "react";
 
 const ventureAssetsConfig = [
     { id: "SEED", name: "SEEDLINE BIOTECH", price: 5750.69, volatility: 0.5, maxPrice: 25000 },
@@ -19,13 +20,30 @@ const ventureAssetsConfig = [
 
 function Level2Content() {
     const { assets, phase, startGame } = useGameStore(state => state);
-    const { play, stop } = useAudio();
+    const { playLevelAudio, stopAudio } = useAudio();
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const handleStart = () => {
-  play("level2");
-  startGame();
-};
+        startGame();
+        // Start level background music
+        audioRef.current = playLevelAudio(2);
+    };
 
+    useEffect(() => {
+        // Cleanup audio when component unmounts or phase changes
+        return () => {
+            if (audioRef.current) {
+                stopAudio(audioRef.current);
+            }
+        };
+    }, [stopAudio]);
+
+    // Stop audio when game ends
+    useEffect(() => {
+        if (phase === 'debrief' && audioRef.current) {
+            stopAudio(audioRef.current);
+        }
+    }, [phase, stopAudio]);
     
     if (phase === 'intro') {
       return (
@@ -41,7 +59,6 @@ function Level2Content() {
     }
     
     if (phase === 'debrief') {
-      stop()
       return <DebriefDialog levelId="level2" />;
     }
     

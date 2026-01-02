@@ -101,7 +101,7 @@ export default function ContactPage() {
                 </Link>
                 </Button>
                 <Button asChild variant="outline">
-                    <Link href="https://www.instagram.com/iqtisadfinance_com/" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://www.instagram.com/iqtisadfinancedotcom/" target="_blank" rel="noopener noreferrer">
                         <InstagramIcon className="mr-2 h-4 w-4" />
                         Instagram Page
                     </Link>

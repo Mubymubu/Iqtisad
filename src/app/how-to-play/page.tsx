@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { BookText, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function HowToPlayPage() {
   return (
@@ -109,6 +110,16 @@ export default function HowToPlayPage() {
           <p className="text-muted-foreground leading-relaxed">
             Performance measurement is done on a system that utilizes net worth growth, decision quality and risk management evaluation. They save and follow the stars and keep a number of them in each level, which means that a player can see their progress and refine the strategies.
           </p>
+        </section>
+
+        <section className="flex justify-center py-8">
+          <Image
+            src="/home2.png"
+            alt="Game progress and scoring illustration"
+            width={800}
+            height={600}
+            className="rounded-lg object-cover"
+          />
         </section>
         
         <section>
