@@ -1,4 +1,6 @@
 
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, User, ShieldAlert, Share2, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -95,16 +97,16 @@ export default function ContactPage() {
             </p>
             <div className="flex flex-wrap gap-4">
                 <Button asChild>
-                <Link href="https://www.linkedin.com/in/ammar-vasee-66621a324/?originalSubdomain=in" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.linkedin.com/in/ammar-vasee-66621a324/?originalSubdomain=in" target="_blank" rel="noopener noreferrer">
                     <Linkedin className="mr-2 h-4 w-4" />
                     View LinkedIn Profile
-                </Link>
+                </a>
                 </Button>
                 <Button asChild variant="outline">
-                    <Link href="https://www.instagram.com/iqtisadfinancedotcom/" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.instagram.com/iqtisadfinancedotcom/" target="_blank" rel="noopener noreferrer">
                         <InstagramIcon className="mr-2 h-4 w-4" />
                         Instagram Page
-                    </Link>
+                    </a>
                 </Button>
             </div>
           </CardContent>

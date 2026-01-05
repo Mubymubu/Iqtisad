@@ -74,8 +74,20 @@ function LevelCard({ level, title, description, href, stars }: {
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
-  const { user } = useUser();
-  const firestore = useFirestore();
+  
+  // Use try-catch to handle cases where Firebase is not available (SSR)
+  let user = null;
+  let firestore = null;
+  
+  try {
+    const userData = useUser();
+    const firestoreData = useFirestore();
+    user = userData.user;
+    firestore = firestoreData;
+  } catch (error) {
+    // Firebase not available during SSR, use default values
+    console.log('Firebase not available during SSR');
+  }
   
   const userProgressRef = useMemo(() => {
     if (!firestore || !user) return null;

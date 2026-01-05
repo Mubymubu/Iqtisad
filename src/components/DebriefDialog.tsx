@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { useGameStore, LevelId } from "@/hooks/use-game-state";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAudio } from "@/hooks/use-audio";
+import { useEffect } from "react";
 
 function StarRating({ rating, isTutorial }: { rating: number; isTutorial?: boolean }) {
   const totalStars = isTutorial ? 1 : 3;
@@ -61,10 +63,22 @@ export function DebriefDialog({ children, customTitle, customDescription, levelI
   }));
 
   const router = useRouter();
+  const { playOpeningBell } = useAudio();
 
   const netGain = netWorth - startingBalance;
   const isProfit = netGain >= 0;
   const isTutorial = profitGoal !== undefined;
+
+  // Play opening bell when game ends (debrief phase starts)
+  useEffect(() => {
+    if (phase === 'debrief') {
+      try {
+        playOpeningBell();
+      } catch (error) {
+        console.warn('Opening bell sound failed:', error);
+      }
+    }
+  }, [phase, playOpeningBell]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {

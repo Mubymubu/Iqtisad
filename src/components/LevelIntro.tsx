@@ -32,15 +32,8 @@ export function LevelIntro({
   objective,
   onStart,
 }: LevelIntroProps) {
-  const { playOpeningBell } = useAudio();
-
   const handleStartTrading = () => {
-    try {
-      playOpeningBell(); // Play opening bell sound
-    } catch (error) {
-      console.warn('Opening bell sound failed:', error);
-    }
-    onStart(); // Start the game
+    onStart(); // Start the game without opening bell sound
   };
 
   return (
@@ -81,7 +74,7 @@ export function LevelIntro({
             </div>
           </div>
 
-          <Button size="xl" className="w-full" onClick={handleStartTrading} disableSound={true}>
+          <Button size="xl" className="w-full" onClick={handleStartTrading}>
             Start Trading
           </Button>
         </CardContent>

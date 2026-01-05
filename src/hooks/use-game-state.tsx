@@ -449,7 +449,20 @@ export function GameStateProvider({ children, initialAssets, duration, startingB
     profitGoal?: number;
 }) {
   const storeRef = React.useRef<GameStoreType>();
-  const { user, firestore } = useUser();
+  
+  // Use try-catch to handle cases where Firebase is not available (SSR)
+  let user = null;
+  let firestore = null;
+  
+  try {
+    const userData = useUser();
+    const firestoreData = useFirestore();
+    user = userData.user;
+    firestore = firestoreData;
+  } catch (error) {
+    // Firebase not available during SSR, use default values
+    console.log('Firebase not available during SSR');
+  }
   
   if (!storeRef.current) {
     storeRef.current = createGameStore(levelId, initialAssets, duration, startingBalance, profitGoal);

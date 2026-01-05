@@ -43,11 +43,17 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, onClick, disableSound = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, onClick, onMouseEnter, disableSound = false, ...props }, ref) => {
     const { playButtonSound } = useAudio();
     const Comp = asChild ? Slot : "button"
     
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (onClick) {
+        onClick(e);
+      }
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!disableSound) {
         try {
           playButtonSound();
@@ -55,8 +61,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           console.warn('Button sound failed:', error);
         }
       }
-      if (onClick) {
-        onClick(e);
+      if (onMouseEnter) {
+        onMouseEnter(e);
       }
     };
 
@@ -65,6 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
         {...props}
       />
     )

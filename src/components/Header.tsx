@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle 
 import React from 'react';
 import Image from 'next/image';
 import { useGameStoreState } from '@/hooks/use-game-state';
+import { useAudio } from '@/hooks/use-audio';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -27,6 +28,7 @@ const navLinks = [
 const NavLink = ({ href, label, isSheet = false }: { href: string; label: string; isSheet?: boolean }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
+  const { playButtonSound } = useAudio();
 
   const linkClasses = cn(
     "text-sm font-medium transition-colors hover:text-primary",
@@ -37,11 +39,19 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
     "text-lg font-medium transition-colors hover:text-primary",
     isActive ? "text-primary" : "text-foreground"
   );
+
+  const handleMouseEnter = () => {
+    try {
+      playButtonSound();
+    } catch (error) {
+      console.warn('Navigation sound failed:', error);
+    }
+  };
   
   if (isSheet) {
     return (
       <SheetClose asChild>
-        <Link href={href} className={sheetLinkClasses}>
+        <Link href={href} className={sheetLinkClasses} onMouseEnter={handleMouseEnter}>
           {label}
         </Link>
       </SheetClose>
@@ -49,7 +59,7 @@ const NavLink = ({ href, label, isSheet = false }: { href: string; label: string
   }
 
   return (
-    <Link href={href} className={linkClasses}>
+    <Link href={href} className={linkClasses} onMouseEnter={handleMouseEnter}>
       {label}
     </Link>
   );
@@ -104,6 +114,15 @@ function HeaderContent() {
 export function Header() {
   const pathname = usePathname();
   const isGameLevel = /^\/level-\d/.test(pathname) || pathname === '/tutorial';
+  const { playButtonSound } = useAudio();
+
+  const handleLogoHover = () => {
+    try {
+      playButtonSound();
+    } catch (error) {
+      console.warn('Logo sound failed:', error);
+    }
+  };
 
   const renderNavLinks = (isSheet = false) => navLinks.map(link => (
     <NavLink
@@ -120,7 +139,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-6 flex items-center">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
+          <Link href="/" className="mr-6 flex items-center space-x-2" onMouseEnter={handleLogoHover}>
             <Image
   src="/logo.svg"
   alt={logoAltText}
@@ -157,7 +176,7 @@ export function Header() {
                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                </SheetHeader>
                <div className="p-4">
-                 <Link href="/" className="flex items-center space-x-2 mb-8">
+                 <Link href="/" className="flex items-center space-x-2 mb-8" onMouseEnter={handleLogoHover}>
                    <Image src="/logo.svg" alt={logoAltText} width={28} height={28} />
                    <span className="font-bold text-lg">Iqtisad</span>
                  </Link>
